@@ -39,7 +39,7 @@ description: |-
   events in that day's mobile sources, or if the map has overlapping rows.
 
   urlbar_clients_daily_v1, mobile_search_clients_daily_v2 and events_stream have no
-  date_partition_offset, so their tasks for the same logical date (in bqetl_search,
+  partition_offset, so their tasks for the same logical date (in bqetl_search,
   bqetl_mobile_search and bqetl_glean_usage) write the next day. If one of them
   is rerun for day D, rerun this table for day D too.
 owners:
@@ -52,7 +52,7 @@ scheduling:
   dag_name: bqetl_search
   # search_clients_daily_glean_v1 and desktop_client_day_dims_v1 fill the previous day's
   # partition on each run, so this table does too.
-  date_partition_offset: -1
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

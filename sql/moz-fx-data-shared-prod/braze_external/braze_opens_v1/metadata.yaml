@@ -7,7 +7,7 @@ labels:
   incremental: true
   owner1: lmcfall
 scheduling:
-  date_partition_parameter: open_time
+  partition_parameter: open_time
 bigquery:
   time_partitioning:
     type: day

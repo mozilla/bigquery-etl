@@ -50,7 +50,7 @@ urlbar AS (
   WHERE
     submission_date = @submission_date
 ),
--- urlbar_clients_daily_v1 has no date_partition_offset, so the urlbar task this run waits on
+-- urlbar_clients_daily_v1 has no partition_offset, so the urlbar task this run waits on
 -- writes the next day. The partition read here comes from the previous run. If that run
 -- didn't land, fail rather than write a day with no Suggest clicks and no urlbar-only clients.
 urlbar_partition_check AS (
@@ -148,7 +148,7 @@ mobile_events AS (
     AND event_category = 'awesomebar'
     AND event_name = 'search_result_tap'
 ),
--- Like urlbar_clients_daily_v1, the mobile sources have no date_partition_offset, so the
+-- Like urlbar_clients_daily_v1, the mobile sources have no partition_offset, so the
 -- partitions read here come from the previous run. Fail rather than write a day without them.
 -- Checks any awesomebar event, not just Suggest clicks: Suggest can be switched off remotely,
 -- so a day with no Suggest clicks is possible, but not one with no awesomebar events.

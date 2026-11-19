@@ -1,14 +1,39 @@
 import datetime
+from pathlib import Path
 
 import pytest
 
+from bigquery_etl.metadata.parse_metadata import PartitionType
 from bigquery_etl.query_scheduling.formatters import (
     format_attr,
     format_date,
     format_optional_string,
     format_schedule_interval,
+    format_task_destination_partition,
+    format_task_partition_parameter,
     format_timedelta,
 )
+from bigquery_etl.query_scheduling.task import Task
+from bigquery_etl.query_scheduling.utils import InvalidTimedeltaError
+
+QUERY_FILE = (
+    Path(__file__).parent.parent
+    / "data"
+    / "test_sql"
+    / "moz-fx-data-test-project"
+    / "test"
+    / "incremental_query_v1"
+    / "query.sql"
+)
+
+
+def _task(**kwargs):
+    return Task(
+        dag_name="bqetl_test_dag",
+        query_file=str(QUERY_FILE),
+        owner="test@example.com",
+        **kwargs,
+    )
 
 
 class TestFormatters:
@@ -39,7 +64,7 @@ class TestFormatters:
     def test_format_timedelta(self):
         assert format_timedelta("string") == "string"
 
-        with pytest.raises(TypeError):
+        with pytest.raises(InvalidTimedeltaError):
             assert format_timedelta(123)
 
         assert format_timedelta("1h") == datetime.timedelta(hours=1)
@@ -67,3 +92,106 @@ class TestFormatters:
             assert format_optional_string(123)
 
         assert format_optional_string("test") == "'test'"
+
+    @pytest.mark.parametrize(
+        "partition_type,partition_parameter,partition_offset,expected",
+        [
+            (
+                PartitionType.DAY,
+                "submission_date",
+                None,
+                "{{ logical_date.format('YYYYMMDD') }}",
+            ),
+            # In the absence of partitioning metadata we assume day partitioning.
+            (None, "submission_date", None, "{{ logical_date.format('YYYYMMDD') }}"),
+            (
+                PartitionType.MONTH,
+                "submission_month",
+                None,
+                "{{ logical_date.format('YYYYMM') }}",
+            ),
+            (
+                PartitionType.YEAR,
+                "submission_year",
+                None,
+                "{{ logical_date.format('YYYY') }}",
+            ),
+            (
+                PartitionType.HOUR,
+                "submission_hour",
+                None,
+                "{{ logical_date.format('YYYYMMDDHH') }}",
+            ),
+            (
+                PartitionType.DAY,
+                "submission_date",
+                "-2d",
+                "{{ (logical_date + macros.timedelta(days=-2)).format('YYYYMMDD') }}",
+            ),
+            # A null partition parameter targets the whole table, unless there's a non-zero partition offset.
+            (PartitionType.DAY, None, None, None),
+            (PartitionType.DAY, None, "0d", None),
+            (
+                PartitionType.DAY,
+                None,
+                "-1d",
+                "{{ (logical_date + macros.timedelta(days=-1)).format('YYYYMMDD') }}",
+            ),
+        ],
+    )
+    def test_format_task_destination_partition(
+        self, partition_type, partition_parameter, partition_offset, expected
+    ):
+        task = _task(
+            partition_type=partition_type,
+            partition_parameter=partition_parameter,
+            partition_offset=partition_offset,
+        )
+        assert format_task_destination_partition(task) == expected
+
+    @pytest.mark.parametrize(
+        "partition_type,partition_parameter,partition_offset,expected",
+        [
+            (
+                PartitionType.DAY,
+                "submission_date",
+                None,
+                "submission_date:DATE:{{ logical_date.format('YYYY-MM-DD') }}",
+            ),
+            (
+                PartitionType.MONTH,
+                "submission_month",
+                None,
+                "submission_month:DATE:{{ logical_date.format('YYYY-MM-01') }}",
+            ),
+            (
+                PartitionType.YEAR,
+                "submission_year",
+                None,
+                "submission_year:INTEGER:{{ logical_date.format('YYYY') }}",
+            ),
+            (
+                PartitionType.HOUR,
+                "submission_hour",
+                None,
+                "submission_hour:TIMESTAMP:{{ logical_date.format('YYYY-MM-DD HH:00:00') }}",
+            ),
+            (
+                PartitionType.DAY,
+                "first_seen_date",
+                "-27d",
+                "first_seen_date:DATE:{{ (logical_date + macros.timedelta(days=-27)).format('YYYY-MM-DD') }}",
+            ),
+            (PartitionType.DAY, None, None, None),
+            (PartitionType.DAY, None, "-1d", None),
+        ],
+    )
+    def test_format_task_partition_parameter(
+        self, partition_type, partition_parameter, partition_offset, expected
+    ):
+        task = _task(
+            partition_type=partition_type,
+            partition_parameter=partition_parameter,
+            partition_offset=partition_offset,
+        )
+        assert format_task_partition_parameter(task) == expected

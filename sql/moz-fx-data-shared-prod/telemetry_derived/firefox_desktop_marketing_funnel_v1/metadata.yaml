@@ -32,10 +32,8 @@ labels:
   dag: bqetl_marketing_analysis
 scheduling:
   dag_name: bqetl_marketing_analysis
-  date_partition_offset: -27
-  date_partition_parameter: null
-  parameters:
-  - submission_date:DATE:{{ds}}
+  partition_offset: -27d
+  partition_parameter: funnel_date
 bigquery:
   time_partitioning:
     type: day

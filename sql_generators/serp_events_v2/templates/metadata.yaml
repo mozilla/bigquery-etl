@@ -19,19 +19,7 @@ labels:
 scheduling:
   dag_name: bqetl_serp
   task_name: {{ app_name }}_serp_events__v2
-  date_partition_parameter: null
-  destination_table:
-    >-
-    {% raw %}serp_events_v2${{
-    (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
-    }}{% endraw %}
-  parameters:
-  - >-
-      {% raw %}submission_date:DATE:{{ds}}{% endraw %}
-  query_file_path:
-    # explicit query file path is necessary because the destination table
-    # includes a partition identifier that is not in the path
-    sql/moz-fx-data-shared-prod/{{ app_name }}_derived/serp_events_v2/query.sql
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

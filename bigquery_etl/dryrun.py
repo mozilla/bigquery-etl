@@ -40,6 +40,11 @@ from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
+from .query_scheduling.partitioning import (
+    get_partition_type,
+    resolve_partition_parameter_name,
+    resolve_partition_parameter_type,
+)
 from .util.cache_dir import get_private_cache_dir
 from .util.common import render
 
@@ -439,18 +444,26 @@ class DryRun:
                 )
         else:
             scheduling_metadata = self.metadata.scheduling if self.metadata else {}
-            if date_partition_parameter := scheduling_metadata.get(
-                "date_partition_parameter", "submission_date"
+            partition_type = get_partition_type(self.metadata)
+            if partition_parameter_name := resolve_partition_parameter_name(
+                scheduling_metadata,
+                partition_type,
+                is_script=basename(self.sqlfile) in ("script.sql", "query.py"),
             ):
+                partition_parameter_type = resolve_partition_parameter_type(
+                    partition_type
+                )
                 query_parameters.append(
                     bigquery.ScalarQueryParameter(
-                        date_partition_parameter,
-                        "DATE",
-                        QUERY_PARAMETER_TYPE_VALUES["DATE"],
+                        partition_parameter_name,
+                        partition_parameter_type,
+                        QUERY_PARAMETER_TYPE_VALUES[partition_parameter_type],
                     )
                 )
             for parameter in scheduling_metadata.get("parameters", []):
                 parameter_name, parameter_type, _ = parameter.strip().split(":", 2)
+                if parameter_name == partition_parameter_name:
+                    continue
                 parameter_type = parameter_type.upper() or "STRING"
                 query_parameters.append(
                     bigquery.ScalarQueryParameter(

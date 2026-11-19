@@ -29,7 +29,7 @@ scheduling:
   dag_name: bqetl_search
   # search_kpi_clients_daily_v1 fills the previous day's partition on each run, so this
   # table does too.
-  date_partition_offset: -1
+  partition_offset: -1d
 bigquery:
   time_partitioning:
     type: day

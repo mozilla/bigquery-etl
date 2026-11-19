@@ -4,7 +4,7 @@
 {{ is_unique(["submission_date", "client_id", "newtab_addon_version"], "submission_date = @submission_date") }}
 --
 --
--- Join safety: exactly one last-reported version per client per day, so joins to
+-- Join safety: at most one last-reported version per client per day, so joins to
 -- newtab_visits_daily filtered to is_last_reported_version don't double-count visits.
 
 #fail

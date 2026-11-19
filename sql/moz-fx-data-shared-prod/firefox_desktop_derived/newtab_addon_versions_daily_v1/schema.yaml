@@ -54,7 +54,7 @@ fields:
 - name: daily_ping_count
   type: INTEGER
   mode: NULLABLE
-  description: Number of addons pings with reason `daily` reporting this version. The ping type where version drops to built-in show up.
+  description: Number of addons pings with reason `daily` reporting this version. This is the reason type where addon version drops to built-in will show up.
 - name: updated_ping_count
   type: INTEGER
   mode: NULLABLE

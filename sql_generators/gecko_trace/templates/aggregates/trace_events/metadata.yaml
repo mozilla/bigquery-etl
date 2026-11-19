@@ -9,3 +9,5 @@ description: |-
 
 owners:
   - jjalkanen@mozilla.com
+labels:
+  sql_generator: gecko_trace

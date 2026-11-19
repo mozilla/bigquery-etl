@@ -16,6 +16,7 @@ from bigquery_etl.backfill.utils import (
     MAX_BACKFILL_ENTRY_AGE_DAYS,
     NBR_DAYS_RETAINED,
     get_effective_retention_days,
+    validate_depends_on_past,
 )
 from bigquery_etl.backfill.validate import (
     validate_custom_query_path,
@@ -339,6 +340,35 @@ class TestValidateBackfill(object):
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
 
+    def test_validate_depends_on_past_script_without_partition_parameter(
+        self, tmp_path
+    ):
+        table_dir = tmp_path / "moz-fx-data-shared-prod" / "test" / "script_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "script.sql").write_text("SELECT 1")
+        (table_dir / METADATA_FILE).write_text(
+            yaml.dump(
+                {
+                    "friendly_name": "test",
+                    "description": "test",
+                    "owners": ["test@example.org"],
+                    "scheduling": {"dag_name": "bqetl_test", "depends_on_past": True},
+                }
+            )
+        )
+
+        # SQL scripts without an explicit partition parameter target the whole table, like in Airflow.
+        assert not validate_depends_on_past(
+            str(tmp_path), "moz-fx-data-shared-prod.test.script_v1"
+        )
+
+        # Python scripts choose their own target partitions, so they're still backfilled per partition.
+        (table_dir / "script.sql").unlink()
+        (table_dir / "query.py").write_text("")
+        assert validate_depends_on_past(
+            str(tmp_path), "moz-fx-data-shared-prod.test.script_v1"
+        )
+
     def test_validate_depends_on_past_end_date_override(self):
         """override_depends_on_past_end_date should allow end date to be before entry date."""
         backfill_entry = Backfill(
@@ -629,11 +659,11 @@ class TestValidateBackfill(object):
     def test_validate_custom_query_path_binds_custom_partition_parameter(
         self, tmp_path
     ):
-        """The dry run should bind the table's date_partition_parameter, not submission_date."""
+        """The dry run should bind the table's partition_parameter, not submission_date."""
         query_file = tmp_path / "backfill_custom.sql"
         query_file.write_text("SELECT 1 WHERE @first_seen_date IS NOT NULL")
         backfill_file = tmp_path / BACKFILL_FILE
-        self._write_metadata(tmp_path, {"date_partition_parameter": "first_seen_date"})
+        self._write_metadata(tmp_path, {"partition_parameter": "first_seen_date"})
         entry = self._custom_query_entry(str(query_file))
 
         with patch("bigquery_etl.dryrun.DryRun") as dry_run_cls:
@@ -668,7 +698,7 @@ class TestValidateBackfill(object):
         self._write_metadata(
             tmp_path,
             {
-                "date_partition_parameter": None,
+                "partition_parameter": None,
                 "parameters": ["submission_date:DATE:{{ds}}"],
             },
         )

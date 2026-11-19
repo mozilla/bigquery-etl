@@ -11,8 +11,8 @@ scheduling:
   # Mozilla ended support for Hubs on 2024-05-31.
   #dag_name: bqetl_subplat
   # delay aggregates by 7 days, to ensure data is complete
-  date_partition_offset: -7
-  date_partition_parameter: date
+  partition_offset: -7d
+  partition_parameter: date
 bigquery:
   time_partitioning:
     type: day

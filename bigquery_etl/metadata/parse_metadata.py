@@ -421,6 +421,18 @@ class Metadata:
 
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
+                    # TODO srose to remove this logic after migration to `partition_parameter` and `partition_offset`
+                    if "date_partition_parameter" in scheduling:
+                        scheduling.setdefault(
+                            "partition_parameter",
+                            scheduling.pop("date_partition_parameter"),
+                        )
+                    if "date_partition_offset" in scheduling:
+                        date_partition_offset = scheduling.pop("date_partition_offset")
+                        if date_partition_offset is not None:
+                            scheduling.setdefault(
+                                "partition_offset", f"{date_partition_offset}d"
+                            )
                     if "dag_name" in scheduling and cls.is_valid_label(
                         scheduling["dag_name"]
                     ):

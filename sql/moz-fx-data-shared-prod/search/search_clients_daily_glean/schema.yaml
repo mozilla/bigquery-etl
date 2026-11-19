@@ -1,5 +1,13 @@
 ---
-# The view is a passthrough, so its schema is the table's. Included rather than copied so
-# a column added to the table cannot leave this file behind.
-fields: !include-fields
+# The view passes the table's columns through. They are included rather than copied, so a
+# column added to the table cannot leave this file behind. sap_exclusion_reason is the view's own.
+fields: !flatten-lists
+- !include-fields
   table: moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1
+- name: sap_exclusion_reason
+  type: STRING
+  mode: NULLABLE
+  description: "Why this row is left out of SAP totals, or NULL to keep it. One column for every rule, so a
+      new rule adds a value rather than a column. The only value is sap_row_ge_10000, for a row with
+      10,000 or more SAP events for one client, day, engine, partner_code and source.
+      search_clients_daily_v8 drops the same rows."

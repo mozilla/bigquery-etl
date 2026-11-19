@@ -1,0 +1,20 @@
+# One history result dismissed while three history results were shown: one annoyance,
+# not one per history result.
+- submission_date: "2026-10-14"
+  glean_client_id: client-c
+  sample_id: 3
+  event_name: engagement
+  event_timestamp: 100
+  event_id: e1
+  interaction: typed
+  selected_result: history
+  product_selected_result: history
+  event_action: annoyance
+  is_terminal: false
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: history, product_result_type: history, result_group: general}
+  - {position: 2, result_type: history, product_result_type: history, result_group: general}
+  - {position: 3, result_type: history, product_result_type: history, result_group: general}
+  - {position: 4, result_type: search_suggest, product_result_type: search_suggest, result_group: suggested}

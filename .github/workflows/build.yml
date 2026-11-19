@@ -142,7 +142,7 @@ jobs:
       # Not the shared *setup-python anchor because the other ones reference needs.build.outputs.python-version
       - name: Set up Python
         id: setup_python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -184,7 +184,7 @@ jobs:
       - &setup-python
         name: Set up Python
         id: setup_python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: ${{ needs.build.outputs.python-version }}
           cache: 'pip'
@@ -433,6 +433,7 @@ jobs:
     environment: *job-env
     outputs:
       generated-sql-commit: ${{ steps.generate.outputs.generated-sql-commit }}
+      main-merge-base: ${{ steps.generate.outputs.main-merge-base }}
       generated-sql-changed: ${{ steps.generate.outputs.generated-sql-changed }}
     steps:
       - &checkout-with-creds
@@ -455,6 +456,7 @@ jobs:
           git fetch origin main --no-tags
           MAIN_MERGE_BASE=$(git merge-base origin/main HEAD || true)
           echo "merge base with main: $MAIN_MERGE_BASE"
+          echo "main-merge-base=$MAIN_MERGE_BASE" >> "$GITHUB_OUTPUT"
 
           git clone -b generated-sql https://github.com/mozilla/bigquery-etl ~/remote-generated-sql
           cd ~/remote-generated-sql
@@ -537,6 +539,39 @@ jobs:
             cp -r ~/remote-generated-sql/sql/ /tmp/workspace/generated-sql/sql
             cp -a sql/. /tmp/workspace/generated-sql/sql
 
+            # Incomplete metadata.yaml can be checked in to override values from generated sql,
+            # e.g. workgroup_access. The copy above overwrites the generated-sql metadata.yaml with
+            # the partial one which creates unrelated sql diff changes, so use the generated-sql one
+            # if the checked-in file hasn't changed since the generated-sql commit.
+            # The dataset's dataset_metadata.yaml must also be unchanged, since the generated file
+            # already has the old default_table_workgroup_access merged in and metadata update only
+            # adds members.
+            same_as_base() {
+              # true if the file is missing in both or unchanged since the generated-sql commit
+              if [ -e "sql/$1" ] || [ -e ~/remote-bigquery-etl-main/sql/"$1" ]; then
+                cmp -s "sql/$1" ~/remote-bigquery-etl-main/sql/"$1"
+              fi
+            }
+            # Fail loudly if yq isn't available.
+            if ! command -v yq > /dev/null; then
+              echo "yq is required to restore generated metadata.yaml files"
+              exit 1
+            fi
+            while IFS= read -r -d '' metadata_file; do
+              relative_path=${metadata_file#sql/}
+              generated_file=~/remote-generated-sql/sql/$relative_path
+              dataset_metadata_file=$(dirname "$(dirname "$relative_path")")/dataset_metadata.yaml
+              # grep is only a fast pre-filter to avoid running yq on every file
+              if [ -f "$generated_file" ] \
+                && grep -q sql_generator "$generated_file" \
+                && yq -e '.labels.sql_generator' "$generated_file" > /dev/null 2>&1 \
+                && same_as_base "$relative_path" \
+                && same_as_base "$dataset_metadata_file"; then
+                echo "Restoring generated $relative_path"
+                cp "$generated_file" "/tmp/workspace/generated-sql/sql/$relative_path"
+              fi
+            done < <(find sql -name metadata.yaml -print0)
+
             # Run only the generators with a templates/unittests/ folder, into a temporary folder, when SQL generation is skipped (no sql_generators/ change,
             # no deleted or renamed SQL file, not a push to main, no manual trigger).
             # Keep only their tests/ output for metadata validation.
@@ -598,7 +633,23 @@ jobs:
       pr-number: ${{ steps.context.outputs.pr_number }}
       commit-sha: ${{ steps.context.outputs.commit_sha }}
     environment: *job-env
+    env:
+      # Secrets can't be referenced in step `if:`, so expose whether the key exists.
+      # Dependabot-triggered runs get it from the Dependabot secret of the same name
+      HAS_CI_BOT_KEY: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY != '' }}
     steps:
+      - name: Generate bigquery-etl-ci-bot token
+        id: app-token
+        # Without the key (e.g. on forks) the dispatch step reports the missing token
+        if: env.HAS_CI_BOT_KEY == 'true'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510  # v3.3.0
+        with:
+          client-id: ${{ secrets.BQETL_CI_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.BQETL_CI_BOT_PRIVATE_KEY }}
+          owner: mozilla
+          repositories: private-bigquery-etl
+          # repository_dispatch needs contents: write
+          permission-contents: write
       - name: Determine context
         id: context
         env:
@@ -618,12 +669,17 @@ jobs:
       - name: Trigger private-bigquery-etl CI
         id: dispatch
         env:
-          TRIGGER_TOKEN: ${{ secrets.PRIVATE_BQETL_TRIGGER_TOKEN }}
+          TRIGGER_TOKEN: ${{ steps.app-token.outputs.token }}
           COMMIT_SHA: ${{ steps.context.outputs.commit_sha }}
           PR_NUMBER: ${{ steps.context.outputs.pr_number }}
           RUN_ID: ${{ github.run_id }}
           IS_MAIN: ${{ steps.context.outputs.is_main_push }}
           IS_MERGE_GROUP: ${{ github.event_name == 'merge_group' }}
+          # Private CI builds its diff baseline from the generated sql at this commit and
+          # bigquery-etl code at the merge base, so main changes merged after the PR's
+          # base don't show up in the diff
+          GENERATED_SQL_COMMIT: ${{ needs.generate-sql.outputs.generated-sql-commit }}
+          MAIN_MERGE_BASE: ${{ needs.generate-sql.outputs.main-merge-base }}
         run: |
           if [[ -z "$TRIGGER_TOKEN" ]]; then
             # Private CI is a required check on PRs and merge groups, so without
@@ -644,10 +700,13 @@ jobs:
               --arg sha "$COMMIT_SHA" \
               --arg pr "$PR_NUMBER" \
               --arg run_id "$RUN_ID" \
+              --arg generated_sql_commit "$GENERATED_SQL_COMMIT" \
+              --arg merge_base "$MAIN_MERGE_BASE" \
               --argjson is_main "${IS_MAIN:-false}" \
               --argjson is_merge_group "${IS_MERGE_GROUP:-false}" \
               '{event_type: "bqetl-ci", client_payload: {
                 bqetl_commit_sha: $sha, bqetl_pr_number: $pr, bqetl_run_id: $run_id,
+                generated_sql_commit: $generated_sql_commit, bqetl_merge_base: $merge_base,
                 is_main_push: $is_main, is_merge_group: $is_merge_group}}')")
 
           if [[ "$HTTP_STATUS" != "204" ]]; then
@@ -934,7 +993,9 @@ jobs:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
+          # Rerun only on transient Workload Identity token refresh failures
+          PATH=".venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine \
+            --reruns 2 --reruns-delay 5 --only-rerun RefreshError
 
   test-routines:
     name: Test Routines
@@ -959,7 +1020,9 @@ jobs:
           CI_RUN_ID: ${{ github.run_id }}_${{ github.run_number }}
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
         run: |
-          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8
+          # Rerun only on transient Workload Identity token refresh failures
+          PATH=".venv/bin:$PATH" script/entrypoint -m routine -n 8 \
+            --reruns 2 --reruns-delay 5 --only-rerun RefreshError
       - name: Validate doc examples
         env:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
@@ -1155,7 +1218,7 @@ jobs:
           fi
           echo "Verified: Tag is on main branch"
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install deployment tools
@@ -1163,4 +1226,4 @@ jobs:
       - name: Build distribution files
         run: python -m build --sdist --wheel
       - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # v1.14.2
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3

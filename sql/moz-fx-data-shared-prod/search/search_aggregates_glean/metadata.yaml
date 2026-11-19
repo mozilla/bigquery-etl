@@ -1,0 +1,7 @@
+---
+friendly_name: Search Aggregates Glean
+description: |
+  Daily desktop search activity, aggregated across unique sets of dimensions with `client_id`
+  removed. Built on Glean, and runs alongside `search_aggregates_v8` rather than replacing it.
+owners:
+  - lmcfall@mozilla.com

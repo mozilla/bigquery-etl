@@ -25,7 +25,12 @@ WITH events AS (
     NULLIF(mozfun.map.get_key(event_params, 'action').string_value, '') AS action,
     NULLIF(mozfun.map.get_key(event_params, 'name').string_value, '') AS name,
     NULLIF(mozfun.map.get_key(event_params, 'newsletter_id').string_value, '') AS newsletter_id,
-    mozfun.map.get_key(event_params, 'percent_scrolled').int_value AS percent_scrolled
+    mozfun.map.get_key(event_params, 'percent_scrolled').int_value AS percent_scrolled,
+    NULLIF(mozfun.map.get_key(event_params, 'partner').string_value, '') AS partner,
+    NULLIF(
+      mozfun.map.get_key(event_params, 'partner_download').string_value,
+      ''
+    ) AS partner_download
   FROM
     `moz-fx-data-marketing-prod.analytics_489412379.events_*`
   WHERE
@@ -72,7 +77,9 @@ classified AS (
         'newsletter_subscribe',
         'dimension_set',
         'send_to_device',
-        'default_browser_set'
+        'default_browser_set',
+        'experiment_view',
+        'partner_download_unavailable'
       ),
       raw_event_name,
       'other'
@@ -176,6 +183,27 @@ classified AS (
     IF(raw_event_name = 'widget_action', name, NULL) AS widget_name,
     IF(raw_event_name = 'newsletter_subscribe', newsletter_id, NULL) AS newsletter_id,
     IF(raw_event_name = 'scroll', percent_scrolled, NULL) AS percent_scrolled,
+    IF(
+      raw_event_name IN (
+        'product_download',
+        'firefox_download',
+        'firefox_mobile_download',
+        'focus_download',
+        'partner_download_unavailable'
+      ),
+      partner,
+      NULL
+    ) AS partner,
+    IF(
+      raw_event_name IN (
+        'product_download',
+        'firefox_download',
+        'firefox_mobile_download',
+        'focus_download'
+      ),
+      partner_download,
+      NULL
+    ) AS partner_download,
     engagement_time_msec
   FROM
     with_page
@@ -209,7 +237,9 @@ SELECT
   percent_scrolled,
   COUNT(*) AS event_count,
   -- Each event is capped at 30 minutes before summing.
-  COALESCE(SUM(LEAST(engagement_time_msec, 1800000)), 0) AS total_engagement_time_ms
+  COALESCE(SUM(LEAST(engagement_time_msec, 1800000)), 0) AS total_engagement_time_ms,
+  partner,
+  partner_download
 FROM
   classified
 GROUP BY
@@ -238,4 +268,6 @@ GROUP BY
   widget_action,
   widget_name,
   newsletter_id,
-  percent_scrolled
+  percent_scrolled,
+  partner,
+  partner_download

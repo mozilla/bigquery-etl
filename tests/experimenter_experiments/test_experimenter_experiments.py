@@ -44,11 +44,13 @@ class TestReadMetricConfigs:
             MagicMock(
                 normandy_slug="slug-a",
                 metric_config={"has_external_config": True},
+                monitoring_config=None,
                 computed_at=computed_at,
             ),
             MagicMock(
                 normandy_slug="slug-b",
-                metric_config={"has_external_config": False},
+                metric_config=None,
+                monitoring_config={"platform": "firefox_desktop"},
                 computed_at=computed_at,
             ),
         ]
@@ -59,8 +61,8 @@ class TestReadMetricConfigs:
             )
 
         assert result == {
-            "slug-a": ({"has_external_config": True}, computed_at.isoformat()),
-            "slug-b": ({"has_external_config": False}, computed_at.isoformat()),
+            "slug-a": ({"has_external_config": True}, None, computed_at.isoformat()),
+            "slug-b": (None, {"platform": "firefox_desktop"}, computed_at.isoformat()),
         }
 
     def test_query_failure_returns_empty_dict(self, query):
@@ -82,6 +84,10 @@ class TestReadMetricConfigs:
                     ),
                     "overrides": {"start_date": datetime.date(2024, 6, 1)},
                 },
+                monitoring_config={
+                    "start_date": datetime.date(2024, 7, 1),
+                    "as_of": datetime.datetime(2024, 8, 1, tzinfo=datetime.UTC),
+                },
                 computed_at=datetime.datetime(2024, 1, 1, tzinfo=datetime.UTC),
             )
         ]
@@ -93,23 +99,32 @@ class TestReadMetricConfigs:
 
         assert "slug-a" in result
 
-        metric_config, metric_config_computed_at = result["slug-a"]
+        metric_config, monitoring_config, metric_config_computed_at = result["slug-a"]
         assert (
             metric_config["external_config_last_modified"]
             == "2024-01-01T12:30:00+00:00"
         )
         assert metric_config["overrides"]["start_date"] == "2024-06-01"
+        assert monitoring_config["start_date"] == "2024-07-01"
+        assert monitoring_config["as_of"] == "2024-08-01T00:00:00+00:00"
         assert metric_config_computed_at == "2024-01-01T00:00:00+00:00"
 
 
 class TestAttachMetricConfigs:
     def test_attaches_config_when_slug_present(self, query):
         blob = [{"normandy_slug": "slug-a"}]
-        metric_configs = {"slug-a": ({"has_external_config": True}, "2024-01-01")}
+        metric_configs = {
+            "slug-a": (
+                {"has_external_config": True},
+                {"platform": "fenix"},
+                "2024-01-01",
+            )
+        }
 
         query.attach_metric_configs(blob, metric_configs)
 
         assert blob[0]["metric_config"] == {"has_external_config": True}
+        assert blob[0]["monitoring_config"] == {"platform": "fenix"}
         assert blob[0]["metric_config_computed_at"] == "2024-01-01"
 
     def test_missing_slug_defaults_to_none(self, query):
@@ -120,4 +135,5 @@ class TestAttachMetricConfigs:
         query.attach_metric_configs(blob, {})
 
         assert blob[0]["metric_config"] is None
+        assert blob[0]["monitoring_config"] is None
         assert blob[0]["metric_config_computed_at"] is None

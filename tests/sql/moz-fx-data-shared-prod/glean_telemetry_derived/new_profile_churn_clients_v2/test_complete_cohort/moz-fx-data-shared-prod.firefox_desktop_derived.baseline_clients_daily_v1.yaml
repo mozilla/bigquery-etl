@@ -1,0 +1,12 @@
+- client_id: day_0_only
+  sample_id: 1
+  submission_date: 2026-08-01
+  is_default_browser: true
+- client_id: day_0_only
+  sample_id: 1
+  submission_date: 2026-08-02
+  is_default_browser: false
+- client_id: days_0_and_1
+  sample_id: 2
+  submission_date: 2026-08-01
+  is_default_browser: false

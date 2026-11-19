@@ -2,7 +2,7 @@
 {{ min_row_count(1, "date = @submission_date") }}
 
 #fail
-{{ is_unique(["date", "pathname", "entry_page", "country_code", "acquisition_channel", "utm_campaign", "product", "platform", "release_channel", "download_language", "method"], "date = @submission_date") }}
+{{ is_unique(["date", "pathname", "entry_page", "country_code", "acquisition_channel", "utm_campaign", "product", "platform", "release_channel", "download_language", "method", "partner", "partner_download"], "date = @submission_date") }}
 
 #warn
 {{ row_count_within_past_partitions_avg(7, 50) }}
@@ -37,6 +37,8 @@ WITH unexpected_keys AS (
       'release_channel',
       'download_language',
       'method',
+      'partner',
+      'partner_download',
       'gtm.uniqueEventId'
     )
   GROUP BY

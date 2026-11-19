@@ -44,6 +44,7 @@
   day_28: false
   day_29: false
   day_30: false
+  is_default_browser: true
 - client_id: days_0_and_1
   sample_id: 2
   submission_date: 2026-08-01
@@ -90,6 +91,7 @@
   day_28: false
   day_29: false
   day_30: false
+  is_default_browser: false
 - client_id: days_0_and_4
   sample_id: 3
   submission_date: 2026-08-01

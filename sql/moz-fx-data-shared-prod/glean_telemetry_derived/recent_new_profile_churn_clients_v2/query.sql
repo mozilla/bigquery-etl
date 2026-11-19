@@ -116,6 +116,7 @@ client_attributes AS (
       first_seen.startup_profile_selection_reason_first,
       first_seen.first_seen_date
     ) AS is_desktop_argument_profile_automation,
+    clients_daily.is_default_browser,
     first_seen.sample_id
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
@@ -125,6 +126,14 @@ client_attributes AS (
     AND first_seen.first_seen_date = distribution_mapping.submission_date
     AND distribution_mapping.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND distribution_mapping.submission_date <= @submission_date
+  -- is_default_browser as of the first-seen day
+  LEFT JOIN
+    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1` AS clients_daily
+    ON first_seen.client_id = clients_daily.client_id
+    AND first_seen.sample_id = clients_daily.sample_id
+    AND first_seen.first_seen_date = clients_daily.submission_date
+    AND clients_daily.submission_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND clients_daily.submission_date <= @submission_date
   WHERE
     first_seen.first_seen_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND first_seen.first_seen_date <= @submission_date
@@ -350,7 +359,8 @@ SELECT
     mozfun.bits28.active_in_range(cohort_bits, 30 - cohort_age, 1),
     NULL
   ) AS day_30,
-  is_desktop_argument_profile_automation
+  is_desktop_argument_profile_automation,
+  is_default_browser
 FROM
   client_bits
 LEFT JOIN

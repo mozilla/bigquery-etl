@@ -12,7 +12,7 @@ A daily aggregate of desktop searches, one row per client per day per engine, pa
   * `firefox_desktop_stable.metrics_v1` — the seven `legacy_` parity counters, taken from the `browser.search.content`, `withads` and `adclicks` labeled counters, and the ad-blocker add-on flag
   * `revenue.monetization_blocking_addons` — the list of ad-blocking add-ons
 * **Filters:** `event = 'sap.counts'` on the SAP side, and enabled monetization-blocking add-ons on the ad-blocker side. Each source is restricted to the run's partition, and a row from any one source reaches the output
-* **Downstream:** the view `search.search_clients_daily_glean`, which exposes this table unchanged
+* **Downstream:** the view `search.search_clients_daily_glean`, which exposes this table's columns and adds `sap_exclusion_reason`
 
 The three sides are combined with full outer joins, so a row survives if any of them has activity for that key.
 
@@ -26,13 +26,15 @@ The three sides are combined with full outer joins, so a row survives if any of 
 
 **`policies_is_enterprise` follows a different aggregation rule on each side.** The pipelines take the mode over the day's events, matching v8; the legacy side publishes the value its winning metrics ping carried. The two diverge where the latest ping carries a null and an earlier one carries a value: the mode skips the null and returns the earlier value, where the legacy rule returns the null.
 
+**The `sap_exclusion_reason` rule lives in the view, not in this table.** Once `shredder_mitigation` is on for an aggregate built from it, a backfill can't lower an existing column, so a change to the `sap_exclusion_reason` rule ships as a new column (e.g. `sap_kpi_v2` in `search_aggregates_glean_v1`), not a change to `sap_kpi`.
+
 ## Floor
 
 The table reaches back 775 days, the partition expiry, and all three partitioned sources share that floor. It is a rolling window that advances daily, so a backfill range is computed against the run date.
 
 ## Runs
 
-One scheduled run per day in the `bqetl_search` DAG, with `date_partition_offset: -1`, so the run for logical date D writes the partition for D-1. The offset aligns this table with `serp_events_v2`, which populates the previous day's partition on each run: each run here reads the SERP partition its upstream run has just written.
+One scheduled run per day in the `bqetl_search` DAG, with `partition_offset: -1d`, so the run for logical date D writes the partition for D-1. The offset aligns this table with `serp_events_v2`, which populates the previous day's partition on each run: each run here reads the SERP partition its upstream run has just written.
 
 A consequence when comparing the two tables: a given day's partition here is produced a day later than `search_clients_daily_v8`'s partition for the same day.
 

@@ -43,6 +43,7 @@
   day_27: false
   day_28: false
   day_29: false
+  is_default_browser: true
 - client_id: age_29
   sample_id: 2
   submission_date: 2026-09-02
@@ -190,6 +191,7 @@
   day_4: false
   day_5: false
   day_6: false
+  is_default_browser: false
 - client_id: age_6
   sample_id: 6
   submission_date: 2026-09-25

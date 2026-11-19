@@ -11,6 +11,7 @@ owners:
 scheduling:
   dag_name: bqetl_materialized_view_refresh
   query_file_path: sql/{{ project_id }}/{{ derived_dataset }}/event_monitoring_live_v1/script.sql
+  partition_parameter: null
   arguments:
   - '--use_legacy_sql=false'
   - '--billing-project=moz-fx-data-backfill-3'

@@ -61,11 +61,11 @@ with DAG(
         name="{{ task.task_name }}",
         arguments=["script/publish_public_data_json"]
         + ["--query_file=sql/{{ task.project }}/{{ task.dataset }}/{{ task.table }}_{{ task.version }}/query.sql"]
-        + ["--destination_table={{ task.table }}{% if task.date_partition_parameter %}${% raw %}{{ds_nodash}}{% endraw %}{% endif %}"]
+        + ["--destination_table={{ task.table }}{% if task.partition_parameter %}${% raw %}{{ds_nodash}}{% endraw %}{% endif %}"]
         + ["--dataset_id={{ task.dataset }}"]
         + ["--project_id={{ task.project }}"]
-        {% if task.date_partition_parameter -%}
-        + ["--parameter={{ task.date_partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw -%}"]
+        {% if task.partition_parameter -%}
+        + ["--parameter={{ task.partition_parameter }}:DATE:{% raw %}{{ds}}{% endraw -%}"]
         {%- endif -%},
         {%+ if task.task_group != None -%}
         task_group=task_group_{{ task.task_group}},

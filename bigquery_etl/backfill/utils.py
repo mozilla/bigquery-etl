@@ -12,6 +12,8 @@ from google.cloud.exceptions import NotFound
 
 from bigquery_etl.backfill.parse import BACKFILL_FILE, Backfill, BackfillStatus
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
+from bigquery_etl.query_scheduling.partitioning import resolve_partition_parameter_name
+from bigquery_etl.query_scheduling.utils import parse_timedelta
 from bigquery_etl.util import extract_from_query_path
 
 QUALIFIED_TABLE_NAME_RE = re.compile(
@@ -32,20 +34,72 @@ MAX_BACKFILL_ENTRY_AGE_DAYS = 28
 # default retention limit to prevent backfills from accidentally querying empty partitions
 NBR_DAYS_RETAINED = 775
 
+# scheduling key naming the date parameter a backfill binds when partition_parameter is null
+BACKFILL_PARTITION_PARAMETER = "backfill_partition_parameter"
 
-def resolve_date_partition_parameter(
-    scheduling: dict, override_depends_on_past_null_partition: Optional[bool] = False
+
+def is_sql_script_etl(table_dir: Path) -> bool:
+    """Return True if the ETL is a `script.sql` ETL.
+
+    `query.py` ETLs are excluded because their scripts choose their own target partitions,
+    so backfills of them still go one partition per date.
+    """
+    return (table_dir / "script.sql").exists()
+
+
+def resolve_backfill_partition_parameter(
+    scheduling: dict,
+    partition_type: Optional[PartitionType] = None,
+    is_sql_script: bool = False,
+    override_depends_on_past_null_partition: Optional[bool] = False,
 ) -> Optional[str]:
-    """Resolve the date partition parameter name a backfill binds at run time.
+    """Resolve the partition parameter name a backfill binds at run time.
 
     Mirrors what `bqetl query backfill` does after merging scheduling overrides: the parameter is
-    scheduling["date_partition_parameter"], defaulting to submission_date.
+    resolved the same way as for scheduled runs (see `resolve_partition_parameter_name`).
     The override_depends_on_past_null_partition path forces submission_date even when metadata
     leaves it null, matching the scheduling override applied in `backfill initiate`.
+
+    scheduling["backfill_partition_parameter"] takes precedence over
+    partition_parameter. It is for tables that leave partition_parameter null
+    because Airflow targets the partition through a templated destination_table and
+    parameter (e.g. hourly runs that rewrite a daily partition), but that still write one
+    partition per date and can be backfilled per partition.
+
+    It also wins over a partition_parameter set through `bqetl query backfill
+    --scheduling-overrides`, since overrides are merged into scheduling before this is
+    called. To bind a different parameter, override backfill_partition_parameter too.
     """
     if override_depends_on_past_null_partition:
         return "submission_date"
-    return scheduling.get("date_partition_parameter", "submission_date")
+    if backfill_parameter := scheduling.get(BACKFILL_PARTITION_PARAMETER):
+        return backfill_parameter
+    return resolve_partition_parameter_name(scheduling, partition_type, is_sql_script)
+
+
+def resolve_scheduling_parameters(scheduling: dict) -> List[str]:
+    """Return the scheduling parameters a backfill binds alongside the date parameter.
+
+    With backfill_partition_parameter set, the scheduling parameter of the same name
+    holds the Airflow template for that date. The backfill binds the backfill date in its
+    place, so drop it.
+    """
+    parameters = scheduling.get("parameters", [])
+    if backfill_parameter := scheduling.get(BACKFILL_PARTITION_PARAMETER):
+        parameters = [
+            parameter
+            for parameter in parameters
+            if parameter.split(":", 1)[0] != backfill_parameter
+        ]
+    return parameters
+
+
+def has_null_partition_parameter(scheduling: dict, is_sql_script: bool = False) -> bool:
+    """Return True if a backfill writes the whole table rather than one partition per date."""
+    return (
+        resolve_backfill_partition_parameter(scheduling, is_sql_script=is_sql_script)
+        is None
+    )
 
 
 def get_effective_retention_days(metadata: Metadata) -> int:
@@ -211,6 +265,40 @@ def validate_table_metadata(
             "only day and month partitioning are supported."
         )
 
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    table_metadata = Metadata.from_file(
+        Path(sql_dir) / project / dataset / table / METADATA_FILE
+    )
+
+    if not validate_backfill_partition_parameter(table_metadata):
+        errors.append(
+            f"{BACKFILL_PARTITION_PARAMETER} is set on {qualified_table_name} but is "
+            "only supported on partitioned tables with partition_parameter: null "
+            "and no partition_offset, and must name a DATE parameter in "
+            "scheduling.parameters."
+        )
+
+    if not reinitialize_table and not validate_templated_partition_target(
+        table_metadata
+    ):
+        if (table_metadata.scheduling or {}).get(BACKFILL_PARTITION_PARAMETER):
+            errors.append(
+                f"{qualified_table_name} has a templated DATE parameter other than the "
+                f"one named by {BACKFILL_PARTITION_PARAMETER}, which backfills can't "
+                "render. Backfills only bind that one parameter to each date."
+            )
+        else:
+            errors.append(
+                f"{qualified_table_name} targets its partition through a templated "
+                "destination_table or date parameter, which backfills can't render. If a "
+                "templated DATE parameter holds the date of the partition the query writes "
+                "(e.g. hourly runs rewriting a daily partition), set "
+                f"scheduling.{BACKFILL_PARTITION_PARAMETER} to the name of that "
+                "parameter. Don't set it when destination_table targets a different period "
+                "than the parameter (e.g. the previous month); such tables can't be "
+                "backfilled per partition."
+            )
+
     return errors
 
 
@@ -220,9 +308,9 @@ def validate_depends_on_past(
     reinitialize_table: bool = False,
     override_depends_on_past_null_partition: bool = False,
 ) -> bool:
-    """Check if the table depends on past and has null date_partition_parameter.
+    """Check if the table depends on past and has null partition_parameter.
 
-    Fail if depends_on_past=true and date_partition_parameter=null, unless either:
+    Fail if depends_on_past=true and partition_parameter=null, unless either:
     - the backfill reinitializes the table via its is_init() query
       (reinitialize_table=true), which rebuilds the whole table without depending on
       prior partitions, or
@@ -231,17 +319,17 @@ def validate_depends_on_past(
       The custom_query_path requirement is enforced in validate.py.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
+    table_dir = Path(sql_dir) / project / dataset / table
+    table_metadata_path = table_dir / METADATA_FILE
 
     table_metadata = Metadata.from_file(table_metadata_path)
 
-    if (
-        "depends_on_past" in table_metadata.scheduling
-        and "date_partition_parameter" in table_metadata.scheduling
-    ):
-        depends_on_past_null_partition = (
-            table_metadata.scheduling["depends_on_past"]
-            and table_metadata.scheduling["date_partition_parameter"] is None
+    if "depends_on_past" in table_metadata.scheduling:
+        depends_on_past_null_partition = table_metadata.scheduling[
+            "depends_on_past"
+        ] and has_null_partition_parameter(
+            table_metadata.scheduling,
+            is_sql_script_etl(table_dir),
         )
         if not depends_on_past_null_partition:
             return True
@@ -277,6 +365,83 @@ def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
             PartitionType.DAY,
             PartitionType.MONTH,
         ]
+
+    return True
+
+
+def validate_backfill_partition_parameter(table_metadata: Metadata) -> bool:
+    """Check that backfill_partition_parameter is only set where it has an effect.
+
+    It replaces a null partition_parameter, so it must not be combined with a
+    non-null one, and it selects a partition, so the table must be partitioned. It must
+    also name a DATE scheduling parameter. A partition_offset already makes a table with a
+    null partition_parameter target a specific partition, so the two can't be combined.
+    """
+    scheduling = table_metadata.scheduling or {}
+
+    backfill_parameter = scheduling.get(BACKFILL_PARTITION_PARAMETER)
+    if not backfill_parameter:
+        return True
+
+    names_date_parameter = any(
+        len(parts) == 3
+        and parts[0] == backfill_parameter
+        and parts[1].upper() == "DATE"
+        for parts in (
+            parameter.split(":", 2) for parameter in scheduling.get("parameters", [])
+        )
+    )
+
+    return (
+        "partition_parameter" in scheduling
+        and scheduling["partition_parameter"] is None
+        and table_metadata.bigquery is not None
+        and table_metadata.bigquery.time_partitioning is not None
+        and names_date_parameter
+        and not parse_timedelta(scheduling.get("partition_offset"))
+    )
+
+
+def validate_templated_partition_target(table_metadata: Metadata) -> bool:
+    """Check that a templated partition target comes with backfill_partition_parameter.
+
+    A partitioned table with a null partition_parameter may pick its partition with
+    Airflow templates in destination_table (e.g. `table${{ ... }}`) or in a DATE
+    parameter. Backfills can't render those templates: the parameter fails to parse and
+    the templated destination is ignored. backfill_partition_parameter tells the
+    backfill which parameter to bind to each date instead. It only covers that one
+    parameter, so any other templated DATE parameter still fails.
+    """
+    scheduling = table_metadata.scheduling or {}
+
+    if (
+        table_metadata.bigquery is None
+        or table_metadata.bigquery.time_partitioning is None
+        or "partition_parameter" not in scheduling
+        or scheduling["partition_parameter"] is not None
+    ):
+        return True
+
+    backfill_parameter = scheduling.get(BACKFILL_PARTITION_PARAMETER)
+
+    destination_table = scheduling.get("destination_table") or ""
+    if (
+        not backfill_parameter
+        and "$" in destination_table
+        and "{{" in destination_table
+    ):
+        return False
+
+    for parameter in scheduling.get("parameters", []):
+        parts = parameter.split(":", 2)
+        if len(parts) != 3:
+            continue
+        name, parameter_type, value = parts
+        if name == backfill_parameter:
+            continue
+        # `bqetl query backfill` only substitutes a literal {{ds}}
+        if parameter_type.upper() == "DATE" and "{{" in value and value != "{{ds}}":
+            return False
 
     return True
 

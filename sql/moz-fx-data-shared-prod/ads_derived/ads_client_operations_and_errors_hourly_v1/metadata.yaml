@@ -14,24 +14,15 @@ description: |-
 
   Desktop rows are absent for 2026-08-07 through 2026-08-23: the backfill for that
   window was cancelled (bug 2058567) rather than replayed, because this table's
-  hourly/execution_date-bound scheduling can't be backfilled day-by-day with the
-  current tooling. Data from 2026-08-24 onward comes from the normal scheduled runs.
+  hourly/execution_date-bound scheduling couldn't be backfilled day-by-day at the time.
+  It can be now, so the gap can be filled with `bqetl backfill`. Data from 2026-08-24
+  onward comes from the normal scheduled runs.
 owners:
   - ahanot@mozilla.com
   - mozilla/ads_data_team
 scheduling:
   dag_name: bqetl_ads_hourly
-  date_partition_parameter: null
-  destination_table: >-
-    ads_client_operations_and_errors_hourly_v1${{
-    (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
-    }}
-  parameters:
-    - >-
-      submission_date:DATE:{{
-      (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
-      }}
-  query_file_path: sql/moz-fx-data-shared-prod/ads_derived/ads_client_operations_and_errors_hourly_v1/query.sql
+  partition_offset: -1h
   referenced_tables: []
 bigquery:
   time_partitioning:

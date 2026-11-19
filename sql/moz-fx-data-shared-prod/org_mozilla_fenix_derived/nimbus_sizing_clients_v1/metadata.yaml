@@ -13,6 +13,7 @@ owners:
 - ykhurana@mozilla.com
 labels:
   owner1: ykhurana
+  sql_generator: experiment_monitoring
   dag: bqetl_experiments_daily
 scheduling:
   dag_name: bqetl_experiments_daily

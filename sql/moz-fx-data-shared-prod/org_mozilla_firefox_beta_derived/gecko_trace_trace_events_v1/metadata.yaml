@@ -11,6 +11,7 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  sql_generator: gecko_trace
   dag: bqetl_gecko_trace
   owner1: jjalkanen
 scheduling:

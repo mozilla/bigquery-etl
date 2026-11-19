@@ -7,6 +7,7 @@ description: |-
 owners:
 - jjalkanen@mozilla.com
 labels:
+  sql_generator: gecko_trace
   owner1: jjalkanen
 workgroup_access:
 - role: roles/bigquery.dataViewer

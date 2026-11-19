@@ -891,7 +891,12 @@ fields:
         a profile that failed once from one failing every time. The migrator gives
         up after 10. Always 0 for "to_json", which is not limited.
 
-        * Number of prior migration attempts across sessions (0 on the first attempt).'
+        * How many launches had already tried and failed before this one, 0 on the
+        first. A retry emits an otherwise identical event, so this is what separates
+        a profile that failed once from one failing every time. The migrator gives
+        up after 15. Always 0 for "to_json", which is not limited.
+
+        * Number of prior migration attempts acro...'
     - name: attemptCount
       type: INTEGER
       mode: NULLABLE
@@ -2183,6 +2188,15 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The number of ms needed to complete the download
+    - name: drop_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Present only when a "to_rust" migration completed by leaving out
+        cards whose number would not decrypt, and says why it was allowed to: "others_decrypted"
+        when another card''s number decrypted in the same attempt; "attempt_threshold"
+        when enough attempts had already failed, the last of them failing to decrypt
+        a card too. When both hold, "others_decrypted" is reported. How many were
+        left out is source_total minus migrated minus failed. Never set on a dry run.'
     - name: dropped
       type: STRING
       mode: NULLABLE
@@ -3502,15 +3516,15 @@ fields:
         by guid rather than by count -- so the profile could be handed to it; otherwise
         "error".
 
-        * The result of the OS Authentication.
-
-        * Optionally, the name of the error that occurred.
-
         * "ok" when the store copied into ended up holding exactly what the source
         holds -- every record arrived and nothing the source lacks survived, compared
         by guid rather than by count -- so the profile could be handed to it; otherwise
         "error". A "to_json" copy hands the profile back to the JSON store either
         way, so an "error" there means some records did not make it back.
+
+        * The result of the OS Authentication.
+
+        * Optionally, the name of the error that occurred.
 
         * The error code, converted to a string.
 

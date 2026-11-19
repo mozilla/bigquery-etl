@@ -6380,9 +6380,6 @@ fields:
         mode: NULLABLE
       description: '2D canvas used
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        CANVAS_2D_USED.
-
         '
     - name: canvas_webgl2_success
       type: RECORD
@@ -6396,9 +6393,6 @@ fields:
         mode: NULLABLE
       description: 'WebGL2 creation success
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        CANVAS_WEBGL2_SUCCESS.
-
         '
     - name: canvas_webgl_accl_failure_id
       type: RECORD
@@ -6411,11 +6405,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Track the failure IDs that lead us to reject attempting to create
-        an accelerated context. CANVAS_WEBGL_FAILURE_ID reports the overall WebGL
+        an accelerated context. canvas.webgl_failure_id reports the overall WebGL
         status with the attempt to fallback.
-
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        CANVAS_WEBGL_ACCL_FAILURE_ID.
 
         '
     - name: canvas_webgl_failure_id
@@ -6433,9 +6424,6 @@ fields:
         identifier that can be traced back to a particular failure branch or blocklist
         rule.
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        CANVAS_WEBGL_FAILURE_ID.
-
         '
     - name: canvas_webgl_success
       type: RECORD
@@ -6449,9 +6437,6 @@ fields:
         mode: NULLABLE
       description: 'WebGL1 creation success
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        CANVAS_WEBGL_SUCCESS.
-
         '
     - name: canvas_webgl_used
       type: RECORD
@@ -6464,9 +6449,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'WebGL canvas used
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        CANVAS_WEBGL_USED.
 
         '
     - name: urlclassifier_vlps_metadata_corrupt
@@ -9829,9 +9811,6 @@ fields:
           mode: NULLABLE
       description: 'AVIF image decode speed (Kbytes/sec)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_SPEED_AVIF.
-
         '
     - name: image_decode_speed_gif
       type: RECORD
@@ -9856,9 +9835,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'GIF image decode speed (Kbytes/sec)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_SPEED_GIF.
 
         '
     - name: image_decode_speed_jpeg
@@ -9885,9 +9861,6 @@ fields:
           mode: NULLABLE
       description: 'JPEG image decode speed (Kbytes/sec)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_SPEED_JPEG.
-
         '
     - name: image_decode_speed_png
       type: RECORD
@@ -9913,9 +9886,6 @@ fields:
           mode: NULLABLE
       description: 'PNG image decode speed (Kbytes/sec)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_SPEED_PNG.
-
         '
     - name: image_decode_speed_webp
       type: RECORD
@@ -9940,9 +9910,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'WebP image decode speed (Kbytes/sec)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_SPEED_WEBP.
 
         '
     - name: hpack_bytes_evicted_compressor
@@ -15146,9 +15113,6 @@ fields:
           mode: NULLABLE
       description: 'Number of chunks per decode attempt
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_CHUNKS.
-
         '
     - name: image_decode_count
       type: RECORD
@@ -15173,9 +15137,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Decode count
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_COUNT.
 
         '
     - name: media_mp4_parse_num_sample_description_entries
@@ -31775,9 +31736,6 @@ fields:
           mode: NULLABLE
       description: 'Time from starting a decode to it showing up on the screen (us)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_ON_DRAW_LATENCY.
-
         '
     - name: image_decode_time
       type: RECORD
@@ -31820,9 +31778,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time spent decoding an image (us)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram IMAGE_DECODE_TIME.
 
         '
     - name: webrtc_audio_quality_inbound_jitter

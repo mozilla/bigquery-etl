@@ -344,6 +344,7 @@ SELECT
       JSON_VALUE(event_extra.document_language) AS `document_language`,
       JSON_VALUE(event_extra.domain) AS `domain`,
       JSON_VALUE(event_extra.download_time) AS `download_time`,
+      JSON_VALUE(event_extra.drop_reason) AS `drop_reason`,
       JSON_VALUE(event_extra.dropped) AS `dropped`,
       JSON_VALUE(event_extra.duration) AS `duration`,
       JSON_VALUE(event_extra.effective) AS `effective`,

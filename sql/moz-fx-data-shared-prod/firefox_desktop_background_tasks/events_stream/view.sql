@@ -14,10 +14,14 @@ SELECT
       LAX_BOOL(event_extra.sampled_in) AS `sampled_in`,
       LAX_BOOL(event_extra.success) AS `success`
     ) AS `boolean`,
-    STRUCT(LAX_INT64(event_extra.session_seq) AS `session_seq`) AS `quantity`,
+    STRUCT(
+      LAX_INT64(event_extra.flow_seq) AS `flow_seq`,
+      LAX_INT64(event_extra.session_seq) AS `session_seq`
+    ) AS `quantity`,
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,
       JSON_VALUE(event_extra.feature) AS `feature`,
+      JSON_VALUE(event_extra.flow_name) AS `flow_name`,
       JSON_VALUE(event_extra.hresult) AS `hresult`,
       JSON_VALUE(event_extra.id) AS `id`,
       JSON_VALUE(event_extra.method) AS `method`,
@@ -28,6 +32,7 @@ SELECT
       JSON_VALUE(event_extra.selection) AS `selection`,
       JSON_VALUE(event_extra.session_id) AS `session_id`,
       JSON_VALUE(event_extra.session_start_time) AS `session_start_time`,
+      JSON_VALUE(event_extra.terminating_event) AS `terminating_event`,
       JSON_VALUE(event_extra.value) AS `value`
     ) AS `string`
   ) AS extras

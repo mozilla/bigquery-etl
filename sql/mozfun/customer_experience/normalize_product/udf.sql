@@ -235,6 +235,18 @@ RETURNS STRING AS (
       )
       THEN 'Mozilla VPN'
     WHEN source = 'Zendesk'
+      AND raw = 'firefox'
+      THEN 'Firefox'
+    WHEN source = 'Zendesk'
+      AND raw = 'firefox-enterprise'
+      THEN 'Firefox Enterprise'
+    WHEN source = 'Zendesk'
+      AND raw = 'thunderbird'
+      THEN 'Thunderbird'
+    WHEN source = 'Zendesk'
+      AND raw = 'thunderbird-android'
+      THEN 'Thunderbird Android'
+    WHEN source = 'Zendesk'
       AND raw IN ('X', 'product_other', 'pocket', 'hubs')
       THEN 'Other'
     WHEN source = 'Zendesk'
@@ -312,6 +324,16 @@ SELECT
   assert.equals(
     'Mozilla Account',
     customer_experience.normalize_product('mozilla-account', 'Zendesk')
+  ),
+  assert.equals('Firefox', customer_experience.normalize_product('firefox', 'Zendesk')),
+  assert.equals(
+    'Firefox Enterprise',
+    customer_experience.normalize_product('firefox-enterprise', 'Zendesk')
+  ),
+  assert.equals('Thunderbird', customer_experience.normalize_product('thunderbird', 'Zendesk')),
+  assert.equals(
+    'Thunderbird Android',
+    customer_experience.normalize_product('thunderbird-android', 'Zendesk')
   ),
   assert.equals('Other', customer_experience.normalize_product('something-new', 'Zendesk')),
   -- Kitsune: known mapping and unknown fallback.

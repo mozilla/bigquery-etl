@@ -260,6 +260,18 @@ RETURNS STRING AS (
       )
       THEN 'Mozilla VPN'
     WHEN LOWER(source) = 'zendesk'
+      AND LOWER(raw) = 'firefox'
+      THEN 'Firefox Desktop'
+    WHEN LOWER(source) = 'zendesk'
+      AND LOWER(raw) = 'firefox-enterprise'
+      THEN 'Firefox Enterprise'
+    WHEN LOWER(source) = 'zendesk'
+      AND LOWER(raw) = 'thunderbird'
+      THEN 'Thunderbird'
+    WHEN LOWER(source) = 'zendesk'
+      AND LOWER(raw) = 'thunderbird-android'
+      THEN 'Thunderbird Android'
+    WHEN LOWER(source) = 'zendesk'
       AND LOWER(raw) IN ('x', 'product_other', 'pocket', 'hubs')
       THEN 'Other'
     WHEN LOWER(source) = 'zendesk'
@@ -389,6 +401,16 @@ SELECT
   assert.equals(
     'Mozilla Account',
     customer_experience.cx_normalize_product('mozilla-account', 'Zendesk')
+  ),
+  assert.equals('Firefox Desktop', customer_experience.cx_normalize_product('firefox', 'Zendesk')),
+  assert.equals(
+    'Firefox Enterprise',
+    customer_experience.cx_normalize_product('firefox-enterprise', 'Zendesk')
+  ),
+  assert.equals('Thunderbird', customer_experience.cx_normalize_product('thunderbird', 'Zendesk')),
+  assert.equals(
+    'Thunderbird Android',
+    customer_experience.cx_normalize_product('thunderbird-android', 'Zendesk')
   ),
   assert.equals(
     'unclassified',

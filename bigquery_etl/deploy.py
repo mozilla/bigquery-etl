@@ -11,7 +11,11 @@ from google.cloud.exceptions import NotFound
 from .config import ConfigLoader
 from .dryrun import DryRun, get_id_token
 from .metadata.parse_metadata import METADATA_FILE, Metadata
-from .metadata.publish_metadata import attach_external_data_config, attach_metadata
+from .metadata.publish_metadata import (
+    MANAGED_LABEL,
+    attach_external_data_config,
+    attach_metadata,
+)
 from .schema import SCHEMA_FILE, Schema
 
 log = logging.getLogger(__name__)
@@ -42,14 +46,13 @@ def deploy_table(
     credentials=None,
     id_token=None,
     isolated: bool = False,
+    add_managed_label: bool = False,
 ) -> None:
     """Deploy a query to a destination."""
     # Under --isolated, schema.yaml is authoritative and the table must
     # still be created so downstream views can reference it. Skip the
     # dryrun-based validation but proceed with the deploy.
-    dryrun_skipped = (
-        respect_dryrun_skip and str(artifact_file) in DryRun.skipped_files()
-    )
+    dryrun_skipped = respect_dryrun_skip and DryRun.is_skipped(artifact_file)
     if dryrun_skipped and not isolated:
         raise SkippedDeployException(f"Dry run skipped for {artifact_file}.")
 
@@ -141,6 +144,9 @@ def deploy_table(
 
     if update_metadata:
         attach_metadata(artifact_file, table)
+
+    if add_managed_label:
+        table.labels = {**table.labels, MANAGED_LABEL: ""}
 
     _create_or_update(client, table, skip_existing)
 

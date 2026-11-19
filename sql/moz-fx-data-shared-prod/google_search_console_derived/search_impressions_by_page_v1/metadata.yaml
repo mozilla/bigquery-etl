@@ -26,10 +26,10 @@ scheduling:
   # Not scheduled because we stopped syncing Google Search Console data with Fivetran.
   # See https://bugzilla.mozilla.org/show_bug.cgi?id=1764960#c44 and https://bugzilla.mozilla.org/show_bug.cgi?id=1890816.
   #dag_name: bqetl_google_search_console
-  date_partition_parameter: date
+  partition_parameter: date
   # Fivetran's rollback sync time frame for Google Search Console connectors is 7 days.
   # https://fivetran.com/docs/connectors/applications/google-search-console#rollbacksync
-  date_partition_offset: -7
+  partition_offset: -7d
 bigquery:
   time_partitioning:
     type: day

@@ -19,3 +19,4 @@ bigquery:
 
 scheduling:
   dag_name: bqetl_domain_meta
+  partition_parameter: submission_date

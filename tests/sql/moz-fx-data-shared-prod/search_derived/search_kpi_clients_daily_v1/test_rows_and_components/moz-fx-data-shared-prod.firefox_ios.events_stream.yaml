@@ -1,0 +1,13 @@
+# ios-a: one sponsored tap counts, a history tap doesn't.
+- submission_timestamp: "2026-10-28 10:00:00"
+  client_id: ios-a
+  sample_id: 14
+  event_category: awesomebar
+  event_name: search_result_tap
+  event_extra: {type: amp-suggestion}
+- submission_timestamp: "2026-10-28 11:00:00"
+  client_id: ios-a
+  sample_id: 14
+  event_category: awesomebar
+  event_name: search_result_tap
+  event_extra: {type: history-item}

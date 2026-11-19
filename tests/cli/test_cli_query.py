@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 import types
 from datetime import date, timedelta
@@ -28,6 +29,8 @@ from bigquery_etl.cli.query import (
 from bigquery_etl.metadata.parse_metadata import PartitionType
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
+from bigquery_etl.util import extract_from_query_path
+from bigquery_etl.util.common import IMPERSONATE_ENV_VAR
 from bigquery_etl.util.target import Target
 
 DEFAULT_SAMPLING_BATCH_SIZE = DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE
@@ -587,7 +590,7 @@ class TestQuery:
                 "friendly_name": "test",
                 "description": "test",
                 "owners": ["test@example.org"],
-                "scheduling": {"dag_name": "bqetl_test", "date_partition_offset": -2},
+                "scheduling": {"dag_name": "bqetl_test", "partition_offset": "-2d"},
                 "bigquery": {"time_partitioning": {"type": "day"}},
             }
 
@@ -777,7 +780,7 @@ class TestQuery:
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": [
                         "submission_date:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')}}",
                     ],
@@ -798,7 +801,7 @@ class TestQuery:
                     "--start_date=2021-01-05",
                     "--end_date=2021-01-06",
                     "--parallelism=0",
-                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "partition_parameter": "submission_date"}""",
                     "--override-retention-range-limit",
                 ],
             )
@@ -820,13 +823,27 @@ class TestQuery:
                 assert len(test_params) == 1
                 assert test_params[0] == "--parameter=test:INT64:30"
 
+    def test_query_backfill_with_unsupported_scheduling_overrides(self, runner):
+        with patch(
+            "bigquery_etl.cli.query._execute_query", autospec=True
+        ) as execute_query:
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2021-01-05",
+                    """--scheduling_overrides={"date_partition_parameter": null}""",
+                ],
+            )
+        assert result.exit_code == 2
+        assert "date_partition_parameter" in result.output
+        execute_query.assert_not_called()
+
     @patch("bigquery_etl.cli.query._run_query")
-    def test_backfill_query_dedupes_date_partition_parameter(
-        self, mock_run_query, runner
-    ):
-        """A null-date_partition_parameter table that lists submission_date in `parameters`
+    def test_backfill_query_dedupes_partition_parameter(self, mock_run_query, runner):
+        """A null-partition_parameter table that lists submission_date in `parameters`
         (e.g. clients_first_seen_v3) is backfilled per-partition by overriding
-        date_partition_parameter to submission_date. That override decorates the destination
+        partition_parameter to submission_date. That override decorates the destination
         with the partition, but submission_date is already bound via `parameters`. bq rejects a
         parameter bound twice, so _backfill_query must emit submission_date exactly once while
         still decorating the destination."""
@@ -843,8 +860,8 @@ class TestQuery:
                 query_file_path=query_path,
                 project_id="moz-fx-data-shared-prod",
                 # overridden to submission_date so the destination gets decorated
-                date_partition_parameter="submission_date",
-                date_partition_offset=0,
+                partition_parameter="submission_date",
+                partition_offset=None,
                 max_rows=100,
                 dry_run=True,
                 # `parameters` already binds submission_date
@@ -896,7 +913,7 @@ class TestQuery:
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": [
                         "submission_date:DATE:{{ds}}",
                         "conversion_window:INT64:30",
@@ -954,10 +971,10 @@ class TestQuery:
                 assert len(conversion_params) == 1
                 assert conversion_params[0] == "--parameter=conversion_window:INT64:30"
 
-    def test_query_backfill_backfill_date_partition_parameter(self, runner):
+    def test_query_backfill_backfill_partition_parameter(self, runner):
         """An hourly table that rewrites a daily partition through a templated
         destination_table and parameter is backfilled per partition when it sets
-        backfill_date_partition_parameter. The templated parameter is replaced by the
+        backfill_partition_parameter. The templated parameter is replaced by the
         backfill date instead of failing to parse."""
         with (
             runner.isolated_filesystem(),
@@ -983,8 +1000,8 @@ class TestQuery:
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "submission_date",
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
                     "destination_table": "query_v1${{ (execution_date - macros.timedelta(hours=1)).strftime('%Y%m%d') }}",
                     "parameters": [
                         "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}",
@@ -1030,7 +1047,7 @@ class TestQuery:
                     "--parameter=conversion_window:INT64:30"
                 ]
 
-    def test_query_backfill_python_script(self, runner):
+    def test_query_backfill_python_script(self, runner, capfd):
         """Valid script backfill should execute script for each backfill date."""
         with (
             runner.isolated_filesystem(),
@@ -1081,6 +1098,7 @@ def main():
             )
 
             assert result.exit_code == 0
+            script_output = capfd.readouterr().out
 
             assert mock_backfill_script.call_count == 2
 
@@ -1089,9 +1107,11 @@ def main():
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
-                "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
+                "writing to telemetry_derived.query_v1 for 2026-01-01" in script_output
             )
 
             mock_backfill_script.assert_any_call(
@@ -1099,9 +1119,11 @@ def main():
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
-                "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
+                "writing to telemetry_derived.query_v1 for 2026-01-02" in script_output
             )
 
     def test_query_backfill_python_script_click(self, runner):
@@ -1159,6 +1181,8 @@ def main(submission_date, table_id):
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
                 "writing to telemetry_derived.query_v1 for 2026-01-01" in result.output
@@ -1169,10 +1193,151 @@ def main(submission_date, table_id):
                 entrypoint_command=ANY,
                 query_script_date_arg="submission-date",
                 query_script_args=("--table-id=telemetry_derived.query_v1",),
+                query_file=ANY,
+                entrypoint_name="main",
             )
             assert (
                 "writing to telemetry_derived.query_v1 for 2026-01-02" in result.output
             )
+
+    def test_query_backfill_python_script_parallel(self, runner, capfd):
+        """Parallel script backfill should run every date exactly once."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("bigquery_etl.cli.query.subprocess.check_call"),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                # sleeping before parse_args reliably exposes a shared sys.argv
+                f.write("""
+import time
+from argparse import ArgumentParser
+
+def main():
+    time.sleep(0.5)
+    parser = ArgumentParser()
+    parser.add_argument("--submission-date")
+    args = parser.parse_args()
+    print(f"ran for {args.submission_date}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-04",
+                    "--parallelism=4",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+            script_output = capfd.readouterr().out
+            for day in range(1, 5):
+                assert script_output.count(f"ran for 2026-01-0{day}") == 1
+
+    def test_query_backfill_python_script_failure(self, runner):
+        """A failing script should fail the backfill for that date."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+def main():
+    raise ValueError("boom")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-01",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+            )
+
+            assert result.exit_code != 0
+            assert "exited with code 1 for 2026-01-01: ValueError: boom" in str(
+                result.exception
+            )
+
+    def test_query_backfill_python_script_restores_worker_state(
+        self, runner, capfd, monkeypatch
+    ):
+        """The script process should impersonate like the CLI and keep its log level."""
+        monkeypatch.setenv(
+            IMPERSONATE_ENV_VAR, "sandbox@example.iam.gserviceaccount.com"
+        )
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+            patch("logging.root.level", logging.DEBUG),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+import logging
+import google.auth
+
+def main():
+    impersonated = hasattr(google.auth.default, "_bqetl_original_default")
+    print(f"impersonated={impersonated} level={logging.root.level}")
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-01",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+            assert f"impersonated=True level={logging.DEBUG}" in capfd.readouterr().out
 
     def test_query_backfill_python_script_invalid_entrypoint(self, runner):
         """Script backfill should fail if entrypoint is not a function."""
@@ -1238,19 +1403,75 @@ def main(submission_date):
             ) as f:
                 f.write(yaml.dump({}))
 
-            with pytest.raises(AttributeError):
-                runner.invoke(
-                    backfill,
-                    [
-                        "telemetry_derived.query_v1",
-                        "--start_date=2026-01-01",
-                        "--end_date=2026-01-02",
-                        "--parallelism=1",
-                        "--query-script-date-arg=submission-date",
-                        "--query-script-entrypoint=execute",
-                    ],
-                    catch_exceptions=False,
-                )
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-02",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=execute",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 1
+            assert "Script entrypoint `execute` not found" in result.stderr
+
+    def test_query_backfill_python_script_dataclass(self, runner, capfd):
+        """Scripts whose dataclasses look up their module in sys.modules should load."""
+        with (
+            runner.isolated_filesystem(),
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.py",
+                "w",
+            ) as f:
+                f.write("""
+from __future__ import annotations
+
+from argparse import ArgumentParser
+from dataclasses import dataclass
+from typing import ClassVar
+
+
+@dataclass
+class Run:
+    submission_date: str
+    kind: ClassVar[str] = "daily"
+
+
+def main():
+    parser = ArgumentParser()
+    parser.add_argument("--submission-date")
+    print(Run(parser.parse_args().submission_date))
+                """)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump({}))
+
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--start_date=2026-01-01",
+                    "--end_date=2026-01-01",
+                    "--parallelism=1",
+                    "--query-script-date-arg=submission-date",
+                    "--query-script-entrypoint=main",
+                ],
+                catch_exceptions=False,
+            )
+
+            assert result.exit_code == 0
+            assert "Run(submission_date='2026-01-01')" in capfd.readouterr().out
 
     @patch("bigquery_etl.cli.query.get_credentials")
     @patch("bigquery_etl.cli.query.get_id_token")
@@ -1466,6 +1687,77 @@ def main(submission_date):
             assert result.exit_code == 0
             mock_deploy_table.assert_not_called()
 
+    @patch("bigquery_etl.cli.query.ensure_dataset_exists")
+    @patch("bigquery_etl.cli.query.bigquery.Client")
+    @patch("bigquery_etl.cli.query.get_credentials")
+    @patch("bigquery_etl.cli.query.get_id_token")
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_deploy_with_target(
+        self,
+        mock_deploy_table,
+        mock_get_id_token,
+        mock_get_credentials,
+        mock_client,
+        mock_ensure_dataset_exists,
+        runner,
+    ):
+        mock_deploy_table.return_value = None
+        mock_get_id_token.return_value = None
+        mock_get_credentials.return_value = None
+
+        with runner.isolated_filesystem():
+            src_dir = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
+            os.makedirs(src_dir)
+            with open(f"{src_dir}/query.sql", "w") as f:
+                f.write("SELECT 1")
+            with open(f"{src_dir}/metadata.yaml", "w") as f:
+                f.write(
+                    yaml.dump(
+                        {
+                            "friendly_name": "test",
+                            "description": "test",
+                            "owners": ["test@example.org"],
+                        }
+                    )
+                )
+
+            result = runner.invoke(
+                deploy,
+                ["telemetry_derived.query_v1"],
+                obj={"target": Target(name="dev", project_id="sandbox")},
+            )
+
+            assert result.exit_code == 0, result.output
+            mock_deploy_table.assert_called_once()
+            artifact_file = mock_deploy_table.call_args.args[0]
+            # the table is deployed to the target project, not to prod
+            assert extract_from_query_path(artifact_file)[0] == "sandbox"
+            assert mock_deploy_table.call_args.kwargs["destination_table"] is None
+            assert mock_deploy_table.call_args.kwargs["use_cloud_function"] is False
+            project, dataset, _ = extract_from_query_path(artifact_file)
+            mock_ensure_dataset_exists.assert_called_once_with(
+                mock_client.return_value,
+                f"{project}.{dataset}",
+                expiration_hours=None,
+                grant_dryrun_access=False,
+            )
+
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_deploy_with_target_and_destination_table(self, mock_deploy_table, runner):
+        with runner.isolated_filesystem():
+            result = runner.invoke(
+                deploy,
+                [
+                    "telemetry_derived.query_v1",
+                    "--destination-table=moz-fx-data-shared-prod.telemetry_derived.t",
+                ],
+                obj={"target": Target(name="dev", project_id="sandbox")},
+            )
+
+            # click usage error
+            assert result.exit_code == 2
+            mock_deploy_table.assert_not_called()
+
     def test_materialized_view_has_changes(self):
         deployed_sql = " SELECT  * FROM project.dataset.table "
 
@@ -1523,7 +1815,7 @@ def main(submission_date):
                 "owners": ["test@example.org"],
                 "scheduling": {
                     "dag_name": "bqetl_test",
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": [
                         "submission_date:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')}}",
                     ],
@@ -1544,7 +1836,7 @@ def main(submission_date):
                     f"--start_date={str(date.today() - timedelta(days=10+NBR_DAYS_RETAINED))}",
                     f"--end_date={str(date.today() - timedelta(days=10))}",
                     "--parallelism=0",
-                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "partition_parameter": "submission_date"}""",
                 ],
             )
             assert result.exit_code == 1

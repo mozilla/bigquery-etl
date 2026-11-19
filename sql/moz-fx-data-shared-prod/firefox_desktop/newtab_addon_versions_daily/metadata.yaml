@@ -1,0 +1,19 @@
+friendly_name: Newtab Addon Versions Daily
+description: |-
+  This table provides the newtab addon (newtab@mozilla.org) versions each Firefox Desktop
+  client reported each day in the addons ping, covering both trainhop and built-in versions.
+  It includes first and last seen timestamps and ping counts by reason for studying update
+  behaviour.
+
+  The grain of the table is one row per `submission_date`, `client_id` and
+  `newtab_addon_version`. The `is_last_reported_version` column provides an easy way to get a
+  single version (the last reported version) per client per day, e.g. when joining to
+  `newtab_visits_daily`.
+
+  The table flows through what the pings report. This includes observed behaviours where some
+  clients flip between a trainhop and the built-in version within and across days.
+
+  Coverage: 2026-01-01 to 2026-01-12 has prerelease clients only. Release ramps up from
+  2026-01-13 to 2026-01-25, so client counts over that period may be incomplete.
+owners:
+  - data-newtab-wg@mozilla.com

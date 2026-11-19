@@ -58,7 +58,7 @@ flowchart TD
 
 ## ⏱️ Date Partition Offset
 
-Data is updated to 3 days before the run (`date_partition_offset: -3`) in order to process most of the reviews that arrive late.
+Data is updated to 3 days before the run (`partition_offset: -3d`) in order to process most of the reviews that arrive late.
 The query below returns the ranges and excludes Fivetran backfill sync dates 2024-11-05, 2025-08-08 and 2025-09-29.
 Reviews that take longer than 72 hours (about 2% of reviews) may be missed.
 

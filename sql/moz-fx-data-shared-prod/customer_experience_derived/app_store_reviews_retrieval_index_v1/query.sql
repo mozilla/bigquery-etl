@@ -185,6 +185,11 @@ SELECT
         []
       ),
       IF(
+        ARRAY_LENGTH(reviews_llm.llm_result.review_entities_llm) > 3,
+        ['review_entities_llm_over_limit'],
+        []
+      ),
+      IF(
         EXISTS (
           SELECT
             1

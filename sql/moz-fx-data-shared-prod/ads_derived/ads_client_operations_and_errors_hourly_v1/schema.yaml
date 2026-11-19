@@ -97,6 +97,12 @@ fields:
     description: >-
       Total number of 'report_ad' error occurrences from ads_client.client_error
       labeled_string.
+  - name: client_error_other
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of ads_client.client_error labeled_string occurrences with a label not
+      enumerated above (Glean's '__other__' overflow bucket for unrecognized labels).
   - name: build_cache_error_builder_error
     type: INT64
     mode: NULLABLE
@@ -122,6 +128,12 @@ fields:
     mode: NULLABLE
     description: >-
       Total number of 'invalid_ttl' occurrences from ads_client.build_cache_error labeled_string.
+  - name: build_cache_error_other
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of ads_client.build_cache_error labeled_string occurrences with a label not
+      enumerated above (Glean's '__other__' overflow bucket for unrecognized labels).
   - name: deserialization_error_invalid_ad_item
     type: INT64
     mode: NULLABLE
@@ -137,6 +149,12 @@ fields:
     mode: NULLABLE
     description: >-
       Total number of 'invalid_structure' occurrences from ads_client.deserialization_error labeled_string.
+  - name: deserialization_error_other
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of ads_client.deserialization_error labeled_string occurrences with a label
+      not enumerated above (Glean's '__other__' overflow bucket for unrecognized labels).
   - name: http_cache_outcome_cleanup_failed
     type: INT64
     mode: NULLABLE
@@ -172,3 +190,17 @@ fields:
     mode: NULLABLE
     description: >-
       Total number of 'store_failed' occurrences from ads_client.http_cache_outcome labeled_string.
+  - name: http_cache_outcome_trim_failed
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of 'trim_failed' occurrences from ads_client.http_cache_outcome labeled_string.
+      Populated by desktop only: the shared ads-client component emits this outcome, but the
+      mobile metrics.yaml omits it from its label list, so on mobile it falls into '__other__'.
+  - name: http_cache_outcome_other
+    type: INT64
+    mode: NULLABLE
+    description: >-
+      Total number of ads_client.http_cache_outcome labeled_string occurrences with a label not
+      enumerated above (Glean's '__other__' overflow bucket for unrecognized labels). Expected
+      to be non-zero on mobile if 'trim_failed' ever fires there; see that field's description.

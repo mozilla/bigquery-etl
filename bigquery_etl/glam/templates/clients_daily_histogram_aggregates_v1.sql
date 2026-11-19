@@ -43,6 +43,25 @@ histograms AS (
         sample_id < 10)
 ),
 {% if client_sampled_histograms %}
+-- Sampled metrics are full-rate everywhere except the rollout's target
+-- population; collect them here like normal metrics.
+full_rate_sampled_histograms AS (
+  SELECT
+    {{ attributes }},
+    ARRAY<
+      STRUCT<
+        key STRING,
+        metric STRING,
+        metric_type STRING,
+        value ARRAY<STRUCT<key STRING, value INT64>>
+      >
+    >[{{ client_sampled_histograms }}] AS metadata
+  FROM
+    extracted
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+),
 sampled_histograms AS (
   SELECT
     {{ attributes }},
@@ -59,12 +78,14 @@ sampled_histograms AS (
   WHERE
     channel = "{{ client_sampled_channel}}"
     AND os = "{{ client_sampled_os}}"
-    AND sample_id < {{ client_sampled_max_sample_id }}
+    AND sample_id <= {{ client_sampled_max_sample_id }}
 ),
 {% endif %}
 unioned_histograms AS (
   SELECT * FROM histograms
   {% if client_sampled_histograms %}
+  UNION ALL
+  SELECT * FROM full_rate_sampled_histograms
   UNION ALL
   SELECT * FROM sampled_histograms
   {% endif %}
@@ -108,6 +129,28 @@ labeled_histograms AS (
     )
 ),
 {% if client_sampled_labeled_histograms %}
+-- Full-rate everywhere except the rollout's target population.
+full_rate_sampled_labeled_histograms AS (
+  SELECT
+    {{ attributes }},
+    ARRAY<
+      STRUCT<
+        metric STRING,
+        metric_type STRING,
+        keyed_values ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value INT64>>
+          >
+        >
+      >
+    >[{{ client_sampled_labeled_histograms }}] AS metadata
+  FROM
+    extracted
+  WHERE
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+),
 sampled_labeled_histograms AS (
   SELECT
     {{ attributes }},
@@ -128,12 +171,14 @@ sampled_labeled_histograms AS (
   WHERE
     channel = "{{ client_sampled_channel}}"
     AND os = "{{ client_sampled_os}}"
-    AND sample_id < {{ client_sampled_max_sample_id }}
+    AND sample_id <= {{ client_sampled_max_sample_id }}
 ),
 {% endif %}
 unioned_labeled_histograms AS (
   SELECT * FROM labeled_histograms
   {% if client_sampled_labeled_histograms %}
+  UNION ALL
+  SELECT * FROM full_rate_sampled_labeled_histograms
   UNION ALL
   SELECT * FROM sampled_labeled_histograms
   {% endif %}

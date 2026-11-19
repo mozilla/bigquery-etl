@@ -9,6 +9,7 @@ description: |-
   in that session, such as first_campaign_from_event_params_in_session & first_source_from_event_params_in_session
 owners:
 - kik@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   level: bronze
   incremental: true

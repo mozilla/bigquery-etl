@@ -16,7 +16,9 @@ WITH extracted AS (
   SELECT
     submission_timestamp,
     client_info.app_build,
-    COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
+    -- geckoview_version was dropped from the nightly ping schema; gecko_version
+    -- is the only field still present for this channel.
+    metrics.string.gecko_version AS gecko_version,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS t1
   UNION ALL

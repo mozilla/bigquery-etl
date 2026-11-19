@@ -1,17 +1,53 @@
 """Utilities for the GLAM module."""
 
 import json
+import shutil
 import subprocess
+import sys
+import time
 from collections import namedtuple
 from itertools import combinations
-from typing import List, Tuple
+from pathlib import Path
+from typing import List, Optional, Tuple
 
+import requests
 from mozilla_schema_generator.glean_ping import GleanPing
 
 CustomDistributionMeta = namedtuple(
     "CustomDistributionMeta",
     ["name", "type", "range_min", "range_max", "bucket_count", "histogram_type"],
 )
+
+# ETL product (stable-table dataset prefix) -> canonical Glean app name.
+_PRODUCT_TO_APP_NAME = {
+    "firefox_desktop": "firefox_desktop",
+    # Experimenter doesn't distinguish Fenix variants; all map to appName=fenix.
+    # Variants follow the Play Store app-id history
+    # (see https://github.com/mozilla/telemetry-airflow/blob/2caa0865f017afa0743c94df02666c9af3d66862/dags/glam_fenix.py#L47-L56).
+    "org_mozilla_fenix": "fenix",
+    "org_mozilla_fenix_nightly": "fenix",
+    "org_mozilla_firefox": "fenix",
+    "org_mozilla_firefox_beta": "fenix",
+    "org_mozilla_fennec_aurora": "fenix",
+}
+
+# Glean Dictionary is the source of truth for static labeled_counter labels: it is
+# more complete/fresh than GleanPing.get_probes() (which lags for recent or
+# dependency-sourced metrics, e.g. it omits dns.trr_http3_0rtt_state). The
+# per-metric file name matches the BigQuery column form, so stable-table schema
+# field names look up directly. The Dictionary uses the same app names as
+# Experimenter, so the product -> app mapping uses _PRODUCT_TO_APP_NAME.
+GLEAN_DICTIONARY_DATA_URL = "https://dictionary.telemetry.mozilla.org/data"
+GLEAN_DICTIONARY_TIMEOUT = 30
+# Retries beyond the first attempt, with 2**attempt seconds between them.
+GLEAN_DICTIONARY_RETRIES = 4
+GLEAN_DICTIONARY_RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
+_TRANSIENT_ERRORS = (
+    requests.exceptions.Timeout,
+    requests.exceptions.ConnectionError,
+)
+
+_glean_metric_metadata_cache: dict = {}
 
 
 def run(command, **kwargs) -> str:
@@ -86,6 +122,102 @@ def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMet
         custom.append(meta)
 
     return custom
+
+
+def _get_with_retries(url: str) -> requests.Response:  # type: ignore[return]
+    """GET `url`, retrying transient errors and GLEAN_DICTIONARY_RETRY_STATUS.
+
+    The last attempt always returns or raises, which mypy cannot infer,
+    hence the type: ignore[return].
+    """
+    for attempt in range(GLEAN_DICTIONARY_RETRIES + 1):
+        last = attempt == GLEAN_DICTIONARY_RETRIES
+        try:
+            resp = requests.get(url, timeout=GLEAN_DICTIONARY_TIMEOUT)
+            if last or resp.status_code not in GLEAN_DICTIONARY_RETRY_STATUS:
+                return resp
+            reason = f"HTTP {resp.status_code}"
+        except _TRANSIENT_ERRORS as e:
+            if last:
+                raise
+            reason = type(e).__name__
+        print(
+            f"retrying {url} after {reason} "
+            f"(attempt {attempt + 1}/{GLEAN_DICTIONARY_RETRIES + 1})",
+            file=sys.stderr,
+        )
+        time.sleep(2**attempt)
+
+
+def emit_query(
+    sql: Optional[str], output_dir: Optional[str], source_table: str
+) -> None:
+    """Write a generated query, or skip the ping when it has no probes."""
+    if sql is None:
+        print(f"skipping {source_table}: no probes found", file=sys.stderr)
+        if output_dir is None:
+            print("-- Empty query: no probes found!")
+        # Not ignore_errors: a stale query.sql must not survive a failed removal.
+        elif Path(output_dir).exists():
+            shutil.rmtree(output_dir)
+        return
+
+    if output_dir is None:
+        print(sql)
+        return
+
+    path = Path(output_dir)
+    path.mkdir(parents=True, exist_ok=True)
+    query_path = path / "query.sql"
+    query_path.write_text(sql.rstrip("\n") + "\n")
+    print(f"generated {query_path}", file=sys.stderr)
+
+
+def get_glean_metric_metadata(
+    product: Optional[str], probe_name: str
+) -> Optional[dict]:
+    """Return Glean Dictionary metadata for a metric, or None if it is absent.
+
+    None means the metric is genuinely not in the Dictionary (HTTP 404) or the
+    product is unmapped. Network errors, timeouts and non-404 HTTP statuses are
+    raised rather than swallowed: treating them as "absent" would silently route
+    a static labeled_counter into the scalar pipeline, and the scalar and
+    histogram generators look this up independently, so an intermittent outage
+    could land a metric in both pipelines or neither.
+    """
+    cache_key = (product, probe_name)
+    if cache_key in _glean_metric_metadata_cache:
+        return _glean_metric_metadata_cache[cache_key]
+
+    app = _PRODUCT_TO_APP_NAME.get(product) if product is not None else None
+    if app is None:
+        _glean_metric_metadata_cache[cache_key] = None
+        return None
+
+    url = f"{GLEAN_DICTIONARY_DATA_URL}/{app}/metrics/data_{probe_name}.json"
+    resp = _get_with_retries(url)
+    if resp.status_code == 404:
+        meta = None
+    else:
+        resp.raise_for_status()
+        info = resp.json()
+        meta = {"type": info.get("type"), "labels": info.get("labels") or []}
+
+    _glean_metric_metadata_cache[cache_key] = meta
+    return meta
+
+
+def is_static_labeled_counter(product: Optional[str], probe_name: str) -> bool:
+    """Return whether a metric is a labeled_counter with predefined (static) `labels`.
+
+    These are Glean's replacement for Legacy Telemetry categorical histograms and
+    are processed in the histogram pipeline; dynamic (open-ended) labeled_counters
+    have no static `labels` and stay in the scalar pipeline.
+    """
+    meta = get_glean_metric_metadata(product, probe_name)
+    if not meta:
+        return False
+    return meta.get("type") == "labeled_counter" and bool(meta.get("labels"))
 
 
 def compute_datacube_groupings(

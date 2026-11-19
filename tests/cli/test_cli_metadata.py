@@ -1,16 +1,23 @@
+import json
 import os
 import shutil
+import subprocess
 import tempfile
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+import requests
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
 
-from bigquery_etl.cli.metadata import deprecate, publish, update
+from bigquery_etl.cli.metadata import deprecate, get_downstream_lineage, publish, update
+from bigquery_etl.cli.metadata import validate as validate_command
+from bigquery_etl.config import ConfigLoader
+from bigquery_etl.datahub.auth import LoginError
+from bigquery_etl.datahub.lineage import AuthError, LineageTooLargeError
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
     BIGEYE_PREDEFINED_FILE,
@@ -820,6 +827,103 @@ class TestMetadata:
             capfd=capfd,
         )
 
+    def write_generated_tree(self, with_tests_dir=True, with_test_case=True):
+        """Create the absolute layout CI builds under /tmp/workspace/private-generated-sql:
+        <root>/sql/<project>/<dataset>/<table> and, optionally,
+        <root>/tests/sql/<project>/<dataset>/<table>, with or without the
+        test_query_v1 child that makes the folder count as a unit test.
+        """
+        root = Path.cwd() / "private-generated-sql"
+        table_dir = (
+            root / "sql" / "moz-fx-data-shared-prod" / "telemetry_derived" / "query_v1"
+        )
+        os.makedirs(table_dir, exist_ok=True)
+
+        files = {
+            "metadata.yaml": {
+                "friendly_name": "test",
+                "description": "Table description.",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_default"},
+                "labels": {"change_controlled": "true", "level": "gold"},
+            },
+            "schema.yaml": {
+                "fields": [
+                    {"name": "column_1", "type": "STRING", "description": "Desc 1"}
+                ]
+            },
+            BIGEYE_PREDEFINED_FILE: {
+                "type": "BIGCONFIG_FILE",
+                "tag_deployments": [
+                    {
+                        "column_selectors": {"name": "{query_path}.*"},
+                        "metrics": [
+                            {
+                                "metric_type": {
+                                    "type": "PREDEFINED",
+                                    "predefined_metric": metric,
+                                },
+                                "metric_name": metric,
+                            }
+                            for metric in ("FRESHNESS", "VOLUME")
+                        ],
+                    }
+                ],
+            },
+        }
+        for name, content in files.items():
+            (table_dir / name).write_text(yaml.safe_dump(content))
+        (table_dir / "query.sql").write_text("SELECT column_1 FROM test_table")
+
+        if with_tests_dir:
+            tests_dir = root / "tests" / Path(*table_dir.parts[-4:])
+            os.makedirs(tests_dir / "test_query_v1" if with_test_case else tests_dir)
+
+        return table_dir
+
+    def test_level_gold_absolute_sql_dir_finds_tests_next_to_sql(self, runner, capfd):
+        """Absolute query_dir: os.path.join("tests", query_dir) drops "tests", so the
+        tests folder is resolved from the sql dir root instead.
+        """
+        with runner.isolated_filesystem():
+            table_dir = self.write_generated_tree(with_tests_dir=True)
+
+            metadata_from_file = Metadata.from_file(table_dir / "metadata.yaml")
+            result = validate_asset_level(str(table_dir), metadata_from_file)
+
+            assert result is True
+            assert "Metadata level gold achieved!" in capfd.readouterr().out
+
+    def test_level_gold_absolute_sql_dir_without_tests(self, runner, capfd):
+        """Same absolute layout without a tests/sql folder: unittests are still
+        reported as missing.
+        """
+        with runner.isolated_filesystem():
+            table_dir = self.write_generated_tree(with_tests_dir=False)
+
+            metadata_from_file = Metadata.from_file(table_dir / "metadata.yaml")
+            result = validate_asset_level(str(table_dir), metadata_from_file)
+
+            assert result is False
+            assert "Missing: unittests" in capfd.readouterr().out
+
+    def test_level_gold_absolute_sql_dir_tests_dir_without_test_case(
+        self, runner, capfd
+    ):
+        """The tests folder exists next to the sql dir but holds no test_ entry:
+        unittests are reported as missing.
+        """
+        with runner.isolated_filesystem():
+            table_dir = self.write_generated_tree(
+                with_tests_dir=True, with_test_case=False
+            )
+
+            metadata_from_file = Metadata.from_file(table_dir / "metadata.yaml")
+            result = validate_asset_level(str(table_dir), metadata_from_file)
+
+            assert result is False
+            assert "Missing: unittests" in capfd.readouterr().out
+
     def test_level_gold_not_comply_missing_description(self, runner, capfd):
         metadata = {
             "friendly_name": "test",
@@ -1596,6 +1700,81 @@ class TestMetadata:
             assert result is True
             assert expected_exc in captured.out
 
+    def _write_table(
+        self, root, metadata, project="moz-fx-data-shared-prod", dataset="test_derived"
+    ):
+        table_dir = Path(root) / project / dataset / "test_v1"
+        table_dir.mkdir(parents=True)
+        (table_dir / "metadata.yaml").write_text(yaml.safe_dump(metadata))
+        (table_dir / "query.sql").write_text("SELECT 1")
+
+    def test_validate_command_valid(self, runner):
+        with runner.isolated_filesystem():
+            self._write_table("sql", {"friendly_name": "Test", "labels": {}})
+            result = runner.invoke(
+                validate_command, ["test_derived.test_v1", "--sql_dir=sql"]
+            )
+            assert result.exit_code == 0, result.output
+            assert "Validated metadata for 1 tables" in result.output
+
+    @property
+    def _invalid_metadata(self):
+        return {
+            "friendly_name": "Test",
+            "labels": {"public_json": True},
+            "owners": ["test@example.org"],
+        }
+
+    def test_validate_command_all_projects(self, runner):
+        with runner.isolated_filesystem():
+            self._write_table("sql", {"friendly_name": "Test"})
+            self._write_table(
+                "sql",
+                self._invalid_metadata,
+                project="moz-fx-data-other",
+            )
+            assert runner.invoke(validate_command, ["--sql_dir=sql"]).exit_code == 1
+            result = runner.invoke(
+                validate_command,
+                ["--sql_dir=sql", "--project-id=moz-fx-data-shared-prod"],
+            )
+            assert result.exit_code == 0, result.output
+
+    def test_validate_command_honors_skip(self, runner):
+        skip = ["sql/moz-fx-data-shared-prod/test_derived/test_v1/metadata.yaml"]
+        real_get = ConfigLoader.get
+        with (
+            runner.isolated_filesystem(),
+            patch.object(
+                ConfigLoader,
+                "get",
+                side_effect=lambda *a, **kw: (
+                    skip
+                    if a == ("metadata", "validation", "skip")
+                    else real_get(*a, **kw)
+                ),
+            ),
+        ):
+            self._write_table("sql", self._invalid_metadata)
+            result = runner.invoke(validate_command, ["--sql_dir=sql"])
+            assert result.exit_code == 0, result.output
+
+    def test_validate_command_dataset_only_directory(self, runner):
+        with runner.isolated_filesystem():
+            dataset_dir = Path("sql/moz-fx-data-shared-prod/bad_live")
+            dataset_dir.mkdir(parents=True)
+            (dataset_dir / "dataset_metadata.yaml").write_text(
+                yaml.safe_dump(
+                    {
+                        "friendly_name": "Bad",
+                        "description": "Bad dataset",
+                        "dataset_base_acl": "derived",
+                        "user_facing": False,
+                    }
+                )
+            )
+            assert runner.invoke(validate_command, ["--sql_dir=sql"]).exit_code == 1
+
     def test_validate_metadata_without_labels(self, runner, capfd):
         """Test that metadata validation doesn't fail when labels are not present."""
         metadata = {
@@ -1872,3 +2051,420 @@ class TestMetadata:
             }
         )
         assert validate_query_parameters(metadata, "") is True
+
+
+class TestGetDownstreamLineage:
+    asset = {
+        "degree": 1,
+        "type": "DATASET",
+        "subtype": "Table",
+        "platform": "bigquery",
+        "name": "b",
+        "qualified_name": "moz-fx-data-shared-prod.d.b",
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:bigquery,moz-fx-data-shared-prod.d.b,PROD)",
+        "deleted": False,
+        "queries_30d": 0,
+        "users_30d": None,
+        "last_query": None,
+    }
+    chart = {
+        "degree": 2,
+        "type": "CHART",
+        "subtype": None,
+        "platform": "redash",
+        "name": "Retention",
+        "qualified_name": "Retention",
+        "urn": "urn:li:chart:(redash,1)",
+        "deleted": False,
+        "queries_30d": None,
+        "users_30d": None,
+        "last_query": None,
+    }
+
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def lineage(self):
+        with (
+            patch("bigquery_etl.cli.metadata.DataHubClient"),
+            patch(
+                "bigquery_etl.cli.metadata.get_downstream_lineage_from_datahub"
+            ) as lineage,
+        ):
+            lineage.return_value = [dict(self.asset), dict(self.chart)]
+            yield lineage
+
+    def test_dataset_table_gets_the_default_project(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[0][1] == ["moz-fx-data-shared-prod.d.a"]
+        assert "BIGQUERY (1)" in result.output
+        assert "moz-fx-data-shared-prod.d.b" in result.output
+
+    def test_fully_qualified_table_is_used_as_is(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["other-project.d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[0][1] == ["other-project.d.a"]
+
+    def test_rejects_a_bare_table_name(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["a"])
+        assert result.exit_code == 2
+        assert "dataset.table" in result.output
+        lineage.assert_not_called()
+
+    def test_passes_options_through(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage,
+            ["d.a", "--since-days=90", "--include-deleted", "--looker-tmp-days=0"],
+        )
+        assert result.exit_code == 0
+        kwargs = lineage.call_args[1]
+        assert kwargs["since_days"] == 90
+        assert kwargs["include_deleted"] is True
+        assert kwargs["looker_tmp_days"] == 0
+
+    def test_type_is_case_insensitive_and_passed_through(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--type=chart", "--type=Dashboard"]
+        )
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["types"] == {"CHART", "DASHBOARD"}
+
+    @pytest.mark.parametrize("choice,max_degree", [("1", 1), ("2", 2), ("3+", 3)])
+    def test_max_degree_choices(self, runner, lineage, choice, max_degree):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", f"--max-degree={choice}"]
+        )
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["max_degree"] == max_degree
+
+    def test_max_degree_defaults_to_all(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["max_degree"] == 3
+
+    def test_csv_output(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--output-format=csv"])
+        assert result.exit_code == 0
+        lines = result.output.splitlines()
+        assert lines[0] == "degree,type,subtype,platform,name,qualified_name,urn"
+        assert len(lines) == 3
+
+    def test_json_output(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--output-format=json", "--since-days=90"]
+        )
+        assert result.exit_code == 0
+        output = json.loads(result.stdout)
+        assert output["table"] == "moz-fx-data-shared-prod.d.a"
+        assert output["since_days"] == 90
+        assert output["count"] == 2
+        assert list(output["downstream"][0]) == [
+            "degree",
+            "type",
+            "subtype",
+            "platform",
+            "name",
+            "qualified_name",
+            "urn",
+        ]
+
+    def test_include_deleted_adds_the_deleted_field(self, runner, lineage):
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--include-deleted", "--output-format=json"]
+        )
+        assert result.exit_code == 0
+        assert json.loads(result.stdout)["downstream"][0]["deleted"] is False
+
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--include-deleted"])
+        assert "DELETED" in result.output
+
+    def test_since_days_note_goes_to_stderr(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--since-days=90"])
+        assert result.exit_code == 0
+        assert "last 90 days" in result.stderr
+        assert "last 90 days" not in result.stdout
+
+    def test_rejected_token_is_reported(self, runner, lineage):
+        lineage.side_effect = AuthError("HTTP 401 from https://datahub.example")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "HTTP 401" in result.output
+        assert "DATAHUB_GMS_TOKEN" in result.output
+
+    @pytest.mark.parametrize(
+        "error",
+        [
+            requests.ConnectionError("down"),
+            RuntimeError("Failed to execute PIT search"),
+        ],
+    )
+    def test_datahub_errors_are_reported(self, runner, lineage, error):
+        lineage.side_effect = error
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert f"Could not get lineage from DataHub: {error}" in result.output
+
+    def test_too_large_lineage_suggests_since_days(self, runner, lineage):
+        lineage.side_effect = LineageTooLargeError("maxRelations")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "--since-days" in result.output
+
+    @patch("bigquery_etl.datahub.lineage.auth.get_token")
+    def test_failed_sign_in_is_reported(self, get_token, runner, monkeypatch):
+        monkeypatch.delenv("DATAHUB_GMS_TOKEN", raising=False)
+        get_token.side_effect = LoginError("DataHub sign-in failed: access_denied")
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 1
+        assert "access_denied" in result.output
+
+    def test_usage_is_off_by_default(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["include_usage"] is False
+        assert "QUERIES 30D" not in result.output
+
+    def test_include_usage_adds_columns_and_fields(self, runner, lineage):
+        result = runner.invoke(get_downstream_lineage, ["d.a", "--include-usage"])
+        assert result.exit_code == 0
+        assert lineage.call_args[1]["include_usage"] is True
+        assert "QUERIES 30D" in result.output
+
+        result = runner.invoke(
+            get_downstream_lineage, ["d.a", "--include-usage", "--output-format=csv"]
+        )
+        lines = result.output.splitlines()
+        assert lines[0].endswith(",urn,queries_30d,users_30d,last_query")
+        assert lines[1].endswith(",0,,")
+
+
+class TestDeprecateDownstream:
+    project = "moz-fx-data-shared-prod"
+
+    def asset(self, table, queries):
+        qualified = f"{self.project}.d.{table}"
+        return {
+            "degree": 1,
+            "type": "DATASET",
+            "subtype": "Table",
+            "platform": "bigquery",
+            "name": table,
+            "qualified_name": qualified,
+            "urn": f"urn:li:dataset:(urn:li:dataPlatform:bigquery,{qualified},PROD)",
+            "deleted": False,
+            "queries_30d": queries,
+            "users_30d": None,
+            "last_query": None,
+        }
+
+    @pytest.fixture
+    def runner(self):
+        return CliRunner()
+
+    @pytest.fixture
+    def sql_dir(self, tmp_path):
+        for table in ("target_v1", "target_v2", "unused_v1", "used_v1"):
+            path = tmp_path / self.project / "d" / table
+            path.mkdir(parents=True)
+            (path / "metadata.yaml").write_text(
+                yaml.dump({"friendly_name": table, "owners": ["test@example.com"]})
+            )
+        # Committed long ago, so the tables aren't treated as recently added.
+        old = "2020-01-01T00:00:00"
+        for command in (
+            ["init", "-q"],
+            ["add", "."],
+            ["-c", "user.name=test", "-c", "user.email=test@example.com"]
+            + ["-c", "commit.gpgsign=false", "commit", "-q", "-m", "x"],
+        ):
+            subprocess.run(
+                ["git", *command],
+                cwd=tmp_path,
+                check=True,
+                env={**os.environ, "GIT_AUTHOR_DATE": old, "GIT_COMMITTER_DATE": old},
+            )
+        return tmp_path
+
+    @pytest.fixture
+    def lineage(self):
+        with (
+            patch("bigquery_etl.cli.metadata.DataHubClient"),
+            patch(
+                "bigquery_etl.cli.metadata.get_downstream_lineage_from_datahub"
+            ) as lineage,
+        ):
+            lineage.return_value = [
+                self.asset("target_v1", 1),
+                self.asset("unused_v1", 0),
+                self.asset("used_v1", 5),
+            ]
+            yield lineage
+
+    @pytest.fixture
+    def pick(self):
+        with patch("bigquery_etl.cli.metadata.pick") as pick:
+            yield pick
+
+    def interactive(self, value):
+        return patch("bigquery_etl.cli.metadata._is_interactive", return_value=value)
+
+    def deprecated(self, sql_dir):
+        return {
+            p.parent.name
+            for p in sql_dir.glob("*/*/*/metadata.yaml")
+            if yaml.safe_load(p.read_text()).get("deprecated")
+        }
+
+    def invoke(self, runner, sql_dir, *args, input=None, name="d.target_v1"):
+        return runner.invoke(
+            deprecate,
+            [name, "--deletion-date=2026-12-01", f"--sql-dir={sql_dir}"] + list(args),
+            input=input,
+        )
+
+    def test_declining_the_prompt_skips_lineage(self, runner, sql_dir, lineage):
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, input="n\n")
+        assert result.exit_code == 0, result.output
+        assert "Show downstream lineage?" in result.output
+        lineage.assert_not_called()
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_prompt_defaults_to_yes(self, runner, sql_dir, lineage, pick):
+        pick.return_value = [sql_dir / self.project / "d" / "used_v1"]
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, input="\n")
+        assert result.exit_code == 0, result.output
+        lineage.assert_called_once()
+        assert lineage.call_args[1]["include_usage"] is True
+        targets, candidates, external, preselected, note = pick.call_args.args
+        assert note == ""
+        assert targets == f"{self.project}.d.target_v1"
+        assert [c.path.name for c in candidates] == ["unused_v1", "used_v1"]
+        assert preselected == set()
+        assert self.deprecated(sql_dir) == {"target_v1", "used_v1"}
+
+    def test_flag_skips_the_prompt_and_preselects(self, runner, sql_dir, lineage, pick):
+        pick.return_value = []
+        with self.interactive(True):
+            result = self.invoke(
+                runner, sql_dir, "--include-downstream=unused", "--since-days=90"
+            )
+        assert result.exit_code == 0, result.output
+        assert "Show downstream lineage?" not in result.output
+        assert pick.call_args.args[4] == (
+            " (lineage seen in the last 90 days; pre-selected: unused)"
+        )
+        assert pick.call_args.args[3] == {sql_dir / self.project / "d" / "unused_v1"}
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_cancel_writes_nothing(self, runner, sql_dir, lineage, pick):
+        pick.return_value = None
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, "--include-downstream=all")
+        assert result.exit_code == 0, result.output
+        assert "nothing was changed" in result.output
+        assert self.deprecated(sql_dir) == set()
+
+    def test_non_interactive_without_flag_skips_lineage(self, runner, sql_dir, lineage):
+        with self.interactive(False):
+            result = self.invoke(runner, sql_dir)
+        assert result.exit_code == 0, result.output
+        lineage.assert_not_called()
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_non_interactive_applies_preselection(self, runner, sql_dir, lineage, pick):
+        with self.interactive(False):
+            result = self.invoke(runner, sql_dir, "--include-downstream=unused")
+        assert result.exit_code == 0, result.output
+        pick.assert_not_called()
+        assert (
+            f"Downstream lineage of {self.project}.d.target_v1 (pre-selected: unused)"
+            in result.output
+        )
+        assert f"Deprecating 1 downstream:\n  {self.project}.d.unused_v1" in (
+            result.output
+        )
+        assert f"{self.project}.d.used_v1 (5 queries in 30 days)" in result.output
+        assert self.deprecated(sql_dir) == {"target_v1", "unused_v1"}
+        metadata = yaml.safe_load(
+            (sql_dir / self.project / "d" / "unused_v1" / "metadata.yaml").read_text()
+        )
+        assert str(metadata["deletion_date"]) == "2026-12-01"
+
+    def test_datahub_errors_write_nothing(self, runner, sql_dir, lineage):
+        lineage.side_effect = AuthError("HTTP 401")
+        with self.interactive(False):
+            result = self.invoke(runner, sql_dir, "--include-downstream=all")
+        assert result.exit_code == 1
+        assert "DataHub rejected the token" in result.output
+        assert self.deprecated(sql_dir) == set()
+
+    @pytest.mark.parametrize(
+        "answer,deprecated", [("y", {"target_v1"}), ("n", set()), ("", set())]
+    )
+    def test_datahub_error_after_prompt_offers_tables_only(
+        self, runner, sql_dir, lineage, pick, answer, deprecated
+    ):
+        lineage.side_effect = AuthError("HTTP 401")
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, input=f"\n{answer}\n")
+        assert result.exit_code == 0, result.output
+        assert "DataHub rejected the token" in result.stderr
+        pick.assert_not_called()
+        assert self.deprecated(sql_dir) == deprecated
+
+    @pytest.mark.parametrize("answer", ["", "2027-06-01"])
+    def test_deletion_date_is_asked_last_with_the_default(
+        self, runner, sql_dir, lineage, pick, answer
+    ):
+        used = sql_dir / self.project / "d" / "used_v1"
+        pick.return_value = [used]
+        default = (datetime.today() + relativedelta(months=+3)).date()
+        with self.interactive(True):
+            result = runner.invoke(
+                deprecate,
+                ["d.target_v1", f"--sql-dir={sql_dir}"],
+                input=f"\n{answer}\n",
+            )
+        assert result.exit_code == 0, result.output
+        assert (
+            f"Deletion date (default is 3 months from today) [{default}]"
+            in result.output
+        )
+        expected = answer or str(default)
+        for table in ("target_v1", "used_v1"):
+            metadata = yaml.safe_load(
+                (sql_dir / self.project / "d" / table / "metadata.yaml").read_text()
+            )
+            assert str(metadata["deletion_date"]) == expected
+
+    def test_deletion_date_is_not_asked_without_a_terminal(self, runner, sql_dir):
+        with self.interactive(False):
+            result = runner.invoke(deprecate, ["d.target_v1", f"--sql-dir={sql_dir}"])
+        assert result.exit_code == 0, result.output
+        assert "Deletion date" not in result.output
+        assert self.deprecated(sql_dir) == {"target_v1"}
+
+    def test_several_tables_are_fetched_together(self, runner, sql_dir, lineage):
+        with self.interactive(False):
+            result = self.invoke(
+                runner, sql_dir, "--include-downstream=none", name="d.target_v*"
+            )
+        assert result.exit_code == 0, result.output
+        lineage.assert_called_once()
+        assert lineage.call_args[0][1] == [
+            f"{self.project}.d.target_v1",
+            f"{self.project}.d.target_v2",
+        ]
+        assert self.deprecated(sql_dir) == {"target_v1", "target_v2"}
+
+    def test_since_days_without_lineage_warns(self, runner, sql_dir, lineage):
+        with self.interactive(True):
+            result = self.invoke(runner, sql_dir, "--since-days=30", input="n\n")
+        assert result.exit_code == 0, result.output
+        assert "--since-days is ignored" in result.stderr
+        assert self.deprecated(sql_dir) == {"target_v1"}

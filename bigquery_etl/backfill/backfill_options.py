@@ -94,3 +94,14 @@ def query_script_arg():
         "Use this to set a destination table for the script to write to a staging table if needed.",
         multiple=True,
     )
+
+
+def copy_table_permissions(default=False):
+    """Return a Click option to copy prod table IAM onto the staging/backup table."""
+    return click.option(
+        "--copy-table-permissions/--no-copy-table-permissions",
+        default=default,
+        help="Copy the production table's IAM policy and dataset access to the "
+        "staging table. Caller needs dataOwner or admin roles on the staging "
+        "dataset.",
+    )

@@ -24,3 +24,4 @@ scheduling:
 deprecated: true
 monitoring:
   enabled: true
+  collection: Operational Checks

@@ -15,3 +15,7 @@ fields:
   type: INTEGER
   description: |-
     Total count
+- name: client_count
+  type: INTEGER
+  description: |-
+    Unique client count

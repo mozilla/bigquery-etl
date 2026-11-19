@@ -29,6 +29,11 @@ git clone git@github.com:mozilla/bigquery-etl.git
 cd bigquery-etl
 ```
 
+> **Work in a branch of this repository, not a fork.** All of Mozilla has write
+> access to `mozilla/bigquery-etl`, so clone it directly (as above), push your
+> branch here, and open the pull request from there. CI does not run on pull
+> requests from forks. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 2. Install the `bqetl` command line tool
 ```bash
 ./bqetl bootstrap
@@ -46,6 +51,20 @@ cp .vscode/launch.json.default .vscode/launch.json
 ```
 
 And you should now be set up to start working in the repo. The easiest way to do this for many tasks is to use [`bqetl`](https://mozilla.github.io/bigquery-etl/bqetl/). You may also want to read up on [common workflows](https://mozilla.github.io/bigquery-etl/cookbooks/common_workflows/).
+
+
+#### Upgrading Dependencies in venv from requirements.txt
+
+Sometimes a new dependency is added to bigquery-etl, or there is an important update made that should be installed locally for `bqetl` commands to continue working. `bootstrap` will only setup from scratch, so use `update` instead to update dependencies in-place.
+
+0. Prerequisites
+  - already followed the steps above for *Installing bqetl*
+  - `requirements.txt` has the up-to-date dependencies list to install
+
+1. Update dependencies
+```bash
+./bqetl update
+```
 
 
 ## Releasing a new version of `bqetl`

@@ -1,0 +1,10 @@
+# Client b searched the day before but not on 2026-10-20, so baseline applies.
+- submission_date: "2026-10-19"
+  client_id: b
+  sample_id: 2
+  profile_group_id: group-b-old
+  country: US
+  ping_end_time: "2026-10-19T10:00:00.000+00:00"
+  sap_counts_total: 1
+  serp_counts_total: 0
+  default_search_engine_provider_id: bing

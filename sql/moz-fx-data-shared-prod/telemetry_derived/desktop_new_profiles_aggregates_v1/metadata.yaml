@@ -3,6 +3,18 @@ description: |-
   This table aggregates the number of new profiles on a given day as well as recording if new profiles are DAU
   for desktop client_ids
 
+  Confirmed automated (bot) profiles are excluded: every client in
+  telemetry.desktop_automated_clients (DENG-11925), which includes the DENG-11590 segment from
+  first_seen_date 2026-08-27. Bots have been up to ~83% of all desktop new profiles, so counts
+  here are not comparable to unfiltered sources such as telemetry.clients_first_seen, which is
+  deliberately left unchanged.
+  Only the DENG-11590 subset is flagged (not removed) on telemetry.desktop_new_profiles_clients,
+  via is_desktop_argument_profile_automation.
+
+  Each partition excludes only clients flagged on or before its run date, so reruns and backfills
+  give the same result as the daily run. A client flagged after that date (58 of 56.9M flagged
+  new profiles from 2026-08-27 to 2026-11-15) stays in the partitions computed before its flag.
+
 owners:
 - mhirose@mozilla.com
 labels:
@@ -16,9 +28,16 @@ labels:
 scheduling:
   dag_name: bqetl_analytics_tables
   task_name: desktop_new_profiles_aggregates
-  date_partition_parameter: first_seen_date
+  partition_parameter: first_seen_date
   parameters:
   - submission_date:DATE:{{ds}}
+monitoring:
+  enabled: true
+  partition_column: first_seen_date
+  volume:
+    blocking: false
+  freshness:
+    blocking: false
 bigquery:
   time_partitioning:
     type: day

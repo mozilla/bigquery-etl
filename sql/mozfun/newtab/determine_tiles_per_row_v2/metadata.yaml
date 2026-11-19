@@ -1,0 +1,3 @@
+description: |-
+  Determine the tiles per row for Firefox Newtab based on layout type and window width
+friendly_name: Tiles per row

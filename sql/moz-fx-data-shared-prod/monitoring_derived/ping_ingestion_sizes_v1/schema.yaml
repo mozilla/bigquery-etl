@@ -1,0 +1,94 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: UTC date the messages were processed. Partitioning column.
+- name: decoder_job
+  type: STRING
+  mode: NULLABLE
+  description: Dataflow decoder job without its deployment suffix, e.g. structured-raw-decoder.
+- name: document_namespace
+  type: STRING
+  mode: NULLABLE
+  description: Document namespace. Null for the row that rolls up submissions to namespaces or doc types with no valid messages.
+- name: document_type
+  type: STRING
+  mode: NULLABLE
+  description: Document type without the version suffix. Null for the rolled up invalid row.
+- name: dataflow_message_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of valid messages (Dataflow valid_submission counter).
+- name: dataflow_compressed_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Payload bytes before decompression (Dataflow predecompress_submission_bytes counter). Includes messages that failed validation.
+- name: dataflow_compressed_bytes_imputed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: >-
+    True when dataflow_compressed_bytes is estimated from dataflow_decompressed_bytes
+    because the decoder does not report it per ping (structured-logging-decoder).
+- name: dataflow_decompressed_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Payload bytes of valid messages after decompression (Dataflow valid_submission_bytes counter).
+- name: raw_topic
+  type: STRING
+  mode: NULLABLE
+  description: Raw Pub/Sub topic the decoder reads from.
+- name: raw_topic_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated bytes published to raw_topic for this ping.
+- name: raw_topic_overhead_bytes_per_message
+  type: INTEGER
+  mode: NULLABLE
+  description: Per-message overhead used to split raw_topic bytes, derived from the day's totals.
+- name: raw_subscription
+  type: STRING
+  mode: NULLABLE
+  description: Raw Pub/Sub subscription the decoder reads from.
+- name: raw_subscription_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated delivered bytes on raw_subscription for this ping.
+- name: raw_subscription_overhead_bytes_per_message
+  type: INTEGER
+  mode: NULLABLE
+  description: Per-message overhead used to split raw_subscription bytes, derived from the day's totals.
+- name: decoded_topic
+  type: STRING
+  mode: NULLABLE
+  description: Decoded Pub/Sub topic the decoder publishes to.
+- name: decoded_topic_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated bytes published to decoded_topic for this ping. Zero for the rolled up invalid row.
+- name: decoded_topic_overhead_bytes_per_message
+  type: INTEGER
+  mode: NULLABLE
+  description: Per-message overhead used to split decoded_topic bytes, derived from the day's totals.
+- name: decoded_subscription
+  type: STRING
+  mode: NULLABLE
+  description: Decoded Pub/Sub subscription used to measure the decoded stage.
+- name: decoded_subscription_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimated delivered bytes on decoded_subscription for this ping. Zero for the rolled up invalid row.
+- name: decoded_subscription_overhead_bytes_per_message
+  type: INTEGER
+  mode: NULLABLE
+  description: Per-message overhead used to split decoded_subscription bytes, derived from the day's totals.
+- name: stable_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Logical bytes of the ping's stable table partitions, summed over table versions and
+    tables split from the ping (telemetry *_use_counter tables).
+    Split between decoders by message count when a doc type arrives through more than one.
+- name: stable_row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Rows in the ping's own stable table partition (not split tables), split between decoders the same way as stable_logical_bytes.

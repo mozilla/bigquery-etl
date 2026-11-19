@@ -1,0 +1,35 @@
+---
+fields:
+  - name: event_signature
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Base64-encoded SHA256 hash of (source_file, source_line, result).
+      Stable within a Firefox release. Changes when the source moves.
+      This is the MERGE key and the cluster key.
+  - name: stable_event_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Stable UUID for this event type. Set when the signature is first seen.
+      Several signatures from different releases can share one stable id.
+  - name: source_file
+    type: STRING
+    mode: NULLABLE
+    description: Source file path where the event occurred.
+  - name: source_line
+    type: INT64
+    mode: NULLABLE
+    description: Line number in the source file.
+  - name: result
+    type: STRING
+    mode: NULLABLE
+    description: Event result code or status.
+  - name: first_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: First date when pings with this signature were received on the server side.
+  - name: last_seen_date
+    type: DATE
+    mode: NULLABLE
+    description: Last date when pings with this signature were received on the server side.

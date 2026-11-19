@@ -8,7 +8,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3` AS sis
 LEFT JOIN
-  `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` AS mls
+  `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4` AS mls
   ON (sis.request_id = mls.request_id)
   AND mls.timestamp >= TIMESTAMP(@submission_date)
   AND mls.timestamp < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))
@@ -16,7 +16,7 @@ WHERE
   sis.submission_timestamp >= TIMESTAMP(@submission_date)
   AND sis.submission_timestamp < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))
   AND LENGTH(sis.query) > 0
-  AND sis.normalized_channel = 'release'
+  AND NOT `moz-fx-data-shared-prod.udf.is_moz_supplied_suggestion`(sis.reporting_url)
 GROUP BY
   sis.query,
   COALESCE(mls.dma, ''),

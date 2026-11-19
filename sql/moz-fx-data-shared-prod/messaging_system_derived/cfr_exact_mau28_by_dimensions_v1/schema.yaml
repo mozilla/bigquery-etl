@@ -1,0 +1,70 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: submission_date
+- name: release_channel
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: release_channel
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: country
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: country_name
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: locale
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: version
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: mau
+- name: wau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: wau
+- name: dau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/messaging_system_derived/messaging_system_derived.yaml
+    field: dau
+- name: whats_new_mau
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that had a CFR What's New panel interaction within the past 28 days of the submission date (i.e. days_since_seen_whats_new
+    < 28). Represents the monthly active user count scoped to What's New CFR activity.
+- name: whats_new_wau
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that had a CFR What's New panel interaction within the past 7 days of the submission date (i.e. days_since_seen_whats_new
+    < 7). Represents the weekly active user count scoped to What's New CFR activity.
+- name: whats_new_dau
+  type: INT64
+  mode: NULLABLE
+  description: Count of clients that had a CFR What's New panel interaction on the submission date (i.e. days_since_seen_whats_new < 1). Represents the
+    daily active user count scoped to What's New CFR activity.

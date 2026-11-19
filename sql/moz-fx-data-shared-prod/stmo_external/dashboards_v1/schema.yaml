@@ -1,0 +1,57 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was last updated.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was created.
+- name: org_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Redash organization ID. There is only one organization.
+- name: slug
+  type: STRING
+  mode: NULLABLE
+  description: URL slug of the dashboard.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: Display name.
+- name: user_email
+  type: STRING
+  mode: NULLABLE
+  description: Email of the user who created the object. Legacy column, use `user_id` instead.
+- name: user_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the user who created the object, see `users_v1`.
+- name: layout
+  type: JSON
+  mode: NULLABLE
+  description: JSON layout of the dashboard. Widget positions are stored in `widgets_v1.options`.
+- name: dashboard_filters_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether dashboard-level filters are enabled.
+- name: is_archived
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the object has been archived (deleted in the Redash UI).
+- name: version
+  type: INTEGER
+  mode: NULLABLE
+  description: Version number, incremented on each save.
+- name: is_draft
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the object is an unpublished draft.
+- name: tags
+  type: STRING
+  mode: REPEATED
+  description: Tags added by users.

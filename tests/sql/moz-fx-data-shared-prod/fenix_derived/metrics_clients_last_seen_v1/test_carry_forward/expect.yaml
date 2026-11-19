@@ -1,0 +1,44 @@
+---
+# Carried forward: row exists though no ping today. n_metrics_ping and
+# uri_count (a counter) are NULL today, so they are omitted from expect.
+# Bits shift one day: shift_28_bits_one_day(1) = 2. Dimensions are carried.
+- submission_date: 2023-01-02
+  client_id: client-carryforward
+  sample_id: 1
+  normalized_channel: release
+  days_sent_metrics_ping_bits: 2
+  is_default_browser: true
+  is_large_device: false
+  notifications_allowed: true
+  marketing_notifications_allowed: false
+  device_manufacturer: Google
+  isp_name: ISP1
+# Updated: combine_adjacent_days_28_bits(1, 1) = 3. Counter + dims from today.
+- submission_date: 2023-01-02
+  client_id: client-matched
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 3
+  days_sent_metrics_ping_bits: 3
+  uri_count: 7
+  is_default_browser: true
+  is_large_device: true
+  notifications_allowed: true
+  marketing_notifications_allowed: true
+  device_manufacturer: Samsung
+  isp_name: ISP2
+# New client: combine_adjacent_days_28_bits(NULL, 1) = 1.
+- submission_date: 2023-01-02
+  client_id: client-new
+  sample_id: 1
+  normalized_channel: release
+  n_metrics_ping: 1
+  days_sent_metrics_ping_bits: 1
+  uri_count: 3
+  is_default_browser: true
+  is_large_device: false
+  notifications_allowed: false
+  marketing_notifications_allowed: false
+  device_manufacturer: Xiaomi
+  isp_name: ISP3
+# client-expired is intentionally absent: last seen 28 days ago, shifted out.

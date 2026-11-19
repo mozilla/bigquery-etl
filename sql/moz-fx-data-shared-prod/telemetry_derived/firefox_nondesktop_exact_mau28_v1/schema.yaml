@@ -2,44 +2,66 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: MAU - Monthly Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
 - name: wau
   type: INTEGER
   mode: NULLABLE
-  description: WAU - Weekly Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: wau
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: DAU - Daily Active Users
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
 - name: id_bucket
   type: INTEGER
   mode: NULLABLE
-  description: ID Bucket
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: id_bucket
 - name: product
   type: STRING
   mode: NULLABLE
-  description: Product
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: product
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - name: campaign
   type: STRING
   mode: NULLABLE
-  description: Campaign
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: campaign
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Distribution ID
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: distribution_id
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: New Profiles
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: new_profiles

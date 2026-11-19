@@ -1,0 +1,12 @@
+friendly_name: Nimbus Feature Monitoring
+description: |-
+  Aggregate tables for monitoring the rollout of Nimbus features.
+  Populated by the sql_generators/nimbus_feature_monitoring generator
+  via the bqetl_nimbus_feature_monitoring DAG (daily).
+dataset_base_acl: derived
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

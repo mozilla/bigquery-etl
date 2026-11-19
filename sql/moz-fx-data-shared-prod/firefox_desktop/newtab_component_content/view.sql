@@ -24,7 +24,7 @@ content_and_visit_info AS (
 add_tiles_per_row AS (
   SELECT
     content_and_visit_info.*,
-    mozfun.newtab.determine_tiles_per_row_v1(
+    mozfun.newtab.determine_tiles_per_row_v2(
       layout_type,
       newtab_window_inner_width
     ) AS num_tiles_per_row,
@@ -43,7 +43,7 @@ add_tiles_per_row AS (
         THEN 2
     -- billboard fills the entire row
       WHEN format = 'billboard'
-        THEN mozfun.newtab.determine_tiles_per_row_v1(layout_type, newtab_window_inner_width)
+        THEN mozfun.newtab.determine_tiles_per_row_v2(layout_type, newtab_window_inner_width)
       ELSE NULL
     END AS tile_size
   FROM

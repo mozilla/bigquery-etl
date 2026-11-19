@@ -1,8 +1,8 @@
 """bigquery-etl CLI."""
 
 import logging
+import os
 import warnings
-from pathlib import Path
 
 import rich_click as click
 
@@ -25,14 +25,23 @@ from ..cli.stage import stage
 from ..cli.static import static_
 from ..cli.target import target
 from ..cli.view import view
-from ..config import ConfigLoader
 from ..copy_deduplicate import copy_deduplicate
+from ..data_governance.cli import data_governance
 from ..dependency import dependency
 from ..docs import docs_
 from ..glam.cli import glam
 from ..stripe import stripe_
 from ..subplat.apple import apple
-from ..util.target import get_default_target_name, get_target
+from ..util.common import (
+    IMPERSONATE_ENV_VAR,
+    enable_impersonation,
+    set_resolved_target_project,
+)
+from ..util.target import (
+    get_default_target_name,
+    get_target,
+    set_grant_impersonation_access,
+)
 
 
 def cli(prog_name=None):
@@ -55,6 +64,7 @@ def cli(prog_name=None):
         "static": static_,
         "docs": docs_,
         "copy_deduplicate": copy_deduplicate,
+        "data_governance": data_governance,
         "stage": stage,
         "backfill": backfill,
         "check": check,
@@ -85,24 +95,71 @@ def cli(prog_name=None):
         default=False,
         help="Disable the default target, ignoring BQETL_TARGET and default_target in bqetl_targets.yaml.",
     )
+    @click.option(
+        "--no-impersonate",
+        "--no_impersonate",
+        is_flag=True,
+        default=False,
+        help="Run with your own credentials instead of impersonating the target's "
+        "service account. Not available to coding agents for write/deploy/backfill.",
+    )
+    @click.option(
+        "--run-id",
+        "--run_id",
+        "run_id",
+        default=None,
+        help="Per-invocation run id rendered into target templates as `{{ run_id }}`. "
+        "Used to disambiguate parallel deploys for the same git.branch/git.commit "
+        "(e.g. concurrent CI runs). Defaults to $BQETL_RUN_ID if set.",
+    )
     @click.pass_context
-    def group(ctx, log_level, target, no_target):
+    def group(ctx, log_level, target, no_target, no_impersonate, run_id):
         """CLI tools for working with bigquery-etl."""
         logging.root.setLevel(level=log_level)
 
+        # Only fall back to BQETL_RUN_ID (opt-in) — not GITHUB_RUN_ID, which
+        # GitHub Actions auto-sets on every runner. A local invocation from a
+        # CI-adjacent shell would otherwise silently inherit an unrelated run
+        # id and filter / render against the wrong dataset.
+        if run_id is None:
+            run_id = os.environ.get("BQETL_RUN_ID") or None
+
         ctx.ensure_object(dict)
         ctx.obj["target"] = None
+        ctx.obj["run_id"] = run_id
+
+        # --no-impersonate opts out for this process, even if the env var was
+        # exported externally. The agent gate refuses write/deploy/backfill
+        # without impersonation.
+        if no_impersonate:
+            os.environ.pop(IMPERSONATE_ENV_VAR, None)
 
         try:
             if not target and not no_target:
                 target = get_default_target_name()
 
+            parsed_target = None
             if target:
-                parsed_target = get_target(target)
+                parsed_target = get_target(target, run_id=run_id)
                 ctx.obj["target"] = parsed_target
+                # Expose the target project to the coding-agent gate.
+                set_resolved_target_project(parsed_target.project_id)
+                # And the target's dataset-access preference for impersonation.
+                set_grant_impersonation_access(parsed_target.grant_impersonation_access)
                 click.echo(
                     f"ℹ️  Using target: {parsed_target.name} (project: {parsed_target.project_id})"
                 )
+
+            # Impersonate the target's SA (explicit env var wins): env var for
+            # `bq`/`gcloud` shell-outs, enable_impersonation for Python clients.
+            if not no_impersonate:
+                sa = os.environ.get(IMPERSONATE_ENV_VAR) or (
+                    parsed_target.impersonate_service_account if parsed_target else None
+                )
+                if sa:
+                    os.environ[IMPERSONATE_ENV_VAR] = sa
+                    enable_impersonation(sa)
+                    click.echo(f"ℹ️  Impersonating service account: {sa}")
         except Exception as e:
             raise click.ClickException(f"Failed to load target '{target}': {e}")
 
@@ -114,5 +171,4 @@ def cli(prog_name=None):
 
 
 if __name__ == "__main__":
-    ConfigLoader.set_project_dir(Path().absolute())
     cli()

@@ -2,12 +2,18 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - name: active_addon_name
   type: STRING
   mode: NULLABLE
-  description: Active Addon Name
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: active_addon_name
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE
-  description: Count of unique clients uninstalling
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: uninstalls_count

@@ -3,12 +3,12 @@
 import concurrent.futures
 import copy
 import datetime
-import importlib.util
 import json
 import logging
 import multiprocessing
 import os
 import re
+import runpy
 import string
 import subprocess
 import sys
@@ -22,6 +22,8 @@ from pathlib import Path
 from traceback import print_exc
 from typing import Callable, Iterable, Optional
 
+import attr
+import google.auth
 import rich_click as click
 import sqlparse
 import yaml
@@ -29,11 +31,18 @@ from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
 from ..backfill import backfill_options
-from ..backfill.date_range import BackfillDateRange, get_backfill_partition
+from ..backfill.date_range import (
+    BackfillDateRange,
+    apply_backfill_date_partition_offset,
+    get_backfill_partition,
+)
 from ..backfill.utils import (
     QUALIFIED_TABLE_NAME_RE,
     get_effective_retention_days,
+    is_sql_script_etl,
     qualified_table_name_matching,
+    resolve_backfill_partition_parameter,
+    resolve_scheduling_parameters,
 )
 from ..cli import check
 from ..cli.format import format
@@ -66,6 +75,7 @@ from ..format_sql.formatter import reformat
 from ..metadata import validate_metadata
 from ..metadata.parse_metadata import (
     DATASET_METADATA_FILE,
+    DEFAULT_DESCRIPTION_IN_METADATA,
     METADATA_FILE,
     BigQueryMetadata,
     ClusteringMetadata,
@@ -76,13 +86,17 @@ from ..metadata.parse_metadata import (
 )
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
+from ..query_scheduling.partitioning import get_partition_type
+from ..query_scheduling.task import Task
+from ..query_scheduling.utils import parse_timedelta
 from ..schema import SCHEMA_FILE, Schema
 from ..util import extract_from_query_path
 from ..util.bigquery_id import sql_table_id
+from ..util.bq_query_args import UnsupportedQueryArgumentsError, parse_bq_query_args
 from ..util.common import block_coding_agents, random_str
 from ..util.common import render as render_template
 from ..util.parallel_topological_sorter import ParallelTopologicalSorter
-from ..util.target import prepare_target_files
+from ..util.target import ensure_dataset_exists, prepare_target_files
 from .dryrun import dryrun
 from .generate import generate_all
 
@@ -103,10 +117,20 @@ DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 3
 INIT_SAMPLE_ID_PARALLELISM = 2
+
+# Default number of sample_ids processed per init/reinitialize batch.
+# BigQuery limits partition modifications to 30000 per table per day and
+# partition_modifications = num_batches * num_partitions.
+DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE = 20
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
 GLOBAL_SCHEMA_NAME = "global.yaml"
+# Drive scope lets queries read external tables backed by Google Sheets
+QUERY_SCOPES = [
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/drive.readonly",
+]
 
 
 @click.group(help="Commands for managing queries.")
@@ -237,7 +261,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         view_metadata_file = view_path / "metadata.yaml"
         view_metadata = Metadata(
             friendly_name=string.capwords(name.replace("_", " ")),
-            description="Please provide a description for the query",
+            description=DEFAULT_DESCRIPTION_IN_METADATA,
             owners=[owner],
             labels={"owner": safe_owner},
         )
@@ -255,7 +279,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
     metadata_file = derived_path / "metadata.yaml"
     metadata = Metadata(
         friendly_name=string.capwords(name.replace("_", " ")),
-        description="Please provide a description for the query",
+        description=DEFAULT_DESCRIPTION_IN_METADATA,
         owners=[owner],
         labels={"incremental": True},
         bigquery=BigQueryMetadata(
@@ -488,8 +512,8 @@ def _parse_parameter(parameter: str, param_date: str) -> str:
 def _backfill_query(
     query_file_path,
     project_id,
-    date_partition_parameter,
-    date_partition_offset,
+    partition_parameter,
+    partition_offset,
     max_rows,
     dry_run,
     scheduling_parameters,
@@ -511,8 +535,8 @@ def _backfill_query(
         if (
             partition := get_backfill_partition(
                 backfill_date,
-                date_partition_parameter,
-                date_partition_offset,
+                partition_parameter,
+                partition_offset,
                 partitioning_type,
             )
         ) is not None:
@@ -527,10 +551,21 @@ def _backfill_query(
         _parse_parameter(param, backfill_date_str) for param in scheduling_parameters
     ]
 
-    if date_partition_parameter is not None:
-        offset_param = backfill_date + timedelta(days=date_partition_offset)
+    # Bind the partition parameter, unless scheduling_parameters already
+    # supplies it (e.g. a table listing submission_date in `parameters`). bq
+    # rejects a parameter bound twice, so skip rather than duplicate.
+    scheduling_parameter_names = {
+        param.split(":", 1)[0] for param in scheduling_parameters
+    }
+    if (
+        partition_parameter is not None
+        and partition_parameter not in scheduling_parameter_names
+    ):
+        partition_date = apply_backfill_date_partition_offset(
+            backfill_date, partition_offset
+        )
         query_parameters.append(
-            f"--parameter={date_partition_parameter}:DATE:{offset_param.strftime('%Y-%m-%d')}"
+            f"--parameter={partition_parameter}:DATE:{partition_date.strftime('%Y-%m-%d')}"
         )
 
     arguments = (
@@ -586,11 +621,17 @@ def _backfill_query(
     return True
 
 
+# Directory containing the bigquery_etl package, for script subprocesses.
+_PACKAGE_ROOT = str(Path(__file__).resolve().parents[2])
+
+
 def _backfill_script(
     backfill_date: date,
     entrypoint_command: Callable,
     query_script_date_arg: str,
     query_script_args: Iterable[str],
+    query_file: str,
+    entrypoint_name: str,
 ):
     script_args = [
         f"--{query_script_date_arg}",
@@ -600,19 +641,63 @@ def _backfill_script(
     print(f"Backfilling script for {backfill_date} with {' '.join(script_args)}")
     if isinstance(entrypoint_command, click.Command):
         entrypoint_command(script_args, standalone_mode=False)
-    else:
-        original_argv = sys.argv.copy()
-        try:
-            sys.argv = ["query.py"] + script_args
-            entrypoint_command()
-        finally:
-            sys.argv = original_argv
+        return
+
+    # Plain functions read the process-global sys.argv, which races across
+    # backfill threads, so each date runs in its own interpreter.
+    # stdout streams straight through; stderr is relayed live, keeping the last
+    # line for the error message.
+    sys.stdout.flush()
+    with subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "bigquery_etl.backfill.run_script",
+            query_file,
+            entrypoint_name,
+            str(logging.root.level),
+            *script_args,
+        ],
+        stderr=subprocess.PIPE,
+        text=True,
+        env={
+            **os.environ,
+            "PYTHONUNBUFFERED": "1",
+            # Make this bigquery_etl importable even when it isn't installed
+            # (e.g. run from a checkout, as in CI).
+            "PYTHONPATH": os.pathsep.join(
+                filter(None, [_PACKAGE_ROOT, os.environ.get("PYTHONPATH")])
+            ),
+        },
+    ) as process:
+        last_error_line = ""
+        assert process.stderr is not None
+        for line in process.stderr:
+            sys.stderr.write(line)
+            if line.strip():
+                last_error_line = line.strip()
+    if process.returncode != 0:
+        raise RuntimeError(
+            f"Query script exited with code {process.returncode} for "
+            f"{backfill_date}: {last_error_line}"
+        )
+
+
+def _validate_scheduling_overrides(ctx, param, scheduling_overrides):
+    """Reject scheduling overrides that aren't supported scheduling keys, rather than silently ignoring them."""
+    if unsupported_overrides := set(json.loads(scheduling_overrides)) - set(
+        attr.fields_dict(Task)
+    ):
+        raise click.BadParameter(
+            f"Unsupported scheduling overrides: {', '.join(sorted(unsupported_overrides))}"
+        )
+    return scheduling_overrides
 
 
 @query.command(
     help="""Run a backfill for a query. Additional parameters will get passed to bq.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
 
@@ -701,15 +786,28 @@ def _backfill_script(
     required=False,
     type=str,
     default="{}",
+    callback=_validate_scheduling_overrides,
     help=(
         "Pass overrides as a JSON string for scheduling sections: "
-        "parameters and/or date_partition_parameter as needed."
+        "parameters and/or partition_parameter as needed. A "
+        "partition_parameter override has no effect on tables that set "
+        "backfill_partition_parameter; override that instead."
     ),
 )
 @backfill_options.override_retention()
 @backfill_options.query_script_entrypoint()
 @backfill_options.query_script_date_arg()
 @backfill_options.query_script_arg()
+@defer_option()
+@click.option(
+    "--skip-target-resolution",
+    "--skip_target_resolution",
+    is_flag=True,
+    default=False,
+    hidden=True,
+    help="Internal: skip --target redirection because the caller (managed backfill) "
+    "has already resolved the destination table.",
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -732,6 +830,8 @@ def backfill(
     query_script_entrypoint,
     query_script_date_arg,
     query_script_arg,
+    defer_to_target,
+    skip_target_resolution,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -770,6 +870,36 @@ def backfill(
             f"Found multiple query source files to backfill: {query_files}"
         )
 
+    # The managed backfill flow (bqetl backfill initiate) calls this command with a
+    # destination already resolved for the active target, so it opts out of target
+    # redirection here to avoid double-handling.
+    #
+    # NOTE: any internal caller that passes --destination-table together with an active
+    # ctx target MUST also pass skip_target_resolution=True; otherwise the
+    # mutual-exclusivity check below raises.
+    target = (
+        None if skip_target_resolution else (ctx.obj.get("target") if ctx.obj else None)
+    )
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
+    # prepare target directories if using --target; the backfill then reads the
+    # target-copied query, runs in the target project, and writes to the target table
+    if target and target.project_id != project_id:
+        query_files = prepare_target_files(
+            query_files,
+            sql_dir,
+            project_id,
+            target,
+            defer_to_target,
+            isolated=False,
+            auto_deploy=True,
+        )
+        project_id = target.project_id
+
     query_file = query_files[0]
     query_file_path = Path(query_file)
 
@@ -797,7 +927,7 @@ def backfill(
         click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     depends_on_past = metadata.scheduling.get("depends_on_past", False)
-    # If date_partition_parameter isn't set it's assumed to be submission_date:
+    # If partition_parameter isn't set it's assumed to be submission_date:
     # https://github.com/mozilla/telemetry-airflow/blob/dbc2782fa23a34ae8268e7788f9621089ac71def/utils/gcp.py#L194C48-L194C48
 
     partitioning_type = None
@@ -831,12 +961,15 @@ def backfill(
                 "e.g. --query-script-arg '--dry-run'"
             )
 
-        # attempt to import the query script using the file path
-        query_spec = importlib.util.spec_from_file_location("query", str(query_file))
-        query_module = importlib.util.module_from_spec(query_spec)
-        query_spec.loader.exec_module(query_module)
-        entrypoint_command = query_module.__getattribute__(query_script_entrypoint)
+        # load the query script without running its __main__ block
+        entrypoint_command = runpy.run_path(str(query_file)).get(
+            query_script_entrypoint
+        )
 
+        if entrypoint_command is None:
+            raise click.ClickException(
+                f"Script entrypoint `{query_script_entrypoint}` not found in {query_file}."
+            )
         if not isinstance(entrypoint_command, Callable):
             raise click.ClickException(
                 f"Script entrypoint `{query_script_entrypoint}` must be a function or a Click CLI command."
@@ -847,16 +980,20 @@ def backfill(
             entrypoint_command=entrypoint_command,
             query_script_date_arg=query_script_date_arg,
             query_script_args=query_script_arg,
+            query_file=str(query_file),
+            entrypoint_name=query_script_entrypoint,
         )
     else:
         # adding copy logic for cleaner handling of overrides
         scheduling_metadata = metadata.scheduling.copy()
         scheduling_metadata.update(json.loads(scheduling_overrides))
-        date_partition_parameter = scheduling_metadata.get(
-            "date_partition_parameter", "submission_date"
+        partition_parameter = resolve_backfill_partition_parameter(
+            scheduling_metadata,
+            get_partition_type(metadata),
+            is_sql_script_etl(query_file_path.parent),
         )
-        scheduling_parameters = scheduling_metadata.get("parameters", [])
-        date_partition_offset = scheduling_metadata.get("date_partition_offset", 0)
+        scheduling_parameters = resolve_scheduling_parameters(scheduling_metadata)
+        partition_offset = parse_timedelta(scheduling_metadata.get("partition_offset"))
 
         client = bigquery.Client(project=project_id)
         project, dataset, table = extract_from_query_path(query_file_path)
@@ -874,8 +1011,8 @@ def backfill(
             _backfill_query,
             query_file_path,
             project_id,
-            date_partition_parameter,
-            date_partition_offset,
+            partition_parameter,
+            partition_offset,
             max_rows,
             dry_run,
             scheduling_parameters,
@@ -888,6 +1025,17 @@ def backfill(
         )
 
     if not depends_on_past and parallelism > 1:
+        # Attempt to populate the gcloud credential store before running the parallel queries below
+        auth_init_args = ["bq", "query", "--use_legacy_sql=false", "--dry_run"]
+        auth_init_project = billing_project or project_id
+        if auth_init_project is not None:
+            auth_init_args.append(f"--project_id={auth_init_project}")
+        auth_init_args.append("SELECT 1")
+        try:
+            subprocess.check_call(auth_init_args, stdout=subprocess.DEVNULL)
+        except subprocess.CalledProcessError as e:
+            click.echo(f"Credential init failed, continuing anyway: {e}", err=True)
+
         # run backfill for dates in parallel if depends_on_past is false
         failed_backfills = []
         with futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
@@ -924,7 +1072,7 @@ def backfill(
     Additional parameters (all parameters that are not specified in the Options) must come after the query-name.
     Otherwise the first parameter that is not an option is interpreted as the query-name and since it can't be found the generation process will start.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
 
@@ -1168,11 +1316,21 @@ def _run_query(
 
             query_arguments.append("--destination_table={}".format(destination_table))
 
-            # default to WRITE_TRUNCATE so re-runs overwrite existing data.
-            # callers that need different semantics pass --append_table or --noreplace explicitly.
+        # default to WRITE_TRUNCATE so re-runs overwrite existing data, including for
+        # public tables. callers that need different semantics pass --append_table or
+        # --noreplace explicitly.
+        if destination_table is not None and query_file.name != "script.sql":
             if not any(
-                flag in query_arguments
-                for flag in ("--replace", "--append_table", "--noreplace")
+                arg.lower()
+                in (
+                    "--append_table",
+                    "--append_table=true",
+                    "--replace",
+                    "--replace=true",
+                    "--replace=false",
+                    "--noreplace",
+                )
+                for arg in query_arguments
             ):
                 query_arguments.append("--replace")
 
@@ -1215,14 +1373,7 @@ def _run_query(
             # when running the query
             query_arguments.append(f"--dataset_id={dataset_id}")
 
-        # write rendered query to a temporary file;
-        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
-        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
-            query_stream.write(query_text)
-            query_stream.seek(0)
-
-            # run the query as shell command so that passed parameters can be used as is
-            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+        _execute_query(query_text, query_arguments)
 
         # If the entire table was overwritten then redeploy the table schema to add back field descriptions.
         schema_file = query_file.parent / SCHEMA_FILE
@@ -1267,6 +1418,58 @@ def _run_query(
                         f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
                         err=True,
                     )
+
+
+def _execute_query(query_text: str, query_arguments: list):
+    """Run the query with the BigQuery client, or with bq if the arguments aren't supported."""
+    parsed = None
+    try:
+        parsed = parse_bq_query_args(query_arguments)
+    except UnsupportedQueryArgumentsError as e:
+        logging.info("Running query with bq (%s): %s", e, query_arguments)
+    except Exception as e:
+        logging.warning(
+            "Error parsing query arguments, running query with bq (%s): %s",
+            e,
+            query_arguments,
+        )
+
+    if parsed is None:
+        # write rendered query to a temporary file;
+        # query string cannot be passed directly to bq as SQL comments will be interpreted as CLI arguments
+        with tempfile.NamedTemporaryFile(mode="w+") as query_stream:
+            query_stream.write(query_text)
+            query_stream.seek(0)
+
+            # run the query as shell command so that passed parameters can be used as is
+            subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+        return
+
+    project, job_config = parsed
+    credentials, default_project = google.auth.default(scopes=QUERY_SCOPES)
+    client = bigquery.Client(
+        project=project or default_project, credentials=credentials
+    )
+    logging.info(
+        "Running query with BigQuery client in %s: %s",
+        client.project,
+        job_config.to_api_repr(),
+    )
+    job = client.query(query_text, job_config=job_config)
+
+    if job_config.dry_run:
+        click.echo(
+            "Query successfully validated. Running this query would process "
+            f"an estimated {job.total_bytes_processed:,} bytes."
+        )
+        return
+
+    click.echo(f"Running query job {job.project}:{job.location}.{job.job_id}...")
+    job.result()
+    click.echo(
+        f"Query job {job.project}:{job.location}.{job.job_id} is done. "
+        f"It processed {job.total_bytes_processed:,} bytes."
+    )
 
 
 def create_query_session(
@@ -1338,7 +1541,7 @@ def extract_and_run_temp_udfs(query_text: str, project_id: str, session_id: str)
 @query.command(
     help="""Run a multipart query.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
     Examples:
 
@@ -1582,8 +1785,8 @@ def validate(
         name = "*.*"
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
+    table_dirs = []
     dataset_dirs = set()
-    errors = []
     for query in query_files:
         click.echo(f"Validating metadata for {query}")
         if not skip_format_sql:
@@ -1600,10 +1803,7 @@ def validate(
                 billing_project=billing_project,
             )
 
-        try:
-            validate_metadata.validate(query.parent)
-        except validate_metadata.MetadataValidationError as e:
-            errors.append(str(e))
+        table_dirs.append(query.parent)
         dataset_dirs.add(query.parent.parent)
 
     if no_dryrun:
@@ -1620,11 +1820,7 @@ def validate(
             ):
                 dataset_dirs.add(dataset_path)
 
-    for dataset_dir in dataset_dirs:
-        try:
-            validate_metadata.validate_datasets(dataset_dir)
-        except validate_metadata.MetadataValidationError as e:
-            errors.append(str(e))
+    errors = validate_metadata.validate_directories(table_dirs, dataset_dirs)
 
     if len(errors) > 0:
         click.echo(
@@ -1645,6 +1841,7 @@ def _initialize_in_parallel(
     sample_ids,
     addl_templates,
     billing_project,
+    ignore_public_dataset: bool = False,
 ):
     with ThreadPool(parallelism) as pool:
         # Process all sample_ids in parallel.
@@ -1658,8 +1855,82 @@ def _initialize_in_parallel(
                 dataset,
                 addl_templates=addl_templates,
                 billing_project=billing_project,
+                ignore_public_dataset=ignore_public_dataset,
             ),
             [arguments + [f"--parameter=sample_id:INT64:{i}"] for i in sample_ids],
+        )
+
+
+def _run_init_query(
+    project,
+    destination_table,
+    dataset,
+    query_file,
+    sql_content,
+    billing_project,
+    public_project_id=None,
+    sampling_batch_size=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
+    dry_run=False,
+    ignore_public_dataset=False,
+):
+    """Run a query's is_init() branch into the destination table.
+
+    Appends to the (already-created) destination table. For queries with a
+    @sample_id parameter the run is parallelized over sample_ids, batched by
+    sampling_batch_size when the query also uses @sampling_batch_size (to stay
+    under BigQuery's 30000 partition-modifications/table/day cap, since
+    partition_modifications = num_batches * num_partitions). Shared by
+    `query initialize` and the backfill reinitialize path.
+    """
+    arguments = [
+        "query",
+        "--use_legacy_sql=false",
+        "--format=none",
+        "--append_table",
+        "--noreplace",
+    ]
+    if dry_run:
+        arguments += ["--dry_run"]
+
+    if "@sample_id" in sql_content:
+        sample_ids = list(range(0, 100))
+
+        # To support batch initialization, include the following clause in your query:
+        # AND sample_id >= @sample_id
+        # AND sample_id < @sample_id + @sampling_batch_size
+        #
+        # This limits each run to a range of sample IDs equal to the specified batch
+        # size (e.g., if @sample_id=0 and @sampling_batch_size=20, sample IDs 0–19).
+        if "@sampling_batch_size" in sql_content:
+            sample_ids = list(range(0, 100, sampling_batch_size))
+            arguments += [
+                f"--parameter=sampling_batch_size:INT64:{sampling_batch_size}"
+            ]
+
+        _initialize_in_parallel(
+            project=project,
+            public_project_id=public_project_id,
+            table=destination_table,
+            dataset=dataset,
+            query_file=query_file,
+            arguments=arguments,
+            parallelism=INIT_SAMPLE_ID_PARALLELISM,
+            sample_ids=sample_ids,
+            addl_templates={"is_init": lambda: True},
+            billing_project=billing_project,
+            ignore_public_dataset=ignore_public_dataset,
+        )
+    else:
+        _run_query(
+            query_files=[query_file],
+            project_id=project,
+            public_project_id=public_project_id,
+            destination_table=destination_table,
+            dataset_id=dataset,
+            query_arguments=arguments,
+            addl_templates={"is_init": lambda: True},
+            billing_project=billing_project,
+            ignore_public_dataset=ignore_public_dataset,
         )
 
 
@@ -1672,7 +1943,7 @@ def _initialize_in_parallel(
        It supports `query.sql` files that use the is_init() pattern.
        To run in parallel per sample_id, include a @sample_id parameter in the query.
 
-       Coding agents aren't allowed to run this command.
+       Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
 
        Examples:
        - For init.sql files: ./bqetl query initialize telemetry_derived.ssl_ratios_v1
@@ -1722,9 +1993,9 @@ def _initialize_in_parallel(
 @click.option(
     "--sampling-batch-size",
     "--sampling_batch_size",
-    help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
+    help="Number of sample IDs per initialization batch (e.g. 0–19, 20–39, etc.).",
     type=int,
-    default=4,
+    default=DEFAULT_INITIALIZE_SAMPLING_BATCH_SIZE,
 )
 @click.option(
     "--file",
@@ -1859,60 +2130,19 @@ def initialize(
                         respect_dryrun_skip=False,
                     )
 
-                arguments = [
-                    "query",
-                    "--use_legacy_sql=false",
-                    "--format=none",
-                    "--append_table",
-                    "--noreplace",
-                ]
-                if dry_run:
-                    arguments += ["--dry_run"]
-
-                if "@sample_id" in sql_content:
-                    sample_ids = list(range(0, 100))
-
-                    # To support batch initialization, include the following clause in your query:
-                    # AND sample_id >= @sample_id
-                    # AND sample_id < @sample_id + @sampling_batch_size
-                    #
-                    # This limits each run to a range of sample IDs equal to the specified batch size
-                    # (e.g., if @sample_id=0 and @sampling_batch_size=4, the query processes sample IDs 0–3).
-                    if "@sampling_batch_size" in sql_content:
-                        sample_ids = [i for i in range(0, 100, sampling_batch_size)]
-                        arguments += [
-                            f"--parameter=sampling_batch_size:INT64:{sampling_batch_size}"
-                        ]
-
-                    _initialize_in_parallel(
-                        project=project,
-                        public_project_id=public_project_id,
-                        table=destination_table if public_project_id else full_table_id,
-                        dataset=dataset,
-                        query_file=query_file,
-                        arguments=arguments,
-                        parallelism=INIT_SAMPLE_ID_PARALLELISM,
-                        sample_ids=sample_ids,
-                        addl_templates={
-                            "is_init": lambda: True,
-                        },
-                        billing_project=billing_project,
-                    )
-                else:
-                    _run_query(
-                        query_files=[query_file],
-                        project_id=project,
-                        public_project_id=public_project_id,
-                        destination_table=(
-                            destination_table if public_project_id else full_table_id
-                        ),
-                        dataset_id=dataset,
-                        query_arguments=arguments,
-                        addl_templates={
-                            "is_init": lambda: True,
-                        },
-                        billing_project=billing_project,
-                    )
+                _run_init_query(
+                    project=project,
+                    public_project_id=public_project_id,
+                    destination_table=(
+                        destination_table if public_project_id else full_table_id
+                    ),
+                    dataset=dataset,
+                    query_file=query_file,
+                    sql_content=sql_content,
+                    sampling_batch_size=sampling_batch_size,
+                    dry_run=dry_run,
+                    billing_project=billing_project,
+                )
             else:
                 for file in materialized_views:
                     with open(file) as init_file_stream:
@@ -2459,13 +2689,14 @@ def _update_query_schema(
     id_token=None,
     use_dataset_schema=False,
     use_global_schema=False,
+    billing_project=None,
 ):
     """
     Update the schema of a specific query file.
 
     Return True if the schema changed, False if it is unchanged.
     """
-    if respect_dryrun_skip and str(query_file) in DryRun.skipped_files():
+    if respect_dryrun_skip and DryRun.is_skipped(query_file):
         click.echo(f"{query_file} dry runs are skipped. Cannot update schemas.")
         return
 
@@ -2551,6 +2782,7 @@ def _update_query_schema(
             query_file_path,
             content=sql_content,
             use_cloud_function=use_cloud_function,
+            billing_project=billing_project,
             respect_skip=respect_dryrun_skip,
             sql_dir=sql_dir,
             credentials=credentials,
@@ -2631,6 +2863,7 @@ def _update_query_schema(
         table_name,
         partitioned_by=partitioned_by,
         use_cloud_function=use_cloud_function,
+        billing_project=billing_project,
         respect_skip=respect_dryrun_skip,
         credentials=credentials,
         id_token=id_token,
@@ -2668,11 +2901,15 @@ def _update_query_schema(
 @schema.command(
     help="""Deploy the query schema.
 
-    Coding agents aren't allowed to run this command.
+    Coding agents may only run this against an allow-listed dev `--target` while impersonating a sandbox service account.
+
+    With --target, the schema is deployed to the target project instead.
 
     Examples:
 
     ./bqetl query schema deploy telemetry_derived.clients_daily_v6
+
+    ./bqetl --target dev query schema deploy telemetry_derived.clients_daily_v6
     """,
 )
 @block_coding_agents
@@ -2736,6 +2973,13 @@ def deploy(
         )
         sys.exit(1)
 
+    target = ctx.obj.get("target") if ctx.obj else None
+
+    if target and destination_table:
+        raise click.UsageError(
+            "--destination-table and --target are mutually exclusive."
+        )
+
     query_files = []
     metadata_files = []
     for project_id in project_ids:
@@ -2766,6 +3010,9 @@ def deploy(
             )
         if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
+        artifact_dir = ctx.obj["TMP_DIR"]
+    else:
+        artifact_dir = sql_dir
 
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)
@@ -2781,6 +3028,52 @@ def deploy(
             if file.is_file()
         )
     ]
+
+    artifact_files = [
+        artifact_file
+        for artifact_file in query_files + metadata_files_without_query_file
+        if str(artifact_file) not in skip_schema_deploy()
+    ]
+
+    # with --target, deploy copies of the artifacts in the target project
+    # instead of the production tables they were defined for
+    if target:
+        # artifacts already defined in the target project are deployed as they are
+        source_files = [
+            artifact_file
+            for artifact_file in artifact_files
+            if extract_from_query_path(artifact_file)[0] != target.project_id
+        ]
+        artifact_files = [
+            artifact_file
+            for artifact_file in artifact_files
+            if artifact_file not in source_files
+        ] + prepare_target_files(
+            source_files,
+            artifact_dir,
+            target.project_id,
+            target,
+            defer_to_target=False,
+            isolated=False,
+            auto_deploy=False,
+        )
+
+        client = bigquery.Client(project=target.project_id, credentials=credentials)
+        for dataset_ref in sorted(
+            {
+                ".".join(extract_from_query_path(artifact_file)[:2])
+                for artifact_file in artifact_files
+            }
+        ):
+            ensure_dataset_exists(
+                client,
+                dataset_ref,
+                expiration_hours=target.expire_after_hours,
+                grant_dryrun_access=target.grant_dryrun_access,
+            )
+
+        # the dry run cloud function doesn't have access to the target project
+        use_cloud_function = False
 
     _deploy = partial(
         deploy_table,
@@ -2799,8 +3092,7 @@ def deploy(
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
             executor.submit(_deploy, artifact_file): artifact_file
-            for artifact_file in query_files + metadata_files_without_query_file
-            if str(artifact_file) not in skip_schema_deploy()
+            for artifact_file in artifact_files
         }
         for future in futures.as_completed(future_to_query):
             artifact_file = future_to_query[future]

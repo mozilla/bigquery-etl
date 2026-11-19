@@ -3,3 +3,5 @@ description: Aggregate table used in Firefox Health Indicator dashboard, calcula
   number of users doing page reloads per country per day
 owners:
 - kwindau@mozilla.com
+labels:
+  legacy: true

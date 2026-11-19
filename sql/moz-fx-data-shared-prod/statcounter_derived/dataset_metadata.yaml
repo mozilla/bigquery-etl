@@ -1,0 +1,10 @@
+friendly_name: Statcounter Derived
+description: |-
+  Derived data on browser market share collected from Statcounter public CSV downloads
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential/data-viewers

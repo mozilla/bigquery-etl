@@ -1,0 +1,19 @@
+friendly_name: Jira Events Derived
+description: |-
+  Per-Jira-project change-event streams pulled from Jira API v3. One row per
+  thing that happened to a ticket: issue creation, status changes, other field
+  changes, and comments.
+
+  Distinct from `jira_tickets_derived`, which holds point-in-time issue
+  snapshots (current status, current assignee, created/resolved timestamps).
+  Tables here record how a ticket moved over time, so they can answer questions
+  about time spent in each status, assignee churn, and first response.
+
+  One table per Jira project scope, e.g. `srein_events_v1`.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

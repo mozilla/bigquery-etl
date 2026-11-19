@@ -13,6 +13,18 @@
 
   "avg_tls_handshake_time"
   "count_dns_failure"
+
+  Same reason, see bug 2054553: `avg_dns_failure_time` is LEFT JOINed
+  from the `dns_failure_time` CTE, which filters `key > 0` and requires
+  more than 50 rows per group, so it is NULL for sparse city/hour cells.
+
+  "avg_dns_failure_time"
+
+  Removing "avg_dns_success_time" due to the same reason stated above.
+    Bug https://bugzilla.mozilla.org/show_bug.cgi?id=2071849
+    Bug https://bugzilla.mozilla.org/show_bug.cgi?id=2071850
+
+  "avg_dns_success_time"
 */
 {{ not_null(columns=[
   "datetime",
@@ -24,9 +36,7 @@
   "proportion_unreachable",
   "proportion_terminated",
   "proportion_channel_open",
-  "avg_dns_success_time",
   "missing_dns_success",
-  "avg_dns_failure_time",
   "missing_dns_failure",
   "ssl_error_prop",
 

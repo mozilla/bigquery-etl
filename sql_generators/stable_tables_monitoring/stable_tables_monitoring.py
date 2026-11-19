@@ -1,12 +1,13 @@
 """Generate metadata and bigconfig files for stable tables."""
 
-from multiprocessing import Pool
+from functools import partial
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
+from bigquery_etl.util.process_pool import process_pool
 
 
 def write_file(content, file_path):
@@ -23,15 +24,14 @@ def parse_config_name(config):
 
 
 def _generate_table_files(
+    dataset_and_table,
     target_project,
-    dataset_name,
-    table,
     templates_dir,
     bigeye_collection,
-    bigeye_slack_channel,
     enable_monitoring,
     sql_base_dir,
 ):
+    dataset_name, table = dataset_and_table
     env = Environment(loader=FileSystemLoader(str(templates_dir)))
     name_part, version_part = parse_config_name(table)
 
@@ -41,7 +41,6 @@ def _generate_table_files(
         name=name_part,
         version=version_part,
         bigeye_collection=bigeye_collection,
-        bigeye_notification_slack_channel=bigeye_slack_channel,
     )
 
     metadata_rendered = env.get_template("metadata.yaml.jinja").render(
@@ -65,30 +64,32 @@ def _generate_table_files(
     schema.to_yaml_file(stable_table_bigconfig_dir / SCHEMA_FILE)
 
 
-def generate_stable_table_bigconfig_files(target_project, output_dir, enable_monitoring, parallelism=8):
+def generate_stable_table_bigconfig_files(
+    target_project, output_dir, enable_monitoring, parallelism=8
+):
     """Generate the metadata and bigconfig files and write to correct directories."""
     templates_dir = Path(__file__).parent / "templates"
     sql_base_dir = Path(output_dir) / target_project
 
     bigeye_collection = "Operational Checks"
-    bigeye_slack_channel = "#de-bigeye-triage"
 
     stable_table_bigconfigs = ConfigLoader.get("monitoring", "stable_tables_monitoring")
 
-    args = [
-        (
-            target_project,
-            dataset_name,
-            table,
-            templates_dir,
-            bigeye_collection,
-            bigeye_slack_channel,
-            enable_monitoring,
-            sql_base_dir,
-        )
+    tables = [
+        (dataset_name, table)
         for dataset_name, table_names in stable_table_bigconfigs.items()
         for table in table_names
     ]
 
-    with Pool(parallelism) as pool:
-        pool.starmap(_generate_table_files, args)
+    with process_pool(parallelism, task_count=len(tables)) as pool:
+        pool.map(
+            partial(
+                _generate_table_files,
+                target_project=target_project,
+                templates_dir=templates_dir,
+                bigeye_collection=bigeye_collection,
+                enable_monitoring=enable_monitoring,
+                sql_base_dir=sql_base_dir,
+            ),
+            tables,
+        )

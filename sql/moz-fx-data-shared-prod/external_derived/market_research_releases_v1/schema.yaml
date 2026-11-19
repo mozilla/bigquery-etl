@@ -1,0 +1,37 @@
+fields:
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser or product name, e.g. Chrome, Firefox.
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: Release version string, e.g. 128.0.
+- name: release_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the release was published by the vendor.
+- name: scraped_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the record was scraped by release_scraping.
+- name: source_url
+  type: STRING
+  mode: NULLABLE
+  description: URL of the release notes page that was scraped.
+- name: source_type
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Kind of release record: developer_release_notes or user_release_notes.
+    Developer release-note source records don't include this field, so it's
+    defaulted to developer_release_notes at load time.
+- name: raw_text
+  type: STRING
+  mode: NULLABLE
+  description: Plain text scraped from the release notes page.
+- name: blob_name
+  type: STRING
+  mode: NULLABLE
+  description: Full GCS object path this row was loaded from, for traceability
+    back to the source file.

@@ -5,7 +5,7 @@ with sanitized search query data captured in logs from the backend Merino servic
 The results of this are copied into suggest_impression_sanitized_v3,
 which is also defined in this directory.
 */
-WITH impressions AS (
+WITH legacy_impressions AS (
   SELECT
     -- This should already be truncated to second level per CONSVC-1364
     -- but we reapply truncation to be explicit about granularity.
@@ -30,11 +30,20 @@ WITH impressions AS (
     scenario,
     -- Truncate to just Firefox major version
     SPLIT(version, '.')[SAFE_OFFSET(0)] AS version,
+    CAST(NULL AS STRING) AS match_type,
+    ARRAY_AGG(
+      STRUCT(experiment.key AS slug, experiment.value.branch AS branch) IGNORE NULLS
+    ) AS experiments,
   FROM
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
+  LEFT JOIN
+    UNNEST(experiments) AS experiment
   WHERE
     DATE(submission_timestamp) = @submission_date
-  UNION ALL
+  GROUP BY
+    ALL
+),
+glean_impressions AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     metrics.string.quick_suggest_request_id AS request_id,
@@ -44,29 +53,59 @@ WITH impressions AS (
     metrics.uuid.quick_suggest_context_id AS context_id,
     sample_id,
     metrics.boolean.quick_suggest_is_clicked AS is_clicked,
-    client_info.locale AS locale,
-    metadata.geo.country,
-    metadata.geo.subdivision1 AS region,
+    -- TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=2074848
+    CAST(NULL AS STRING) AS locale,
+    -- Moved from metadata.geo.country to quick_suggest_country
+    metrics.string.quick_suggest_country AS country,
+    CAST(NULL AS STRING) AS region,
     normalized_os,
     normalized_os_version,
     normalized_channel,
     metrics.quantity.quick_suggest_position AS position,
     metrics.url2.quick_suggest_reporting_url AS reporting_url,
     CAST(NULL AS STRING) AS scenario,
-    -- Truncate to just Firefox major version
-    SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
+    -- TODO: https://bugzilla.mozilla.org/show_bug.cgi?id=2074848
+    CAST(NULL AS STRING) AS version,
+    metrics.string.quick_suggest_match_type AS match_type,
+    ARRAY_AGG(experiment IGNORE NULLS) AS experiments,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1`
+  -- The general ping_info.experiments is not available over OHTTP, but the urlbar
+  -- may optionally inform us if there is a urlbar experiment enrolled.
+  LEFT JOIN
+    UNNEST(
+      IF(
+        (
+          metrics.string.quick_suggest_experiment_name IS NULL
+          OR metrics.string.quick_suggest_experiment_name = ''
+        ),
+        ARRAY<STRUCT<slug STRING, branch STRING>>[],
+        ARRAY<STRUCT<slug STRING, branch STRING>>[
+          STRUCT(
+            metrics.string.quick_suggest_experiment_name AS slug,
+            metrics.string.quick_suggest_experiment_branch AS branch
+          )
+        ]
+      )
+    ) AS experiment
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND metrics.string.quick_suggest_ping_type = 'quicksuggest-impression'
+  GROUP BY
+    ALL
   QUALIFY
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        metrics.string.quick_suggest_request_id
-      ORDER BY
-        submission_timestamp DESC
-    ) = 1
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY submission_timestamp DESC) = 1
+),
+impressions AS (
+  SELECT
+    *
+  FROM
+    legacy_impressions
+  UNION ALL
+  SELECT
+    *
+  FROM
+    glean_impressions
 ),
 -- Dedupe the UNION ALL result by request_id to eliminate cross-source overlap where
 -- the same request_id appears in both quicksuggest_impression_v1 (legacy) and
@@ -85,11 +124,15 @@ sanitized_queries AS (
     LTRIM(LOWER(query)) AS query,
     * EXCEPT (`timestamp`, query, region, country)
   FROM
-    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3`
+    `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4`
   WHERE
     DATE(`timestamp`) = @submission_date
+  -- Keep one row per request so the join to impressions on request_id cannot fan
+  -- out; Merino logs can be redelivered with the same request_id. Deduping by
+  -- session_id instead would drop every request but the last of each session,
+  -- leaving impressions shown earlier in the session without a query.
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY sequence_no DESC, `timestamp` DESC) = 1
+    ROW_NUMBER() OVER (PARTITION BY request_id ORDER BY `timestamp` DESC) = 1
 ),
 sanitized_queries_count AS (
   SELECT
@@ -114,7 +157,7 @@ validated_queries AS (
     IF(
       _n < 1,
       ERROR(
-        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3 is empty; retry later or investigate upstream issues"
+        "The source partition of moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4 is empty; retry later or investigate upstream issues"
       ),
       TRUE
     )

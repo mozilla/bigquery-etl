@@ -10,6 +10,9 @@ fields:
 - name: total_downloads
   type: INTEGER
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/addons_derived/firefox_desktop_stats_installs_combined_v1/schema.yaml
+    field: total_downloads
 - name: downloads_per_source
   type: RECORD
   mode: REPEATED

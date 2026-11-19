@@ -1,0 +1,57 @@
+fields:
+- name: event_date
+  type: DATE
+  mode: NULLABLE
+  description: Activity date (UTC)
+- name: week
+  type: DATE
+  mode: NULLABLE
+  description: Start of the week (Sunday) containing `event_date`
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: Canonical CX product name; see kb_revisions_base_v1.product
+- name: reviewer_type
+  type: STRING
+  mode: NULLABLE
+  description: >
+    Review population: 'Staff', 'Community', 'Unreviewed' (no reviewer attached),
+    or 'Unknown' (reviewer not resolvable). See kb_revisions_base_v1.reviewer_type.
+- name: created_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Revisions created on `event_date` for this product and reviewer type. The
+    reviewer_type split means "eventually reviewed by", not anything known at
+    creation time, and is retroactively mutable: this table is fully recomputed
+    each run, so a revision counted under 'Unreviewed' for its creation date
+    today moves to 'Staff'/'Community' for that same date once reviewed. About
+    27% of revisions created in the last 30 days are still unreviewed, so the
+    recent tail of a created-by-reviewer-type series will redistribute between
+    buckets on later runs. Sum across reviewer types for a stable creation count.
+- name: reviewed_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Revisions reviewed on `event_date` for this product and reviewer type.
+    Non-zero for reviewer_type = 'Unreviewed': a revision with no reviewer
+    attached still inherits a `reviewed_date` from the document's latest review
+    upstream, and is counted here under 'Unreviewed'. Day-level totals are
+    correct, but do not read the 'Unreviewed' row as "reviewed by nobody" — sum
+    across reviewer types, or use sumo_kb_revision_kpis, when you want review
+    throughput.
+- name: approved_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    Revisions reviewed and approved on `event_date` for this product and reviewer
+    type. A subset of `reviewed_revisions`.
+- name: net_revisions
+  type: INTEGER
+  mode: NULLABLE
+  description: >
+    `created_revisions` minus `reviewed_revisions` — the daily net review flow,
+    not a backlog level, and can be negative. Inherits the retroactive
+    mutability of `created_revisions` per reviewer type. For the cumulative
+    version see `backlog_change_since_window_start` in sumo_kb_revision_kpis,
+    which is a trend rather than a pending count.

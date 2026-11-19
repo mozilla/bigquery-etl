@@ -1,0 +1,28 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the metrics (UTC)
+- name: bugs_created
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Knowledge Base Content bugs created on this date
+- name: bugs_resolved
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of Knowledge Base Content bugs resolved on this date.
+    A bug is considered resolved on the first snapshot where status = 'RESOLVED'
+    or resolution is set; resolution date is the most recent of that and any
+    later REOPENED→RESOLVED snapshot.
+- name: bugs_open
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of Knowledge Base Content bugs open as of this date: created on or
+    before this date and not yet resolved as of this date, regardless of when
+    they were created.
+- name: etl_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery

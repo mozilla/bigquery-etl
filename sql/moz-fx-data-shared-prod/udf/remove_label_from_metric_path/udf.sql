@@ -1,8 +1,10 @@
 CREATE OR REPLACE FUNCTION udf.remove_label_from_metric_path(column_path STRING)
 RETURNS STRING AS (
   IF(
-    STARTS_WITH(column_path, 'metrics.labeled_'),
+    STARTS_WITH(column_path, 'metrics.labeled_')
+    OR STARTS_WITH(column_path, 'metrics.dual_labeled_'),
     -- labeled metric path looks like metrics.labeled_counter.metric_name.label
+    -- dual-labeled metric path looks like metrics.dual_labeled_counter.metric_name.key_label.value_label
     (
       SELECT
         ARRAY_TO_STRING(ARRAY_AGG(s ORDER BY offset), '.')
@@ -26,6 +28,12 @@ SELECT
     "metrics.labeled_boolean.tb_ui_configuration_pane_visibility",
     udf.remove_label_from_metric_path(
       "metrics.labeled_boolean.tb_ui_configuration_pane_visibility.folder_pane"
+    )
+  ),
+  mozfun.assert.equals(
+    "metrics.dual_labeled_counter.tls_handshake_result",
+    udf.remove_label_from_metric_path(
+      "metrics.dual_labeled_counter.tls_handshake_result.all.pr_end_of_file_error"
     )
   ),
   mozfun.assert.equals(

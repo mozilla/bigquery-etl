@@ -5,6 +5,7 @@ owners:
 - ascholtz@mozilla.com
 - mwilliams@mozilla.com
 labels:
+  sql_generator: experiment_monitoring
   application: experiments
   schedule: daily
   table_type: aggregate

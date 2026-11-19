@@ -1,0 +1,92 @@
+fields:
+- name: as_of_date
+  type: DATE
+  mode: NULLABLE
+  description: >-
+    The date the domain counts were captured for, read from a snapshot of the
+    emails mirror taken at the end of this day. Used as the partition column.
+- name: registrable_domain
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    The registrable domain (eTLD+1) of the account's primary email address, via
+    NET.REG_DOMAIN. Subdomains roll up into their parent, so a subdomain-spray
+    campaign appears as one row. The literal `__below_threshold__` is the pooled
+    tail of all domains with fewer than 10 accounts; exclude it for per-domain
+    analysis, and watch it on its own for sprays spread across thousands of
+    individually-tiny throwaway domains.
+- name: accounts
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Total accounts whose primary email address is on this domain, as of the
+    snapshot. Cumulative, not a daily delta. Because only domains active in the
+    trailing 28 days are emitted, this series has gaps -- do not difference it
+    across dates to derive growth; use the window columns instead.
+- name: verified_accounts
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Of all accounts on this domain, how many have a verified primary email.
+    Useful as a base rate only: this ratio sits at ~99.9% for every large
+    provider, so it does not discriminate. Use the per-window verified counts
+    below to judge a campaign.
+- name: new_accounts_1d
+  type: INTEGER
+  mode: NULLABLE
+  description: Accounts on this domain created on as_of_date.
+- name: verified_new_accounts_1d
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Of new_accounts_1d, how many have a verified primary email. A near-100%
+    share on a domain that is accumulating accounts quickly is the signal that
+    an attacker controls the domain's MX and is confirming their own signups.
+    Verified state is read at 02:30 UTC the morning after as_of_date, so a
+    registration late in the day has had less time to confirm than one early in
+    the day; expect a small systematic dip for late-day cohorts.
+- name: new_accounts_7d
+  type: INTEGER
+  mode: NULLABLE
+  description: Accounts on this domain created in the 7 days ending on as_of_date.
+- name: verified_new_accounts_7d
+  type: INTEGER
+  mode: NULLABLE
+  description: Of new_accounts_7d, how many have a verified primary email.
+- name: new_accounts_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Accounts on this domain created in the 28 days ending on as_of_date.
+- name: verified_new_accounts_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: Of new_accounts_28d, how many have a verified primary email.
+- name: distinct_hosts
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Distinct full email hosts seen under this registrable domain. Large values
+    relative to `accounts` mean a subdomain spray, where each account uses its
+    own throwaway host.
+- name: distinct_hosts_28d
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Distinct full email hosts among accounts created in the 28 days ending on
+    as_of_date. Separates an active subdomain spray from one that has stopped.
+- name: first_account_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: >-
+    When the earliest account on this domain was created. A recent value on a
+    domain with many accounts means the domain is new, which raises suspicion.
+- name: last_account_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the most recent account on this domain was created.
+- name: domains_pooled
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    How many distinct domains are pooled into this row. Only set on the
+    `__below_threshold__` row; NULL for named domains.

@@ -24,3 +24,4 @@ owners:
   - jklukas@mozilla.com
 labels:
   application: firefox
+  legacy: true

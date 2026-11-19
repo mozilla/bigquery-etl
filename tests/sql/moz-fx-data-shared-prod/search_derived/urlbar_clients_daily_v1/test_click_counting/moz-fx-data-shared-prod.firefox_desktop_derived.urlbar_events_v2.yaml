@@ -1,0 +1,52 @@
+# Two completed sessions for one client: a sponsored Suggest click, and an abandonment
+# after dismissing a weather card.
+
+# Completed session, sponsored Suggest click.
+- submission_date: "2026-10-14"
+  glean_client_id: client-a
+  sample_id: 1
+  event_name: engagement
+  event_timestamp: 100
+  event_id: e1
+  interaction: typed
+  selected_result: rust_adm_sponsored
+  product_selected_result: admarketplace_sponsored
+  event_action: engaged
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
+  - {position: 2, result_type: rust_adm_sponsored, product_result_type: admarketplace_sponsored, result_group: suggest}
+# Weather card dismissed: non-terminal, so it adds an annoyance but no shown session.
+- submission_date: "2026-10-14"
+  glean_client_id: client-a
+  sample_id: 1
+  event_name: engagement
+  event_timestamp: 200
+  event_id: e2
+  interaction: typed
+  selected_result: weather
+  product_selected_result: weather
+  event_action: annoyance
+  is_terminal: false
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
+  - {position: 2, result_type: weather, product_result_type: weather, result_group: suggest}
+# ...and the session is then abandoned.
+- submission_date: "2026-10-14"
+  glean_client_id: client-a
+  sample_id: 1
+  event_name: abandonment
+  event_timestamp: 300
+  event_id: e3
+  interaction: typed
+  event_action: abandoned
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
+  - {position: 2, result_type: weather, product_result_type: weather, result_group: suggest}

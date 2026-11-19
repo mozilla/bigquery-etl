@@ -26,7 +26,8 @@ SELECT
   play_store_attribution_term,
   play_store_attribution_install_referrer_response,
   DATE_TRUNC(cohort_date, WEEK) AS cohort_date_week,
-  client_id
+  client_id,
+  install_source
 FROM
   `moz-fx-data-shared-prod.glean_telemetry_derived.rolling_cohorts_v1`
 WHERE

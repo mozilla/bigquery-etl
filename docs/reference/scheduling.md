@@ -15,6 +15,9 @@
       retry_delay: 30m
   ```
   - All DAG names need to have `bqetl_` as prefix.
+  - DAGs can be tagged using a `tags` field (e.g., `tags: [impact/tier_3]`), used to filter DAGs in the Airflow UI and to track impact tier and triage status; see [Airflow Tags](https://github.com/mozilla/bigquery-etl/blob/main/docs/reference/airflow_tags.md) for details.
+  - `catchup` can be set to `true` to let Airflow backfill missed DAG runs since `start_date`; defaults to `false`.
+  - `max_active_runs` limits how many concurrent runs of the DAG are allowed; `max_active_tis_per_dag` (set under `default_args`) limits concurrent task instances across runs.
   - `schedule_interval` is either defined as a [CRON expression](https://en.wikipedia.org/wiki/Cron) or alternatively as one of the following [CRON presets](https://airflow.readthedocs.io/en/latest/dag-run.html): `once`, `hourly`, `daily`, `weekly`, `monthly`
   - `start_date` defines the first date for which the query should be executed
     - Airflow will not automatically backfill older dates if `start_date` is set in the past, backfilling can be done via the Airflow web interface
@@ -29,7 +32,9 @@
   ```
   - Additional scheduling options:
     - `depends_on_past` keeps query from getting executed if the previous schedule for the query hasn't succeeded
-    - `date_partition_parameter` - by default set to `submission_date`; can be set to `null` if query doesn't write to a partitioned table
+    - `partition_parameter` - name of the query parameter identifying the partition the query writes to. Defaults based on the table's `time_partitioning.type`: `submission_date` for day partitioning or unpartitioned tables, `submission_hour` (as a timestamp) for hour partitioning, `submission_month` (as a date on the first of the month) for month partitioning, and `submission_year` (as an integer) for year partitioning. Python and BigQuery scripts and queries whose `destination_table` includes a `$` partition decorator get no default. Can be set to `null` for the query to write to the whole table rather than a single partition.
+    - `partition_offset` - timedelta to shift the partition the query writes to relative to the run's logical date. The timedelta value must be specified as a string with `w` (weeks), `d` (days), `h` (hours), `m` (minutes), and/or `s` (seconds) units, in that order, with no spaces (e.g. `-27d`, or `-1h30m`). Also applies when `partition_parameter` is `null`, in which case the query writes to the offset partition rather than the whole table. Queries with a non-null `partition_parameter` and no `partition_offset` inherit the smallest `partition_offset` of their upstream dependencies.
+    - `backfill_partition_parameter` - only read by `bqetl backfill`. For tables with a null `partition_parameter` that pick their partition through a templated `destination_table` and DATE parameter, names the parameter that backfills bind to each date. Prefer `partition_offset` where possible. See [Backfilling a table](../cookbooks/backfilling_a_table.md#what-can-be-backfilled-with-bqetl-backfill).
     - `parameters` specifies a list of query parameters, e.g. `["n_clients:INT64:500"]`
     - `arguments` - a list of arguments passed when running the query, for example: `["--append_table"]`
     - `referenced_tables` - manually curated list of tables a Python or BigQuery script depends on; for `query.sql` files dependencies will get determined automatically and should only be overwritten manually if really necessary

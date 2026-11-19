@@ -157,6 +157,9 @@ fields:
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: normalized_os_version
 - name: release_channel
   type: STRING
   mode: NULLABLE
@@ -172,6 +175,9 @@ fields:
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: experiments
   fields:
   - name: key
     type: STRING

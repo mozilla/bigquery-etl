@@ -6,3 +6,4 @@ owners:
   - frank@mozilla.com
 labels:
   application: firefox
+  legacy: true

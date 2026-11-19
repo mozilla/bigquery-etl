@@ -5,6 +5,8 @@ WITH cohort_cutoff AS (
     COALESCE(MAX(cohort_date) + 1, DATE_SUB(@submission_date, INTERVAL 30 DAY)) AS min_cohort_date
   FROM
     `moz-fx-data-shared-prod.glean_telemetry_derived.new_profile_churn_clients_v1`
+  WHERE
+    cohort_date < @submission_date
 ),
 activity_range AS (
   SELECT

@@ -26,3 +26,6 @@ fields:
 - name: ipAddr
   type: STRING
   mode: NULLABLE
+- name: additionalInfo
+  type: JSON
+  mode: NULLABLE

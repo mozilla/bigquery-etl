@@ -5,10 +5,37 @@ import os
 import sys
 from argparse import ArgumentParser
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 
 import google.auth
 import requests
 from google.cloud import bigquery
+
+logger = logging.getLogger(__name__)
+
+
+def _to_numeric(value) -> str | None:
+    """Coerce an API amount to a NUMERIC-compatible string.
+
+    The costs API may return the amount as either a number or a string. An
+    absent amount is treated as a genuine zero (prior behavior), but an
+    unparseable or non-finite value returns None (NULL) so a parse failure is
+    distinguishable from a real zero and surfaced in the data (checkable via
+    checks.sql) rather than silently under-reporting cost aggregations.
+    """
+    if value is None or value == "":
+        return "0"
+    try:
+        amount = Decimal(str(value))
+        # Decimal accepts "NaN"/"Infinity" without raising; these serialize to
+        # literal "NaN"/"Infinity" and fail the BigQuery NUMERIC load. Route
+        # them onto the fallback path instead.
+        if not amount.is_finite():
+            raise InvalidOperation(value)
+        return format(round(amount, 9), "f")
+    except (InvalidOperation, ValueError):
+        logger.warning(f"Could not parse amount value {value!r}, recording NULL")
+        return None
 
 
 class BigQueryAPI:
@@ -39,9 +66,7 @@ class BigQueryAPI:
                     "project_id": result.get("project_id"),
                     "line_item": result.get("line_item"),
                     "organization_id": result.get("organization_id"),
-                    "amount_value": round(
-                        result.get("amount", {}).get("value") or 0, 9
-                    ),
+                    "amount_value": _to_numeric(result.get("amount", {}).get("value")),
                     "currency": result.get("amount", {}).get("currency"),
                 }
                 records.append(record)

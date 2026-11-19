@@ -9,11 +9,12 @@ description: |-
 owners:
   - lvargas@mozilla.com
 labels:
+  sql_generator: active_users_deletion_requests
   incremental: true
 scheduling:
 #  dag_name: bqetl_kpis_shredder
   task_name: {{ app_name }}_active_users_aggregates_for_deletion_requests
-  date_partition_parameter: partition_date
+  partition_parameter: partition_date
   parameters: {{ parameters }}
   depends_on:
     - task_id: copy_deduplicate_all
@@ -34,3 +35,4 @@ bigquery:
       - attribution_medium
       - channel
 deprecated: true
+deletion_date: 2026-10-01

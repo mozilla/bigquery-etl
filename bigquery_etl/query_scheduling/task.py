@@ -4,6 +4,7 @@ import copy
 import logging
 import os
 import re
+from datetime import timedelta
 from enum import Enum
 from fnmatch import fnmatchcase
 from pathlib import Path
@@ -15,6 +16,11 @@ import click
 
 from bigquery_etl.dependency import extract_table_references_without_views
 from bigquery_etl.metadata.parse_metadata import Metadata, PartitionType
+from bigquery_etl.query_scheduling.partitioning import (
+    get_partition_granularity,
+    get_partition_type,
+    resolve_partition_parameter_name,
+)
 from bigquery_etl.query_scheduling.utils import (
     ensure_telemetry_alerts_email,
     is_date_string,
@@ -22,6 +28,7 @@ from bigquery_etl.query_scheduling.utils import (
     is_email_or_github_identity,
     is_schedule_interval,
     is_valid_dag_name,
+    parse_timedelta,
     schedule_interval_delta,
     validate_timedelta_string,
 )
@@ -90,7 +97,7 @@ class TaskRef:
     task_id: str = attr.ib()
     execution_delta: Optional[str] = attr.ib(None)
     schedule_interval: Optional[str] = attr.ib(None)
-    date_partition_offset: Optional[int] = attr.ib(None)
+    partition_offset: Optional[timedelta] = attr.ib(None, converter=parse_timedelta)
     task_group: Optional[str] = attr.ib(None)
     poke_interval: Optional[str] = attr.ib(None, kw_only=True)
     timeout: Optional[str] = attr.ib(None, kw_only=True)
@@ -233,7 +240,7 @@ class Secret:
     deploy_target: str
     key: str
     deploy_type: str = attr.ib("env")
-    secret: str = attr.ib("airflow-gke-secrets")
+    secret: str = attr.ib("airflow-gke-restricted-secrets")
 
     @deploy_type.validator
     def validate_deploy_type(self, attribute, value):
@@ -317,11 +324,11 @@ class Task:
     version: str = attr.ib(init=False)
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
-    date_partition_parameter: Optional[str] = "submission_date"
-    table_partition_type: Optional[str] = None
-    table_partition_template: Optional[str] = None
-    # number of days date partition parameter should be offset
-    date_partition_offset: Optional[int] = None
+    partition_parameter: Optional[str] = attr.ib(None)
+    # only read by backfills, see resolve_backfill_partition_parameter
+    backfill_partition_parameter: Optional[str] = attr.ib(None)
+    partition_type: Optional[PartitionType] = attr.ib(None)
+    partition_offset: Optional[timedelta] = attr.ib(None, converter=parse_timedelta)
     # indicate whether data should be published as JSON
     public_json: bool = attr.ib(False)
     # manually specified upstream dependencies
@@ -363,6 +370,15 @@ class Task:
     startup_timeout_seconds: Optional[int] = attr.ib(None)
     secrets: Optional[List[Secret]] = attr.ib(None)
     monitoring_enabled: Optional[bool] = attr.ib(False)
+    # metadata surfaced in the Airflow task description (doc_md)
+    friendly_name: Optional[str] = attr.ib(None)
+    description: Optional[str] = attr.ib(None)
+    owners: List[str] = attr.ib([])
+    labels: Dict = attr.ib({})
+    workgroups: List[str] = attr.ib([])
+    # repository the query lives in, used to build the source link; set from
+    # `Dag.repo` in `of_query` so it stays consistent with the DAG-level link.
+    repo: Optional[str] = attr.ib(None)
 
     @property
     def task_key(self):
@@ -439,7 +455,8 @@ class Task:
             )
 
     def __attrs_post_init__(self):
-        """Extract information from the query file name."""
+        """Post init logic."""
+        # Extract information from the query file name.
         query_file_re = re.search(QUERY_FILE_RE, self.query_file)
         if query_file_re:
             self.project = query_file_re.group(1)
@@ -469,6 +486,112 @@ class Task:
                 f" but is {self.query_file}"
             )
 
+        # TODO srose to restore raising this error instead of dropping the conflicting
+        # parameters after the migration to `partition_parameter`
+        if self.partition_parameter and any(
+            parameter.split(":", 1)[0] == self.partition_parameter
+            for parameter in self.parameters
+        ):
+            logging.warning(
+                f"Partition parameter `{self.partition_parameter}` for {self.query_file}"
+                " conflicts with an explicit parameter of the same name in `parameters`,"
+                " so the explicit parameter is being ignored."
+            )
+            self.parameters = [
+                parameter
+                for parameter in self.parameters
+                if parameter.split(":", 1)[0] != self.partition_parameter
+            ]
+            # raise TaskParseException(
+            #     f"Partition parameter `{self.partition_parameter}` for {self.query_file}"
+            #     " conflicts with an explicit parameter of the same name in `parameters`."
+            # )
+
+    @property
+    def source_file_path(self):
+        """Return the repository-relative path to the task's source file."""
+        parts = Path(self.query_file).parts
+        if "sql" in parts:
+            index = parts.index("sql")
+            return "/".join(parts[index:])
+        return None
+
+    @property
+    def source_url(self):
+        """Return a link to the source file on the generated-sql branch.
+
+        The repository is taken from `Dag.repo` (via `of_query`) rather than
+        inferred from the DAG name, so private queries published from
+        `private-bigquery-etl` always link there even when the DAG is named
+        `bqetl_*`. This mirrors the DAG-level source link in `airflow_dag.j2`.
+        """
+        path = self.source_file_path
+        if path is None or self.repo is None:
+            return None
+        if self.repo == "private-bigquery-etl":
+            branch = "private-generated-sql"
+        else:
+            branch = "generated-sql"
+        return f"https://github.com/mozilla/{self.repo}/blob/{branch}/{path}"
+
+    @property
+    def display_labels(self):
+        """Return the authored labels, dropping keys synthesized by metadata parsing.
+
+        `Metadata.from_file` injects a `dag` label and one `owner<N>` label per
+        owner; those just restate the DAG and the `**Owners:**` line, so they
+        are filtered out of the task description.
+        """
+        return {
+            key: value
+            for key, value in self.labels.items()
+            if key != "dag" and not re.fullmatch(r"owner\d+", key)
+        }
+
+    @property
+    def description_markdown(self):
+        """Return a markdown task description derived from the table metadata.
+
+        Rendered into the Airflow task's `doc_md`.
+        """
+        heading = self.friendly_name or (
+            f"{self.dataset}.{self.destination_table or self.table}"
+        )
+        if self.is_dq_check:
+            heading += " (data checks)"
+        elif self.is_bigeye_check:
+            heading += " (Bigeye monitoring)"
+        lines = [f"### {heading}"]
+
+        if self.description:
+            lines += ["", self.description.strip()]
+
+        if self.owners:
+            lines += ["", f"**Owners:** {', '.join(self.owners)}"]
+
+        labels = self.display_labels
+        if labels:
+            rendered = ", ".join(
+                key if value == "" else f"{key}: {self._format_label_value(value)}"
+                for key, value in sorted(labels.items())
+            )
+            lines += ["", f"**Labels:** {rendered}"]
+
+        if self.workgroups:
+            lines += ["", f"**Workgroup access:** {', '.join(sorted(self.workgroups))}"]
+
+        if self.source_url:
+            lines += ["", f"[View source]({self.source_url})"]
+
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_label_value(value):
+        """Render a label value, flattening list-valued labels (e.g. review_bugs)."""
+        if isinstance(value, (list, tuple)):
+            return ", ".join(str(item) for item in value)
+        return str(value)
+
     @classmethod
     def of_query(cls, query_file, metadata=None, dag_collection=None):
         """
@@ -478,7 +601,8 @@ class Task:
         If `metadata` is set, then it is used instead of the metadata.yaml
         file that might exist alongside the query file.
         """
-        converter = cattrs.BaseConverter()
+        # Make sure field converters handle raw values (e.g. `partition_offset`).
+        converter = cattrs.BaseConverter(prefer_attrib_converters=True)
         if metadata is None:
             metadata = Metadata.of_query_file(query_file)
 
@@ -499,6 +623,17 @@ class Task:
         # Airflow only allows to set one owner, so we just take the first
         task_config["owner"] = metadata.owners[0]
 
+        # Metadata surfaced in the Airflow task description (doc_md)
+        task_config["friendly_name"] = metadata.friendly_name
+        task_config["description"] = metadata.description
+        task_config["owners"] = list(metadata.owners)
+        task_config["labels"] = metadata.labels
+        task_config["workgroups"] = [
+            member
+            for workgroup in (metadata.workgroup_access or [])
+            for member in workgroup.members
+        ]
+
         # Get default email from default_args if available
         default_email = []
         dag = None
@@ -506,6 +641,8 @@ class Task:
             dag = dag_collection.dag_by_name(dag_name)
             if dag is not None:
                 default_email = dag.default_args.email
+                # Authoritative repo for the source link (see `source_url`).
+                task_config["repo"] = dag.repo
         email = task_config.get("email", default_email)
         # Remove non-valid emails from owners e.g. Github identities and add to
         # Airflow email list.
@@ -532,40 +669,12 @@ class Task:
         if metadata.is_public_json():
             task_config["public_json"] = True
 
-        if metadata.bigquery and metadata.bigquery.time_partitioning:
-            task_config["table_partition_type"] = (
-                metadata.bigquery.time_partitioning.type.value
-            )
-
-            # Override the table_partition_template if there is no `destination_table`
-            # set in the scheduling section of the metadata. If not then pass a jinja
-            # template that reformats the date string used for table partition decorator.
-            # See doc here for formatting conventions:
-            #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
-            if metadata.scheduling.get("destination_table") is None:
-                match metadata.bigquery.time_partitioning.type:
-                    case PartitionType.YEAR:
-                        partition_template = (
-                            '${{ dag_run.logical_date.strftime("%Y") }}'
-                        )
-                    case PartitionType.MONTH:
-                        partition_template = (
-                            '${{ dag_run.logical_date.strftime("%Y%m") }}'
-                        )
-                    case PartitionType.DAY:
-                        # skip for the default case of daily partitioning
-                        partition_template = None
-                    case PartitionType.HOUR:
-                        partition_template = (
-                            '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
-                        )
-                    case _:
-                        raise TaskParseException(
-                            f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
-                        )
-
-                if partition_template:
-                    task_config["table_partition_template"] = partition_template
+        task_config["partition_type"] = get_partition_type(metadata)
+        task_config["partition_parameter"] = resolve_partition_parameter_name(
+            metadata.scheduling,
+            task_config["partition_type"],
+            is_script=Path(query_file).name in ("script.sql", "query.py"),
+        )
 
         try:
             return copy.deepcopy(converter.structure(task_config, cls))
@@ -670,7 +779,7 @@ class Task:
         return TaskRef(
             dag_name=self.dag_name,
             task_id=self.task_name,
-            date_partition_offset=self.date_partition_offset,
+            partition_offset=self.partition_offset,
             execution_delta=execution_delta,
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
@@ -748,7 +857,7 @@ class Task:
 
                     task_ref = upstream_task.to_ref(dag_collection)
                     if not _duplicate_dependency(task_ref):
-                        # Get its upstream dependencies so its date_partition_offset gets set.
+                        # Get its upstream dependencies so its partition_offset gets set.
                         upstream_task.with_upstream_dependencies(dag_collection)
                         task_ref = upstream_task.to_ref(dag_collection)
                         dependencies.append(task_ref)
@@ -760,32 +869,28 @@ class Task:
                             dependencies.append(task_ref)
                         break  # stop after the first match
 
-        if (
-            self.date_partition_parameter is not None
-            and self.date_partition_offset is None
-        ):
-            # adjust submission_date parameter based on whether upstream tasks have
-            # date partition offsets
-            date_partition_offsets = [
-                dependency.date_partition_offset
+        if self.partition_parameter is not None and self.partition_offset is None:
+            # Adjust partition parameter based on whether upstream tasks have partition offsets,
+            # ignoring offsets smaller than this ETL's partitions (e.g. an upstream -1h offset
+            # shouldn't change a day partitioned ETL that happens to be scheduled at midnight).
+            partition_granularity = get_partition_granularity(self.partition_type)
+            partition_offsets = [
+                dependency.partition_offset
                 for dependency in dependencies
-                if dependency.date_partition_offset
+                if dependency.partition_offset
+                and abs(dependency.partition_offset) >= partition_granularity
             ]
 
-            if len(date_partition_offsets) > 0:
-                self.date_partition_offset = min(date_partition_offsets)
-                # unset the table_partition_template property if we have an offset
-                # as that will be overridden in the template via `destination_table`
-                self.table_partition_template = None
-                date_partition_offset_task_keys = [
+            if len(partition_offsets) > 0:
+                self.partition_offset = min(partition_offsets)
+                partition_offset_task_keys = [
                     dependency.task_key
                     for dependency in dependencies
-                    if dependency.date_partition_offset == self.date_partition_offset
+                    if dependency.partition_offset == self.partition_offset
                 ]
                 logging.info(
-                    f"Set {self.task_key} date partition offset"
-                    f" to {self.date_partition_offset}"
-                    f" based on {', '.join(date_partition_offset_task_keys)}."
+                    f"Set {self.task_key} partition offset to {self.partition_offset}"
+                    f" based on {', '.join(partition_offset_task_keys)}."
                 )
 
         self.upstream_dependencies = dependencies

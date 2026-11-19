@@ -4,4 +4,7 @@ description: >
   https://developer.android.com/google/play/billing/subscriptions
   and
   https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions
+  In addition to the Google Play schema, FxA adds several fields: form_of_payment,
+  is_mutable, latest_notification_type, package_name, purchase_token,
+  replaced_by_another_purchase, sku, sku_type, user_id, and verified_at.
 friendly_name: Parse Android Receipt from IAP

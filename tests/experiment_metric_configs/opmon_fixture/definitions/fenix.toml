@@ -1,0 +1,7 @@
+[metrics.fenix_metric]
+select_expression = "1"
+data_source = "test_source"
+friendly_name = "Fenix Metric"
+
+[data_sources.test_source]
+from_expression = "test.test_source"

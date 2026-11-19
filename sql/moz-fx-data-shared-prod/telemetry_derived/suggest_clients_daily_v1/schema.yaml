@@ -2,75 +2,123 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: A unique identifier (UUID) for the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
 - mode: NULLABLE
   name: block_nonsponsored_count
   type: INTEGER
+  description: Number of times the client dismissed (blocked) a non-sponsored Firefox Suggest result on
+    this submission date.
 - mode: NULLABLE
   name: block_sponsored_count
   type: INTEGER
+  description: Number of times the client dismissed (blocked) a sponsored Firefox Suggest result on this
+    submission date.
 - mode: NULLABLE
   name: block_nonsponsored_bestmatch_count
   type: INTEGER
+  description: Number of times the client dismissed a non-sponsored best match Firefox Suggest result on
+    this submission date.
 - mode: NULLABLE
   name: block_sponsored_bestmatch_count
   type: INTEGER
+  description: Number of times the client dismissed a sponsored best match Firefox Suggest result on this
+    submission date.
 - mode: NULLABLE
   name: click_nonsponsored_count
   type: INTEGER
+  description: Number of times the client clicked on a non-sponsored Firefox Suggest result on this submission
+    date.
 - mode: NULLABLE
   name: click_sponsored_count
   type: INTEGER
+  description: Number of times the client clicked on a sponsored Firefox Suggest result on this submission
+    date.
 - mode: NULLABLE
   name: click_nonsponsored_bestmatch_count
   type: INTEGER
+  description: Number of times the client clicked on a non-sponsored best match Firefox Suggest result on
+    this submission date.
 - mode: NULLABLE
   name: click_sponsored_bestmatch_count
   type: INTEGER
+  description: Number of times the client clicked on a sponsored best match Firefox Suggest result on this
+    submission date.
 - mode: NULLABLE
   name: help_nonsponsored_count
   type: INTEGER
+  description: Number of times the client clicked the 'Learn More' or help link for a non-sponsored Firefox
+    Suggest result on this submission date.
 - mode: NULLABLE
   name: help_sponsored_count
   type: INTEGER
+  description: Number of times the client clicked the 'Learn More' or help link for a sponsored Firefox
+    Suggest result on this submission date.
 - mode: NULLABLE
   name: help_nonsponsored_bestmatch_count
   type: INTEGER
+  description: Number of times the client clicked the help link for a non-sponsored best match Firefox Suggest
+    result on this submission date.
 - mode: NULLABLE
   name: help_sponsored_bestmatch_count
   type: INTEGER
+  description: Number of times the client clicked the help link for a sponsored best match Firefox Suggest
+    result on this submission date.
 - mode: NULLABLE
   name: impression_nonsponsored_count
   type: INTEGER
+  description: Number of times a non-sponsored Firefox Suggest result was displayed (impressed) to the client
+    on this submission date.
 - mode: NULLABLE
   name: impression_sponsored_count
   type: INTEGER
+  description: Number of times a sponsored Firefox Suggest result was displayed (impressed) to the client
+    on this submission date.
 - mode: NULLABLE
   name: impression_nonsponsored_bestmatch_count
   type: INTEGER
+  description: Number of times a non-sponsored best match Firefox Suggest result was displayed to the client
+    on this submission date.
 - mode: NULLABLE
   name: impression_sponsored_bestmatch_count
   type: INTEGER
+  description: Number of times a sponsored best match Firefox Suggest result was displayed to the client
+    on this submission date.
 - mode: NULLABLE
   name: user_pref_data_collection_enabled
   type: BOOLEAN
+  description: True if the client had the Firefox Suggest data collection preference enabled on this submission
+    date; false otherwise.
 - mode: NULLABLE
   name: user_pref_sponsored_suggestions_enabled
   type: BOOLEAN
+  description: True if the client had sponsored Firefox Suggest suggestions enabled on this submission date;
+    false otherwise.
 - mode: NULLABLE
   name: user_pref_firefox_suggest_enabled
   type: BOOLEAN
+  description: True if the client had non-sponsored Firefox Suggest recommendations enabled on this submission
+    date; derived from the browser.urlbar.suggest.quicksuggest.nonsponsored preference.
 - fields:
   - mode: NULLABLE
     name: version
     type: STRING
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: version
   - mode: NULLABLE
     name: major_version
     type: NUMERIC
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: major_version
   - mode: NULLABLE
     name: minor_version
     type: NUMERIC
@@ -87,34 +135,49 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: The experiment slug identifying the experiment the client was enrolled in.
   - mode: NULLABLE
     name: value
     type: STRING
   mode: REPEATED
   name: experiments
   type: RECORD
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: experiments
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Set of language- and/or country-based preferences for a user interface.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: locale
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: The normalized channel the application is being distributed on.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_channel
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: normalized_os_version
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
 - mode: NULLABLE
   name: country
   type: STRING
-  description: An ISO 3166-1 alpha-2 country code
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id

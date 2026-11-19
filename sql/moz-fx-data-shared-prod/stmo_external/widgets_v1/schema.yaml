@@ -1,0 +1,33 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Primary key.
+- name: updated_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was last updated.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the row was created.
+- name: visualization_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the visualization shown in the widget, see `visualizations_v1`. Null for text widgets.
+- name: text
+  type: STRING
+  mode: NULLABLE
+  description: Markdown text of a text widget.
+- name: width
+  type: INTEGER
+  mode: NULLABLE
+  description: Widget width.
+- name: options
+  type: JSON
+  mode: NULLABLE
+  description: JSON widget options, including its position on the dashboard.
+- name: dashboard_id
+  type: INTEGER
+  mode: NULLABLE
+  description: ID of the dashboard the widget belongs to, see `dashboards_v1`.

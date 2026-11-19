@@ -8,3 +8,5 @@ description: |-
   See also: `baseline_clients_last_seen`
 owners:
   - ascholtz@mozilla.com
+labels:
+  sql_generator: glean_usage

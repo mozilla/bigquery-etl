@@ -36,8 +36,10 @@ nav:
       - ... | mozfun/**.md
       - ... | moz-fx-data-shared-prod/**.md
   - Cookbooks:
+      - Backfilling a table: cookbooks/backfilling_a_table.md
       - Common workflows: cookbooks/common_workflows.md
       - Creating a derived dataset: cookbooks/creating_a_derived_dataset.md
+      - Development workflows: cookbooks/development_workflows.md
       - Testing: cookbooks/testing.md
   - Reference:
       - bqetl CLI: bqetl.md
@@ -47,6 +49,7 @@ nav:
       - Scheduling: reference/scheduling.md
       - Schema includes: reference/schema_includes.md
       - Public data: reference/public_data.md
+      - BigQuery Sharing: reference/external_sharing.md
       - Airflow Tags: reference/airflow_tags.md
       - Data Checks: reference/data_checks.md
       - bigConfig: reference/bigconfig.md

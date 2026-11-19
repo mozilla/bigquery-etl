@@ -11,6 +11,7 @@ owners:
   - cmorales@mozilla.com
   - akommasani@mozilla.com
 labels:
+  sql_generator: search_v2
   schedule: daily
   table_type: client_level
 scheduling:

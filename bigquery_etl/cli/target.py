@@ -30,12 +30,14 @@ from ..util.target import (
 log = logging.getLogger(__name__)
 
 
-def _find_matching_datasets(client, target_config, branch=None):
+def _find_matching_datasets(client, target_config, branch=None, run_id=None):
     """Find datasets in the target project matching the target's naming pattern.
 
     Returns a list of dataset references, or an empty list (with user message).
     """
-    dataset_re = re.compile(render_dataset_pattern(target_config, branch=branch))
+    dataset_re = re.compile(
+        render_dataset_pattern(target_config, branch=branch, run_id=run_id)
+    )
     all_datasets = list(client.list_datasets())
 
     if not all_datasets:
@@ -81,6 +83,9 @@ def target(ctx):
     git.branch is in artifact_prefix, only matching tables within datasets are
     deleted. Both filters apply when branch appears in both templates.
 
+    --run-id deletes artifacts for a specific run id. Defaults to the
+    group-level `bqetl --run-id` value when not passed.
+
     --older-than performs table-level cleanup: within matched datasets, only
     tables not updated within the given duration are deleted.
 
@@ -98,6 +103,8 @@ def target(ctx):
 
       ./bqetl --target dev target clean --branch feature-xyz --older-than 7d
 
+      ./bqetl --target dev target clean --run-id 12345 --yes
+
       ./bqetl --target dev target clean --older-than 7d --dry-run
     """)
 @click.option(
@@ -110,6 +117,13 @@ def target(ctx):
     "--branch",
     default=None,
     help="Delete deployments for a specific branch.",
+)
+@click.option(
+    "--run-id",
+    "--run_id",
+    "run_id",
+    default=None,
+    help="Delete deployments for a specific run id (defaults to $BQETL_RUN_ID if set).",
 )
 @click.option(
     "--all",
@@ -134,20 +148,28 @@ def target(ctx):
 @sql_dir_option
 @block_coding_agents
 @click.pass_context
-def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
+def clean(ctx, older_than, branch, run_id, all_deployments, dry_run, yes, sql_dir):
     """Clean up target environment deployments."""
-    if not any([older_than, branch, all_deployments]):
+    # Default the filter to the group-level --run-id so callers don't have to
+    # pass --run-id twice (once for template render, once for filter). Skip
+    # this when --all is set — `--all is mutually exclusive with --branch /
+    # --run-id` (see check below), and auto-applying a run_id the user didn't
+    # type would raise that error from a value they didn't pass.
+    if not run_id and not all_deployments:
+        run_id = ctx.obj.get("run_id")
+
+    if not any([older_than, branch, run_id, all_deployments]):
         raise click.UsageError(
-            "Must specify at least one filter: --older-than, --branch, or --all"
+            "Must specify at least one filter: --older-than, --branch, --run-id, or --all"
         )
-    if branch and all_deployments:
-        raise click.UsageError("--branch and --all are mutually exclusive.")
+    if all_deployments and (branch or run_id):
+        raise click.UsageError("--all is mutually exclusive with --branch / --run-id.")
 
     target_config = ctx.obj["target"]
     project_id = target_config.project_id
 
     client = bigquery.Client(project=project_id)
-    matching = _find_matching_datasets(client, target_config, branch)
+    matching = _find_matching_datasets(client, target_config, branch, run_id)
     if not matching:
         return
 
@@ -155,13 +177,12 @@ def clean(ctx, older_than, branch, all_deployments, dry_run, yes, sql_dir):
         datetime.now(timezone.utc) - _parse_duration(older_than) if older_than else None
     )
     artifact_re = None
-    if (
-        branch
-        and target_config.raw_artifact_prefix
-        and "git.branch" in target_config.raw_artifact_prefix
+    if target_config.raw_artifact_prefix and (
+        (branch and re.search(r"\bgit\.branch\b", target_config.raw_artifact_prefix))
+        or (run_id and re.search(r"\brun_id\b", target_config.raw_artifact_prefix))
     ):
         artifact_re = re.compile(
-            render_artifact_prefix_pattern(target_config, branch=branch)
+            render_artifact_prefix_pattern(target_config, branch=branch, run_id=run_id)
         )
 
     # table-level cleanup when we have table-level filters
@@ -484,7 +505,14 @@ def migrate_branch(ctx, old_branch, dry_run, yes, sql_dir):
 
 
 def _make_transform(pairs):
-    """Build a str->str substring-replace transform from (old, new) pairs."""
+    """Build a str->str substring-replace transform from (old, new) pairs.
+
+    TODO: naive str.replace can match substrings inside unrelated identifiers,
+    comments, string literals, or column names. Short sanitized branch tokens
+    like "dev" or "test" are particularly risky. Use a word-boundary-anchored
+    regex, or scope rewrites to known qualified-identifier positions (3-part
+    refs, manifest source_* keys).
+    """
 
     def transform(s):
         for old, new in pairs:

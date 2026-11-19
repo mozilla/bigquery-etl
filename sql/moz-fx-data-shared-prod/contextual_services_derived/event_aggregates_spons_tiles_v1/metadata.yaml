@@ -5,11 +5,11 @@ owners:
 - rburwei@mozilla.com
 labels:
   incremental: true
-  schedule: daily
-  dag: bqetl_ctxsvc_derived
+  # schedule: daily
+  # dag: bqetl_ctxsvc_derived
   owner1: rburwei
-scheduling:
-  dag_name: bqetl_ctxsvc_derived
+# scheduling:
+#   dag_name: bqetl_ctxsvc_derived
 bigquery:
   time_partitioning:
     type: day
@@ -17,3 +17,5 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering: null
+deprecated: true
+deletion_date: 2026-12-18

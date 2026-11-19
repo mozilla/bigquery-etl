@@ -299,3 +299,77 @@ END;"""
 
         routines = parse_routine.get_routines_from_dir("non-existing")
         assert len(routines) == 0
+
+    @staticmethod
+    def _write_udf(base, name):
+        udf_dir = base / "sql" / "moz-fx-data-test-project" / "udf" / name
+        udf_dir.mkdir(parents=True)
+        (udf_dir / "udf.sql").write_text(
+            f"CREATE OR REPLACE FUNCTION udf.{name}() AS (1);\n"
+        )
+
+    def test_read_routine_dir_depends_on_cwd(self, tmp_path, monkeypatch):
+        for name in ("in_first", "in_second"):
+            self._write_udf(tmp_path / name, name)
+        project_dir = "sql/moz-fx-data-test-project"
+
+        monkeypatch.chdir(tmp_path / "in_first")
+        assert set(parse_routine.read_routine_dir(project_dir)) == {"udf.in_first"}
+
+        monkeypatch.chdir(tmp_path / "in_second")
+        assert set(parse_routine.read_routine_dir(project_dir)) == {"udf.in_second"}
+
+    def test_read_routine_dir_does_not_reuse_dirs_across_keys(
+        self, tmp_path, monkeypatch
+    ):
+        # Reads with the same dirs are cached, but a different set of dirs must
+        # read from disk rather than reuse an earlier parse of a shared dir.
+        monkeypatch.chdir(tmp_path)
+        project_dir = "sql/moz-fx-data-test-project"
+        self._write_udf(tmp_path, "first")
+        assert set(parse_routine.read_routine_dir(project_dir)) == {"udf.first"}
+
+        self._write_udf(tmp_path, "second")
+        assert set(parse_routine.read_routine_dir(project_dir, "sql/mozfun")) == {
+            "udf.first",
+            "udf.second",
+        }
+
+    def test_read_routine_dir_returns_copy(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        project_dir = "sql/moz-fx-data-test-project"
+        self._write_udf(tmp_path, "first")
+
+        parse_routine.read_routine_dir(project_dir).clear()
+        assert set(parse_routine.read_routine_dir(project_dir)) == {"udf.first"}
+
+    def test_deleted_cwd(self, tmp_path, monkeypatch):
+        deleted = tmp_path / "deleted"
+        deleted.mkdir()
+        monkeypatch.chdir(deleted)
+        deleted.rmdir()
+
+        assert parse_routine.read_routine_dir("sql/moz-fx-data-test-project") == {}
+        assert parse_routine.get_routines("sql/moz-fx-data-test-project") == []
+        with parse_routine.cached_routine_listing():
+            assert parse_routine.get_routines("sql/moz-fx-data-test-project") == []
+
+    def test_routine_usage_pattern_is_cached(self):
+        assert parse_routine.routine_usage_pattern(
+            "udf.test", "project"
+        ) is parse_routine.routine_usage_pattern("udf.test", "project")
+
+    def test_cached_routine_listing_is_scoped(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        project = "sql/moz-fx-data-test-project"
+        self._write_udf(tmp_path, "first")
+
+        def routine_names():
+            return {r["name"] for r in parse_routine.get_routines(project)}
+
+        with parse_routine.cached_routine_listing():
+            assert routine_names() == {"udf.first"}
+            self._write_udf(tmp_path, "second")
+            assert routine_names() == {"udf.first"}
+
+        assert routine_names() == {"udf.first", "udf.second"}

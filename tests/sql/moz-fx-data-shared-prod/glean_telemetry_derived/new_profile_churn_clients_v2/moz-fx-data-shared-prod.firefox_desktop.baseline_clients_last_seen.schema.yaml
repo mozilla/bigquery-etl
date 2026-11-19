@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: days_desktop_active_bits
+  type: INTEGER
+  mode: NULLABLE

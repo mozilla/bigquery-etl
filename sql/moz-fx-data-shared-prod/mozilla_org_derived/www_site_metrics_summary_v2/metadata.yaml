@@ -2,10 +2,9 @@ friendly_name: WWW Site Metrics Summary V2
 description: |-
   Summary of site metrics from Google Analytics (specifically Google Analytics 4)
 owners:
-- mhirose@mozilla.com
+- data-marketing-wg@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose@mozilla.com
   table_type: aggregate
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4

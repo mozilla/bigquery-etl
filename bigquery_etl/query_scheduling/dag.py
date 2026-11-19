@@ -266,9 +266,6 @@ class Dag:
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
         args = self.__dict__
         args["task_groups"] = self.task_groups
-        args["bigeye_warehouse_id"] = ConfigLoader.get(
-            "monitoring", "bigeye_warehouse_id", fallback=1939
-        )
         args["bigeye_conn_id"] = ConfigLoader.get(
             "monitoring", "bigeye_conn_id", fallback="bigeye_connection"
         )
@@ -291,7 +288,8 @@ class PublicDataJsonDag(Dag):
         if not task.public_json:
             raise ValueError(f"Task {task.task_name} not marked as public JSON.")
 
-        converter = cattrs.BaseConverter()
+        # Make sure field converters handle raw values (e.g. `partition_offset`).
+        converter = cattrs.BaseConverter(prefer_attrib_converters=True)
         task_dict = converter.unstructure(task)
 
         del task_dict["dataset"]

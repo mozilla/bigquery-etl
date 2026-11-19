@@ -1,0 +1,79 @@
+---
+- submission_date: 2026-05-04
+  client_id: client_id_1
+  newtab_visit_id: visit_id_1
+  app_version: 138
+  os: Windows
+  channel: release
+  locale: en-US
+  country: US
+  homepage_category: enabled
+  newtab_category: enabled
+  sample_id: 42
+  profile_group_id: profile_group_id_1
+  experiments: []
+  newtab_blocked_sponsors: []
+  newtab_content_surface_id: NEW_TAB_EN_US
+  is_default_ui: true
+  is_newtab_opened: true
+  # DENG-11596: the visit emitted 6 `widgets_user_event`s, 2 of which are excluded
+  # (interaction/input_letter and interaction/reveal_grid_requested on crossword).
+  # The 4 retained events are interaction/play_started, an `interaction` with no
+  # action_value, and learn_more on crossword, plus interaction/input_letter on
+  # lists. All four fields below counted 6 before the fix.
+  is_widget_interaction: true
+  widget_interaction_count: 4
+  any_interaction_count: 4
+  nonsearch_interaction_count: 4
+  # invariant: widget impressions are not touched by the exclusion
+  widget_impression_count: 1
+  # invariants: no search, content, topsite, wallpaper or section events in this
+  # fixture, so everything below must stay at its zero value
+  is_search_issued: false
+  is_search_ad_click: false
+  is_content_interaction: false
+  is_content_click: false
+  is_content_impression: false
+  is_sponsored_content_interaction: false
+  is_sponsored_content_click: false
+  is_sponsored_content_impression: false
+  is_topsite_interaction: false
+  is_topsite_click: false
+  is_topsite_impression: false
+  is_sponsored_topsite_interaction: false
+  is_sponsored_topsite_click: false
+  is_sponsored_topsite_impression: false
+  is_wallpaper_interaction: false
+  is_other_interaction: false
+  is_section: false
+  search_interaction_count: 0
+  search_ad_click_count: 0
+  search_ad_impression_count: 0
+  any_content_click_count: 0
+  any_content_impression_count: 0
+  any_content_interaction_count: 0
+  organic_content_click_count: 0
+  organic_content_impression_count: 0
+  organic_content_interaction_count: 0
+  organic_content_dismissal_count: 0
+  sponsored_content_click_count: 0
+  sponsored_content_impression_count: 0
+  sponsored_content_interaction_count: 0
+  sponsored_content_dismissal_count: 0
+  any_topsite_click_count: 0
+  any_topsite_impression_count: 0
+  any_topsite_interaction_count: 0
+  organic_topsite_click_count: 0
+  organic_topsite_impression_count: 0
+  organic_topsite_interaction_count: 0
+  organic_topsite_dismissal_count: 0
+  sponsored_topsite_click_count: 0
+  sponsored_topsite_impression_count: 0
+  sponsored_topsite_interaction_count: 0
+  sponsored_topsite_dismissal_count: 0
+  content_thumbs_up_count: 0
+  content_thumbs_down_count: 0
+  other_interaction_count: 0
+  other_impression_count: 0
+  topsite_tile_components: []
+  content_position_components: []

@@ -1,0 +1,34 @@
+friendly_name: Column Profiles
+description: |-
+  Per-column profiling statistics (null rate, approximate distinct count,
+  cardinality flag, example value, and value/frequency pairs) for base tables
+  across one or more source datasets, tagged with source_dataset/source_table.
+  Produced weekly by a self-contained Python job (defaults to profiling
+  telemetry_derived and telemetry) and consumed by schema enrichment tooling.
+  Each run overwrites its own profiled_at date partition.
+labels:
+  incremental: true
+owners:
+- gkatre@mozilla.com
+scheduling:
+  dag_name: bqetl_data_governance_metadata
+  # Per-run overrides via the Airflow trigger config (dag_run.conf). Scheduled/
+  # backfill runs default --date to the interval-END date (data_interval_end, the
+  # run's Monday; scans interval_end - 7 days) and --source-datasets to the set
+  # below. Manual runs must pass both — the defaults render empty so query.py
+  # rejects them. See README.md for details.
+  arguments: [
+    "--date", "{{ dag_run.conf.get('date', (data_interval_end | ds) if dag_run.run_type != 'manual' else '') }}",
+    "--source-datasets", "{{ dag_run.conf.get('source_datasets', 'telemetry_derived,telemetry' if dag_run.run_type != 'manual' else '') }}"
+  ]
+bigquery:
+  time_partitioning:
+    type: day
+    field: profiled_at
+    require_partition_filter: false
+    expiration_days: 90
+  clustering:
+    fields:
+    - source_dataset
+    - source_table
+    - column_name

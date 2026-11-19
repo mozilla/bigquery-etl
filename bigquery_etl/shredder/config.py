@@ -20,8 +20,8 @@ from ..util.bigquery_id import qualified_table_id
 
 MOZDATA = "mozdata"
 SHARED_PROD = "moz-fx-data-shared-prod"
-GLEAN_SCHEMA_ID = "glean_ping_1"
-GLEAN_MIN_SCHEMA_ID = "glean-min_ping_1"
+GLEAN_SCHEMA_ID_PREFIX = "glean_ping_"
+GLEAN_MIN_SCHEMA_ID_PREFIX = "glean-min_ping_"
 
 
 @dataclass(frozen=True)
@@ -252,6 +252,33 @@ DELETE_TARGETS: DeleteIndex = {
         table="search_derived.mobile_search_clients_daily_v2"
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
+    # client_id is the Glean id here, so this pairs with the Glean deletion stream while
+    # v8 above pairs with the legacy one. The row also carries
+    # legacy_telemetry_client_id, but it needs no second target: deleting on client_id
+    # removes the whole row, and client_id is a grain key that is never null.
+    client_id_target(
+        table="search_derived.search_clients_daily_glean_v1"
+    ): DESKTOP_GLEAN_SRC,
+    # Keyed on the Glean id, like search_clients_daily_glean_v1 above.
+    client_id_target(
+        table="search_derived.desktop_client_day_dims_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(table="search_derived.urlbar_clients_daily_v1"): DESKTOP_GLEAN_SRC,
+    # The Glean id is named glean_client_id
+    # Rows also carry legacy_telemetry_client_id
+    # Deletions should happen regardless of the telemetry system the request is received through
+    DeleteTarget(
+        table="firefox_desktop_derived.urlbar_events_v2",
+        field=("glean_client_id", "legacy_telemetry_client_id"),
+    ): (DESKTOP_GLEAN_SRC, DESKTOP_SRC),
+    DeleteTarget(
+        table="search_derived.search_kpi_clients_daily_v1",
+        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID),
+    ): (
+        DESKTOP_GLEAN_SRC,
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,
@@ -276,6 +303,19 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.main_use_counter_1pct_v1"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.desktop_retention_clients_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.desktop_retention_clients_v2"
+    ): DESKTOP_SRC,
+    # Legacy first-seen tables, added in DENG-11876.
+    client_id_target(table="telemetry_derived.clients_first_seen_v1"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v2"): DESKTOP_SRC,
+    client_id_target(table="telemetry_derived.clients_first_seen_v3"): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v1"
+    ): DESKTOP_SRC,
+    client_id_target(
+        table="telemetry_derived.clients_first_seen_28_days_later_v3"
     ): DESKTOP_SRC,
     client_id_target(
         table="firefox_desktop_derived.desktop_retention_clients_v1"
@@ -340,6 +380,19 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
         *FOCUS_ADDITIONAL_DELETIONS,
     ),
+    # Firefox Desktop Glean clients only, so only the Desktop Glean stream applies.
+    client_id_target(
+        table="glean_telemetry_derived.new_profile_churn_clients_v2"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.recent_new_profile_churn_clients_v2"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.new_profile_churn_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
+        table="glean_telemetry_derived.recent_new_profile_churn_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_cfs_staging_v1",
         field=(CLIENT_ID,) * 15,
@@ -362,9 +415,13 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
     ),
     DeleteTarget(
-        table="ltv_derived.fenix_client_ltv_v1",
-        field=(),
-    ): (),  # Does not need to be shredded https://mozilla-hub.atlassian.net/browse/DENG-6169
+        table="remote_settings_derived.clients_uptake_events_v1",
+        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID),
+    ): (
+        DESKTOP_GLEAN_SRC,
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     DeleteTarget(
         table="ltv_derived.fenix_new_profile_ltv_v1",
         field=(CLIENT_ID),
@@ -724,19 +781,56 @@ DELETE_TARGETS: DeleteIndex = {
     ): FXA_UNHASHED_SRC,
 }
 
+# Tables with a client id that are intentionally not shredded, keyed by
+# project.dataset.table with the reason as the value. find_glean_targets and the
+# shredder_targets_v1 monitoring job skip these.
+NOT_SHREDDED: dict[str, str] = {
+    f"{SHARED_PROD}.{table}": reason
+    for table, reason in {
+        "firefox_desktop_derived.migration_esr_incorrect_deletion_request_v1": (
+            "Deletion request table."
+        ),
+        "firefox_desktop_derived.pageload_1pct_v1": (
+            "Subset of firefox_desktop_stable.pageload_v1, which doesn't have client ids."
+        ),
+        "firefox_desktop_derived.pageload_nightly_v1": (
+            "Subset of firefox_desktop_stable.pageload_v1, which doesn't have client ids."
+        ),
+        "ltv_derived.fenix_client_ltv_v1": (
+            "Does not need to be shredded, see "
+            "https://mozilla-hub.atlassian.net/browse/DENG-6169"
+        ),
+        **{
+            f"{channel}_stable.migration_v1": "Glean migration ping, not yet supported."
+            for channel in (
+                "org_mozilla_fenix_nightly",
+                "org_mozilla_fenix",
+                "org_mozilla_fennec_aurora",
+                "org_mozilla_firefox_beta",
+                "org_mozilla_firefox",
+            )
+        },
+    }.items()
+}
+
+
+def not_shredded_tables(project: str) -> set[str]:
+    """Return NOT_SHREDDED tables in the given project in dataset.table form."""
+    return {
+        table.removeprefix(f"{project}.")
+        for table in NOT_SHREDDED
+        if table.startswith(f"{project}.")
+    }
+
+
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}
 SEARCH_IGNORE_TABLES |= {target.table for target in DELETE_TARGETS}
+SEARCH_IGNORE_TABLES |= not_shredded_tables(SHARED_PROD)
 # these tables have a known user identifier, but do not yet have associated
 # deletion requests, or do not keep data for older than 30 days
 SEARCH_IGNORE_TABLES |= {
     target.table
     for target in [
-        # glean migration
-        glean_target(table="org_mozilla_fenix_nightly_stable.migration_v1"),
-        glean_target(table="org_mozilla_fenix_stable.migration_v1"),
-        glean_target(table="org_mozilla_fennec_aurora_stable.migration_v1"),
-        glean_target(table="org_mozilla_firefox_beta_stable.migration_v1"),
-        glean_target(table="org_mozilla_firefox_stable.migration_v1"),
         # pocket
         DeleteTarget(table="pocket_stable.fire_tv_events_v1", field=POCKET_ID),
         # mobile
@@ -770,15 +864,6 @@ SEARCH_IGNORE_FIELDS = {
     ("telemetry_stable.prio_v4", ID),
 }
 
-# list of dataset_id.table_id to ignore in find_glean_targets function
-GLEAN_IGNORE_LIST = {
-    # deletion request table
-    "firefox_desktop_derived.migration_esr_incorrect_deletion_request_v1",
-    # subset of firefox_desktop_stable.pageload_v1 which doesn't have client ids
-    "firefox_desktop_derived.pageload_1pct_v1",
-    "firefox_desktop_derived.pageload_nightly_v1",
-}
-
 
 def find_glean_targets(
     pool: ThreadPool,
@@ -796,7 +881,13 @@ def find_glean_targets(
 
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
 
-    def stable_tables_by_schema(schema_id):
+    def stable_tables_by_schema(schema_id_prefix):
+        """Return _v1 stable tables whose schema id matches the given prefix.
+
+        Matches any schema version (glean_ping_1, glean_ping_2, ...) but only includes _v1 tables;
+        _v2+ tables are ignored. This is for https://mozilla-hub.atlassian.net/browse/DENG-8494
+        where the _v1 tables are still the user-facing data.
+        """
         return [
             table
             for tables in pool.map(
@@ -809,10 +900,11 @@ def find_glean_targets(
                 chunksize=1,
             )
             for table in tables
-            if table.labels.get("schema_id") == schema_id
+            if table.labels.get("schema_id", "").startswith(schema_id_prefix)
+            and table.table_id.endswith("_v1")
         ]
 
-    glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID)
+    glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID_PREFIX)
 
     channel_to_app_name = get_glean_app_id_to_app_name_mapping()
 
@@ -889,12 +981,12 @@ def find_glean_targets(
             if app_name is not None and app_name != channel_name:
                 sources[app_name + "_derived"] += (source,)
 
-    # skip tables already added to DELETE_TARGETS
+    # skip tables already added to DELETE_TARGETS or intentionally not shredded
     manually_added_tables = {target.table for target in DELETE_TARGETS.keys()}
-    skipped_tables = manually_added_tables | GLEAN_IGNORE_LIST
+    skipped_tables = manually_added_tables | not_shredded_tables(project)
 
     # Handle custom deletion requests for usage_reporting pings
-    glean_min_stable_tables = stable_tables_by_schema(GLEAN_MIN_SCHEMA_ID)
+    glean_min_stable_tables = stable_tables_by_schema(GLEAN_MIN_SCHEMA_ID_PREFIX)
     usage_reporting_sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
     for table in glean_min_stable_tables:
         if table.table_id == "usage_deletion_request_v1":
@@ -937,8 +1029,6 @@ def find_glean_targets(
             for table in glean_stable_tables
             if table.dataset_id in sources
             and not table.table_id.startswith(source_doctype)
-            # migration tables not yet supported
-            and not table.table_id.startswith("migration")
             # skip tables with explicitly excluded client ids
             and table.labels.get("include_client_id", "true").lower() != "false"
             and qualified_table_id(table) not in skipped_tables
@@ -985,6 +1075,7 @@ def find_glean_targets(
             for table in glean_min_stable_tables
             if table.table_id == "usage_reporting_v1"
             and table.dataset_id in usage_reporting_sources
+            and qualified_table_id(table) not in skipped_tables
         },
         **{
             # usage_reporting derived tables that contain usage_profile_id

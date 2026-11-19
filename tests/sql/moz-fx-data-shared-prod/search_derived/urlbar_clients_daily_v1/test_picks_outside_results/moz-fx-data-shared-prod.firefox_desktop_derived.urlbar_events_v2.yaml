@@ -1,0 +1,32 @@
+# Paste-and-go and a quick action: neither input_field nor action_* is in the results
+# list, so each becomes its own element and clicks still sum to sessions_engaged.
+- submission_date: "2026-10-14"
+  glean_client_id: client-a
+  sample_id: 1
+  event_name: engagement
+  event_timestamp: 100
+  event_id: e1
+  interaction: pasted
+  selected_result: input_field
+  product_selected_result: other
+  event_action: engaged
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}
+- submission_date: "2026-10-14"
+  glean_client_id: client-a
+  sample_id: 1
+  event_name: engagement
+  event_timestamp: 200
+  event_id: e2
+  interaction: typed
+  selected_result: action_tabgroup-0
+  product_selected_result: other
+  event_action: engaged
+  is_terminal: true
+  window_mode: classic
+  sap: urlbar
+  results:
+  - {position: 1, result_type: search_engine, product_result_type: search_engine, result_group: heuristic}

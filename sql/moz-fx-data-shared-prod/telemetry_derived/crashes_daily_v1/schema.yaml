@@ -1,41 +1,60 @@
 fields:
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: client_id
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: sample_id
   mode: NULLABLE
   name: sample_id
   type: INTEGER
-- description: null
+- description: The normalized name of the Mozilla application that produced the crash data (e.g., 'Firefox',
+    'Fennec'), taken as the most frequently observed value across the client's crashes for the day.
   mode: NULLABLE
   name: application_name
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: build_id
   mode: NULLABLE
   name: build_id
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: channel
   mode: NULLABLE
   name: channel
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
   mode: NULLABLE
   name: os
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os_version
   mode: NULLABLE
   name: os_version
   type: STRING
-- description: null
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_code
   mode: NULLABLE
   name: country_code
   type: STRING
-- description: NULL
+- description: An array of per-process-type crash counts, where each entry's key is the process type (e.g.,
+    'main', 'content', 'gpu') and value is the number of detected crashes of that process type, excluding
+    shutdown-kill crashes.
   mode: REPEATED
   type: RECORD
   name: process_crash_counts
@@ -43,10 +62,15 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: The Firefox process type (e.g., 'main', 'content', 'gpu') for which crashes are counted.
   - mode: NULLABLE
     name: value
     type: INTEGER
-- description: NULL
+    description: The number of detected crashes of the corresponding process type, excluding shutdown-kill
+      crashes.
+- description: An array of per-process-type counts of shutdown-kill crashes, where each entry's key is the
+    process type (e.g., 'main', 'content', 'gpu') and value is the number of crashes of that process type
+    attributed to a shutdown kill.
   mode: REPEATED
   type: RECORD
   name: process_shutdown_kill_crash_counts
@@ -54,10 +78,15 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: The Firefox process type (e.g., 'main', 'content', 'gpu') for which shutdown-kill crashes
+      are counted.
   - mode: NULLABLE
     name: value
     type: INTEGER
-- description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+    description: The number of shutdown-kill crashes of the corresponding process type.
+- description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: profile_group_id
   mode: NULLABLE
   name: profile_group_id
   type: STRING

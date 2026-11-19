@@ -1,0 +1,15 @@
+friendly_name: GA4 Firefox.com Events Metrics
+description: |-
+  Daily count of GA4 events on firefox.com.
+
+  Every row belongs to one event_name, and event_count mixes all of them, so
+  always filter on event_name: use event_name = 'page_view' for pageviews.
+  Summing event_count without that filter overcounts, because engagement
+  events such as user_engagement and scroll are mixed in with page views.
+  Always filter on event_date.
+
+  For downloads use ga4_firefoxdotcom_download_metrics; download event names
+  overlap, so do not add them together.
+owners:
+- sherrera@mozilla.com
+- data-marketing-wg@mozilla.com

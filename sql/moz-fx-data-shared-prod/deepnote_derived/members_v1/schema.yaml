@@ -1,0 +1,21 @@
+fields:
+- name: snapshot_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the snapshot.
+- name: workspace_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote workspace ID.
+- name: user_id
+  type: STRING
+  mode: NULLABLE
+  description: Deepnote user ID, matches user_id in audit_log_v1.
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: Email of the user, null for anonymous users.
+- name: access_level
+  type: STRING
+  mode: NULLABLE
+  description: "Role in the workspace: admin, editor, viewer, restricted_user, or guest (not a workspace member, but a collaborator on a workspace project)."

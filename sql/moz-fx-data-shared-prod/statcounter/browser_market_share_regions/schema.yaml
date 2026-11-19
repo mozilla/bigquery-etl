@@ -1,0 +1,21 @@
+fields:
+  - name: date
+    type: DATE
+    mode: NULLABLE
+    description: The date of the observation
+  - name: geography
+    type: STRING
+    mode: NULLABLE
+    description: The geographic region
+  - name: device
+    type: STRING
+    mode: NULLABLE
+    description: The device type (Desktop or Mobile)
+  - name: browser
+    type: STRING
+    mode: NULLABLE
+    description: The browser name
+  - name: percent
+    type: FLOAT
+    mode: NULLABLE
+    description: The browser's market share percentage

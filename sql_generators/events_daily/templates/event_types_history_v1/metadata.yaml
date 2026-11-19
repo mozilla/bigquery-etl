@@ -8,6 +8,7 @@ description: >
 owners:
   - akomar@mozilla.com
 labels:
+  sql_generator: events_daily
   application: {{ dataset }}
   incremental: true
   schedule: daily
@@ -23,4 +24,3 @@ bigquery:
     fields:
       - category
       - event
-

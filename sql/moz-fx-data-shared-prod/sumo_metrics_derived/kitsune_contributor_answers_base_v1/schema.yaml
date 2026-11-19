@@ -1,0 +1,99 @@
+fields:
+- name: answer_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique identifier of the answer in Kitsune.
+- name: answer_date
+  type: DATE
+  mode: NULLABLE
+  description: UTC date the answer was created.
+- name: creator_username
+  type: STRING
+  mode: NULLABLE
+  description: Username of the contributor who posted the answer.
+- name: creator_profile
+  type: STRING
+  mode: NULLABLE
+  description: URL of the contributor's SUMO profile.
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: Email address of the contributor (from kitsune_auth_user).
+- name: question_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Identifier of the question this answer belongs to.
+- name: question_date
+  type: DATE
+  mode: NULLABLE
+  description: UTC date the question was created.
+- name: answer_url
+  type: STRING
+  mode: NULLABLE
+  description: Deep link to the answer on support.mozilla.org.
+- name: product
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Canonicalized Firefox product name:
+    - 'Firefox desktop'
+    - 'Firefox for Android'
+    - 'Firefox for iOS'
+    - 'Firefox for Enterprise'
+    Non-Firefox products are excluded from this table.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: BCP-47 locale code of the question (e.g. 'en-US', 'pt-BR').
+- name: num_replies_from_others
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of replies on the question from users other than the OP.
+- name: last_reply_on_question
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |
+    Timestamp of the most recent reply on the question, across all answers
+    (unfiltered, includes spam and OP self-answers).
+- name: op_reply_back
+  type: INTEGER
+  mode: NULLABLE
+  description: 1 if the OP replied back on the question (num_replies > num_replies_from_others), else 0.
+- name: total_helpful_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Helpful votes on this answer as of ETL run time. Not stable across runs.
+- name: total_unhelpful_votes
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Unhelpful votes on this answer as of ETL run time. Not stable across runs.
+- name: total_helpfulness
+  type: INTEGER
+  mode: NULLABLE
+  description: Sum of helpful and unhelpful votes on this answer, as of ETL run time.
+- name: user_first_answer_date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    Date of the contributor's first answer across ALL their answers
+    (unfiltered: includes spam, inactive, non-Firefox and OP self-answers).
+- name: user_last_answer_date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    Date of the contributor's most recent answer across ALL their answers
+    (unfiltered). Reflects state as of ETL run time.
+- name: date_joined
+  type: DATE
+  mode: NULLABLE
+  description: Date the contributor's SUMO account was created.
+- name: last_login
+  type: DATE
+  mode: NULLABLE
+  description: Date the contributor last logged in, as of ETL run time. Not stable across runs.
+- name: generated_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp when this record was loaded into BigQuery.

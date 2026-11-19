@@ -11,6 +11,7 @@ accidentally running queries during tests and overwriting production data, we
 proxy the queries through the dry run service endpoint.
 """
 
+import fnmatch
 import glob
 import hashlib
 import json
@@ -30,12 +31,21 @@ from urllib.request import Request, urlopen
 
 import click
 import google.auth
+import yaml
+from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
+from google.cloud.exceptions import Forbidden, NotFound
 from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
+from .query_scheduling.partitioning import (
+    get_partition_type,
+    resolve_partition_parameter_name,
+    resolve_partition_parameter_type,
+)
+from .util.cache_dir import get_private_cache_dir
 from .util.common import render
 
 try:
@@ -43,6 +53,8 @@ try:
 except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
+
+DRYRUN_CACHE_DIR_NAME = "bigquery_etl_dryrun_cache"
 
 QUERY_PARAMETER_TYPE_VALUES = {
     "DATE": "2019-01-01",
@@ -77,7 +89,16 @@ def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credential
     if not id_token:
         auth_req = GoogleAuthRequest()
         credentials = credentials or get_credentials(auth_req)
-        if hasattr(credentials, "id_token"):
+        if isinstance(credentials, impersonated_credentials.Credentials):
+            # Impersonated credentials (e.g. a target's impersonate_service_account)
+            # don't expose an OIDC id_token, and fetch_id_token() can't use them;
+            # mint one for the impersonated SA via the IAM API.
+            id_token_credentials = impersonated_credentials.IDTokenCredentials(
+                credentials, target_audience=dry_run_url, include_email=True
+            )
+            id_token_credentials.refresh(auth_req)
+            id_token = id_token_credentials.token
+        elif hasattr(credentials, "id_token"):
             # Get token from default credentials for the current environment created via Cloud SDK run
             id_token = credentials.id_token
         else:
@@ -136,14 +157,18 @@ class DryRun:
         self.project = project
         self.dataset = dataset
         self.table = table
+        self.billing_project = billing_project
         # if using cloud function and billing project isn't set, randomly select project to use
-        self.billing_project = (
-            billing_project
-            if billing_project or not use_cloud_function
-            else random.choice(
-                ConfigLoader.get("dry_run", "default_projects", fallback=[None])
+        if not self.billing_project:
+            self.billing_project = (
+                random.choice(
+                    ConfigLoader.get(
+                        "dry_run", "cloud_function_billing_projects", fallback=[None]
+                    )
+                )
+                if use_cloud_function
+                else ConfigLoader.get("dry_run", "default_billing_project")
             )
-        )
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
@@ -182,30 +207,90 @@ class DryRun:
             )
         }
 
-        # update skip list to include renamed queries in stage.
+        # Stage deploys rewrite every artifact's path, so a prod-side skip
+        # entry no longer matches the file's stage path. Reverse the mapping
+        # via each stage dir's bqetl_target_info.yaml manifest (written by
+        # prepare_target_directory) — layout-independent, so any future
+        # bqetl_targets.yaml rename scheme still works.
         test_project = ConfigLoader.get("default", "test_project", fallback="")
-        file_pattern_re = re.compile(r"sql/([^\/]+)/([^/]+)(/?.*|$)")
+        skip_patterns = ConfigLoader.get("dry_run", "skip", fallback=[])
+        stage_root = sql_dir / test_project if test_project else None
+        if stage_root and stage_root.is_dir() and skip_patterns:
+            # Local import: util.target imports from this module.
+            from .util.target import MANIFEST_FILENAME
 
-        skip_files.update(
-            [
-                file
-                for skip in ConfigLoader.get("dry_run", "skip", fallback=[])
-                for file in glob.glob(
-                    file_pattern_re.sub(
-                        lambda x: f"sql/{test_project}/{x.group(2)}_{x.group(1).replace('-', '_')}*{x.group(3)}",
-                        skip,
-                    ),
-                    recursive=True,
+            for manifest_path in stage_root.rglob(MANIFEST_FILENAME):
+                skip_files |= DryRun._manifest_skipped_files(
+                    manifest_path, skip_patterns
                 )
-            ]
-        )
 
         return skip_files
 
     @staticmethod
+    def is_skipped(file, sql_dir=ConfigLoader.get("default", "sql_dir")) -> bool:
+        """Return whether dry runs are skipped for the file.
+
+        Copies of artifacts made for a --target (outside of the stage root
+        handled by skipped_files()) have paths that aren't on the skip list,
+        so these are matched based on the source recorded in their manifest.
+        """
+        if str(file) in DryRun.skipped_files(sql_dir=sql_dir):
+            return True
+
+        # Local import: util.target imports from this module.
+        from .util.target import MANIFEST_FILENAME
+
+        manifest_path = Path(file).parent / MANIFEST_FILENAME
+        skip_patterns = ConfigLoader.get("dry_run", "skip", fallback=[])
+        if not manifest_path.exists() or not skip_patterns:
+            return False
+        return str(file) in DryRun._manifest_skipped_files(manifest_path, skip_patterns)
+
+    @staticmethod
+    def _manifest_skipped_files(manifest_path: Path, skip_patterns) -> Set[str]:
+        """Return the artifact files next to the manifest whose source is skipped.
+
+        Match with fnmatchcase (case-sensitive on all platforms, unlike
+        fnmatch which is case-insensitive on Windows/macOS) for
+        deterministic dev-vs-CI behavior. Note: fnmatch's `*` matches `/`
+        — fine here because source_equivalent always has the fixed
+        `sql/<proj>/<ds>/<table>/<file>` shape, but it's a semantic
+        difference from glob.
+        """
+        try:
+            manifest = yaml.safe_load(manifest_path.read_text()) or {}
+        except (yaml.YAMLError, OSError) as e:
+            # Surface so a corrupt manifest doesn't silently drop
+            # its artifact off the skip list — the resulting dryrun
+            # failure would otherwise mask the real cause.
+            click.echo(
+                f"Warning: could not read manifest {manifest_path}: {e}",
+                err=True,
+            )
+            return set()
+        src_project = manifest.get("source_project")
+        src_dataset = manifest.get("source_dataset")
+        src_table = manifest.get("source_table")
+        if not (src_project and src_dataset and src_table):
+            return set()
+
+        artifact_suffixes = (".sql", ".py")
+        return {
+            str(file)
+            for file in manifest_path.parent.iterdir()
+            if file.suffix in artifact_suffixes
+            and any(
+                fnmatch.fnmatchcase(
+                    f"sql/{src_project}/{src_dataset}/{src_table}/{file.name}", pat
+                )
+                for pat in skip_patterns
+            )
+        }
+
+    @staticmethod
     def clear_cache():
         """Clear dry run cache directory."""
-        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        cache_dir = Path(tempfile.gettempdir()) / DRYRUN_CACHE_DIR_NAME
         if cache_dir.exists():
             try:
                 shutil.rmtree(cache_dir)
@@ -215,9 +300,7 @@ class DryRun:
 
     def skip(self):
         """Determine if dry run should be skipped."""
-        return self.respect_skip and self.sqlfile in self.skipped_files(
-            sql_dir=self.sql_dir
-        )
+        return self.respect_skip and self.is_skipped(self.sqlfile, sql_dir=self.sql_dir)
 
     def get_sql(self):
         """Get SQL content."""
@@ -232,13 +315,13 @@ class DryRun:
             raise ValueError(f"Invalid file path: {self.sqlfile}")
         if self.strip_dml:
             sql = re.sub(
-                "CREATE OR REPLACE VIEW.*?AS",
+                r"CREATE OR REPLACE VIEW.*?\bAS\b",
                 "",
                 sql,
                 flags=re.DOTALL,
             )
             sql = re.sub(
-                "CREATE MATERIALIZED VIEW.*?AS",
+                r"CREATE MATERIALIZED VIEW.*?\bAS\b",
                 "",
                 sql,
                 flags=re.DOTALL,
@@ -253,10 +336,8 @@ class DryRun:
 
     @staticmethod
     def _get_cache_dir():
-        """Get the cache directory path."""
-        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        return cache_dir
+        """Get the cache directory path, or None if it can't be used safely."""
+        return get_private_cache_dir(DRYRUN_CACHE_DIR_NAME)
 
     def _read_cache_file(self, cache_file, ttl_seconds):
         """Read and return cached data from a pickle file with TTL check."""
@@ -313,12 +394,18 @@ class DryRun:
         if ttl_seconds is None:
             ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
 
-        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return None
+        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
         return self._read_cache_file(cache_file, ttl_seconds)
 
     def _save_cached_result(self, cache_key, result):
         """Save dry run result to disk cache using atomic write."""
-        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return
+        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
         self._write_cache_file(cache_file, result)
 
         # save table metadata separately if present
@@ -339,13 +426,19 @@ class DryRun:
 
         # table identifier as cache key
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return None
+        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
         return self._read_cache_file(cache_file, ttl_seconds)
 
     def _save_cached_table_metadata(self, table_identifier, metadata):
         """Save table metadata to disk cache using atomic write."""
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        cache_dir = self._get_cache_dir()
+        if cache_dir is None:
+            return
+        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
         self._write_cache_file(cache_file, metadata)
 
     @cached_property
@@ -377,18 +470,26 @@ class DryRun:
                 )
         else:
             scheduling_metadata = self.metadata.scheduling if self.metadata else {}
-            if date_partition_parameter := scheduling_metadata.get(
-                "date_partition_parameter", "submission_date"
+            partition_type = get_partition_type(self.metadata)
+            if partition_parameter_name := resolve_partition_parameter_name(
+                scheduling_metadata,
+                partition_type,
+                is_script=basename(self.sqlfile) in ("script.sql", "query.py"),
             ):
+                partition_parameter_type = resolve_partition_parameter_type(
+                    partition_type
+                )
                 query_parameters.append(
                     bigquery.ScalarQueryParameter(
-                        date_partition_parameter,
-                        "DATE",
-                        QUERY_PARAMETER_TYPE_VALUES["DATE"],
+                        partition_parameter_name,
+                        partition_parameter_type,
+                        QUERY_PARAMETER_TYPE_VALUES[partition_parameter_type],
                     )
                 )
             for parameter in scheduling_metadata.get("parameters", []):
                 parameter_name, parameter_type, _ = parameter.strip().split(":", 2)
+                if parameter_name == partition_parameter_name:
+                    continue
                 parameter_type = parameter_type.upper() or "STRING"
                 query_parameters.append(
                     bigquery.ScalarQueryParameter(
@@ -430,28 +531,27 @@ class DryRun:
                 )
                 result = json.load(r)
             else:
-                # Prefer billing project if provided, otherwise use the project from the SQL file
-                self.client.project = (
-                    self.billing_project if self.billing_project else project
-                )
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,
                     default_dataset=f"{project}.{dataset}",
                     query_parameters=query_parameters,
                 )
-                job = self.client.query(sql, job_config=job_config)
+                job = self.client.query(
+                    sql, job_config=job_config, project=self.billing_project
+                )
                 try:
                     dataset_labels = self.client.get_dataset(job.default_dataset).labels
                 except Exception as e:
-                    # Most users do not have bigquery.datasets.get permission in
-                    # moz-fx-data-shared-prod
-                    # This should not prevent the dry run from running since the dataset
-                    # labels are usually not required
-                    if "Permission bigquery.datasets.get denied on dataset" in str(e):
-                        dataset_labels = []
-                    else:
-                        raise e
+                    # `Forbidden` exceptions are to be expected because most users don't have
+                    # bigquery.datasets.get permission in moz-fx-data-shared-prod.
+                    # `NotFound` exceptions are to be expected for datasets that haven't been deployed yet.
+                    # Print a warning about other exceptions, but don't prevent the dryrun from completing.
+                    if not isinstance(e, (Forbidden, NotFound)):
+                        print(
+                            f"Error getting labels for dataset `{job.default_dataset}`: {e}"
+                        )
+                    dataset_labels = {}
 
                 result = {
                     "valid": True,

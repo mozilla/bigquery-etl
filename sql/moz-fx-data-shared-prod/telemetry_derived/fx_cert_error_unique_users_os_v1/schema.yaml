@@ -2,12 +2,18 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the telemetry ping is received on the server side.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: submission_date
 - mode: NULLABLE
   name: os
   type: STRING
-  description: The normalized name of the operating system running at the client.
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: os
 - name: nbr_unique_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of Unique users (distinct client ids)
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: nbr_unique_users

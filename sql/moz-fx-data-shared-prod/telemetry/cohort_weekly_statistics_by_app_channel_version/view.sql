@@ -1,11 +1,18 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.cohort_weekly_statistics_by_app_channel_version`
 AS
+-- NOTE: install_source is a cohort grain dimension here (populated for fenix; NULL for all
+-- other apps). Fenix cohorts split into one row per install_source per
+-- (normalized_app_name, normalized_channel, app_version, cohort_date_week, activity_date_week).
+-- This view recomputes live from rolling_cohorts_v2 with no backfill, so the change takes effect
+-- immediately on deploy. Consumers expecting one row per app-channel-version-week must group by
+-- or sum nbr_clients_in_cohort / nbr_active_clients across install_source before computing pct_retained.
 WITH clients_first_seen AS (
   SELECT
     normalized_app_name,
     normalized_channel,
     app_version,
+    install_source,
     DATE_TRUNC(cohort_date, WEEK) AS cohort_date_week,
     client_id
   FROM
@@ -41,6 +48,7 @@ clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
     a.normalized_app_name,
     a.normalized_channel,
     a.app_version,
+    a.install_source,
     a.cohort_date_week,
     b.activity_date_week,
     COUNT(DISTINCT(b.client_id)) AS nbr_active_clients
@@ -53,6 +61,7 @@ clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
     a.normalized_app_name,
     a.normalized_channel,
     a.app_version,
+    a.install_source,
     a.cohort_date_week,
     b.activity_date_week
 ),
@@ -62,6 +71,7 @@ initial_cohort_counts AS (
     normalized_app_name,
     normalized_channel,
     app_version,
+    install_source,
     cohort_date_week,
     COUNT(DISTINCT(client_id)) AS nbr_clients_in_cohort
   FROM
@@ -70,12 +80,14 @@ initial_cohort_counts AS (
     normalized_app_name,
     normalized_channel,
     app_version,
+    install_source,
     cohort_date_week
 )
 SELECT
   i.normalized_app_name,
   i.normalized_channel,
   i.app_version,
+  i.install_source,
   i.cohort_date_week,
   i.nbr_clients_in_cohort,
   a.activity_date_week,
@@ -89,4 +101,5 @@ LEFT JOIN
   ON COALESCE(i.normalized_app_name, 'NULL') = COALESCE(a.normalized_app_name, 'NULL')
   AND COALESCE(i.normalized_channel, 'NULL') = COALESCE(a.normalized_channel, 'NULL')
   AND COALESCE(i.app_version, 'NULL') = COALESCE(a.app_version, 'NULL')
+  AND COALESCE(i.install_source, 'NULL') = COALESCE(a.install_source, 'NULL')
   AND i.cohort_date_week = a.cohort_date_week

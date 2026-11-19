@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 
 """Search for tables with client id columns."""
+
 import datetime
 from collections import defaultdict
-from functools import cache
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Set
+from typing import Any, Dict, List, Set, Tuple
 
 import click
+from google.api_core import exceptions, retry
 from google.cloud import bigquery
 from google.cloud import datacatalog_lineage_v1 as datacatalog_lineage
 from google.cloud.bigquery import TableReference
-from google.cloud.exceptions import NotFound
 
 from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 from bigquery_etl.schema import Schema
 from bigquery_etl.shredder.config import (
-    CLIENT_ID,
     DELETE_TARGETS,
-    GLEAN_CLIENT_ID,
+    NOT_SHREDDED,
     SHARED_PROD,
     DeleteSource,
     find_glean_targets,
 )
+from bigquery_etl.shredder.deletion_sources import get_associated_deletions
 
 FIND_TABLES_QUERY_TEMPLATE = """
 WITH no_client_id_tables AS (
@@ -70,18 +70,136 @@ WHERE
   AND table_name != 'deletion_request_v1'
   AND table_name != 'deletion_request_v4'
   -- ignore recently created tables that may not have lineage populated yet
-  AND DATE(creation_time) < DATE_SUB('2025-11-24', INTERVAL 1 DAY)
+  AND DATE(creation_time) < DATE_SUB(@run_date, INTERVAL 3 DAY)
 """
 
+LINEAGE_PARENT = "projects/moz-fx-data-shared-prod/locations/us"
+# SearchLineageStreaming accepts at most 20 root entities per request
+LINEAGE_BATCH_SIZE = 20
+LINEAGE_MAX_RESULTS = 10_000
+# Deadline for consuming the entire stream of a single request
+LINEAGE_STREAM_TIMEOUT = 90
 
-def find_client_id_tables(project: str) -> List[str]:
-    """Return a list of tables that have columns ending with 'client_id'."""
+# The lineage API intermittently returns 503s that usually succeed on the next attempt.
+# Retries are kept short so persistent errors fail the task and are retried by airflow.
+# Deadline exceeded is not retried because the same batch is likely to time out again.
+LINEAGE_RETRY = retry.Retry(
+    predicate=retry.if_exception_type(
+        exceptions.ServiceUnavailable,
+        exceptions.TooManyRequests,
+        exceptions.InternalServerError,
+    ),
+    initial=1,
+    maximum=16,
+    multiplier=2,
+    timeout=90,
+)
+
+
+class LineageTruncatedError(Exception):
+    """Lineage search returned the maximum number of results."""
+
+
+def find_client_id_tables(project: str, run_date: datetime.date) -> List[str]:
+    """Return a list of tables that have columns ending with 'client_id'.
+
+    Tables in NOT_SHREDDED are excluded.
+    """
     client = bigquery.Client(project=project)
     row_results = client.query_and_wait(
-        query=FIND_TABLES_QUERY_TEMPLATE.format(project=project)
+        query=FIND_TABLES_QUERY_TEMPLATE.format(project=project),
+        job_config=bigquery.QueryJobConfig(
+            query_parameters=[
+                bigquery.ScalarQueryParameter("run_date", "DATE", run_date)
+            ]
+        ),
     )
 
-    return [f"{project}.{row.table_schema}.{row.table_name}" for row in row_results]
+    tables = [f"{project}.{row.table_schema}.{row.table_name}" for row in row_results]
+    return [table for table in tables if table not in NOT_SHREDDED]
+
+
+def is_stable_table(table_name: str) -> bool:
+    """Return true if the table is a stable table."""
+    return TableReference.from_string(table_name).dataset_id.endswith("_stable")
+
+
+def get_direct_upstream_links(
+    client: datacatalog_lineage.LineageClient, tables: List[str]
+) -> List[Tuple[str, str]]:
+    """Return (source, target) pairs for the direct upstream bigquery tables of the given tables.
+
+    If the search results are truncated, split the batch in half and search each half.
+    """
+    try:
+        return search_direct_upstream_links(client, tables)
+    except LineageTruncatedError:
+        if len(tables) == 1:
+            raise
+        mid = len(tables) // 2
+        return get_direct_upstream_links(
+            client, tables[:mid]
+        ) + get_direct_upstream_links(client, tables[mid:])
+
+
+@LINEAGE_RETRY
+def search_direct_upstream_links(
+    client: datacatalog_lineage.LineageClient, tables: List[str]
+) -> List[Tuple[str, str]]:
+    """Search lineage for the direct upstream bigquery tables of the given tables.
+
+    The stream is fully consumed inside this function so errors partway through a stream
+    are retried along with the rest of the batch.
+    """
+    request_type = datacatalog_lineage.SearchLineageStreamingRequest
+    request = request_type(
+        parent=LINEAGE_PARENT,
+        locations=["us"],
+        root_criteria=request_type.RootCriteria(
+            entities=datacatalog_lineage.MultipleEntityReference(
+                entities=[
+                    datacatalog_lineage.EntityReference(
+                        fully_qualified_name=f"bigquery:{table}"
+                    )
+                    for table in tables
+                ]
+            )
+        ),
+        direction=request_type.SearchDirection.UPSTREAM,
+        # exclude column-level lineage
+        filters=request_type.SearchFilters(entity_set=request_type.EntitySet.ENTITIES),
+        limits=request_type.SearchLimits(max_depth=1, max_results=LINEAGE_MAX_RESULTS),
+    )
+
+    links = []
+    num_links = 0
+    for response in client.search_lineage_streaming(
+        request=request, timeout=LINEAGE_STREAM_TIMEOUT
+    ):
+        if response.unreachable:
+            raise RuntimeError(
+                f"Lineage search was incomplete, unreachable: {response.unreachable}"
+            )
+        for link in response.links:
+            num_links += 1
+            # possible sources: https://docs.cloud.google.com/knowledge-catalog/docs/fully-qualified-names
+            link_parts = link.source.fully_qualified_name.split(":")
+            source = link_parts[0]
+            parent_table = link_parts[-1]
+            if not source.startswith("bigquery") or parent_table.startswith(
+                "moz-fx-data-shredder.shredder_tmp"
+            ):
+                continue
+            links.append(
+                (parent_table, link.target.fully_qualified_name.split(":")[-1])
+            )
+
+    if num_links >= LINEAGE_MAX_RESULTS:
+        raise LineageTruncatedError(
+            f"Lineage search results were truncated for {tables}"
+        )
+
+    return links
 
 
 def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
@@ -91,145 +209,60 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
     """
     client = datacatalog_lineage.LineageClient()
 
-    upstream_stable_tables = defaultdict(set)
+    # Fetch the lineage graph one level at a time, batching the tables in each level.
+    # Searching multiple levels in one request doesn't stop at stable tables and can
+    # hit the result limit.
+    parent_tables: Dict[str, Set[str]] = defaultdict(set)
+    visited = set()
+    tables_to_search = sorted(
+        {table for table in id_tables if not is_stable_table(table)}
+    )
+    while tables_to_search:
+        visited.update(tables_to_search)
+        for i in range(0, len(tables_to_search), LINEAGE_BATCH_SIZE):
+            batch = tables_to_search[i : i + LINEAGE_BATCH_SIZE]
+            for parent_table, table in get_direct_upstream_links(client, batch):
+                parent_tables[table].add(parent_table)
+        tables_to_search = sorted(
+            {
+                parent_table
+                for table in tables_to_search
+                for parent_table in parent_tables[table]
+                if not is_stable_table(parent_table) and parent_table not in visited
+            }
+        )
 
-    def traverse_upstream(base_table: str):
-        """Recursively traverse lineage to find stable tables."""
-        table_ref = TableReference.from_string(base_table)
+    def traverse_upstream(base_table: str) -> Set[str]:
+        """Find all stable tables reachable upstream of the given table.
 
-        if table_ref.dataset_id.endswith("_stable"):  # stable tables are terminal nodes
-            upstream_stable_tables[base_table] = {base_table}
-        elif base_table not in upstream_stable_tables:
-            upstream_links_result = client.search_links(
-                request={
-                    "parent": "projects/moz-fx-data-shared-prod/locations/us",
-                    "target": datacatalog_lineage.EntityReference(
-                        fully_qualified_name=f"bigquery:{base_table}"
-                    ),
-                }
-            )
-            # recursively add upstream tables
-            for upstream_link in upstream_links_result:
-                # possible sources: https://cloud.google.com/dataplex/docs/fully-qualified-names
-                link_parts = upstream_link.source.fully_qualified_name.split(":")
-                source = link_parts[0]
-                parent_table = link_parts[-1]
-                if not source.startswith("bigquery") or parent_table.startswith("moz-fx-data-shredder.shredder_tmp"):
-                    break
-                upstream_stable_tables[base_table] = upstream_stable_tables[
-                    base_table
-                ].union(traverse_upstream(parent_table))
+        Results aren't cached per table because the lineage graph can contain cycles
+        and a partial result for a table in a cycle would be incorrect.
+        """
+        if is_stable_table(base_table):  # stable tables are terminal nodes
+            return {base_table}
+        stable_tables = set()
+        seen = {base_table}
+        to_visit = [base_table]
+        while to_visit:
+            for parent_table in parent_tables[to_visit.pop()]:
+                if parent_table in seen:
+                    continue
+                seen.add(parent_table)
+                if is_stable_table(parent_table):
+                    stable_tables.add(parent_table)
+                else:
+                    to_visit.append(parent_table)
 
-        return upstream_stable_tables[base_table]
+        return stable_tables
 
     upstream_stable_table_map = {}
 
     print("Upstream stable tables:")
     for table_name in id_tables:
-        upstream_stable_table_map[table_name] = set(traverse_upstream(table_name))
+        upstream_stable_table_map[table_name] = traverse_upstream(table_name)
         print(f"{table_name} upstream: {upstream_stable_table_map[table_name]}")
 
     return upstream_stable_table_map
-
-
-@cache
-def table_exists(client: bigquery.Client, table_name: str) -> bool:
-    """Return true if given project.dataset.table exists, caching results."""
-    try:
-        client.get_table(table_name)
-        return True
-    except NotFound:
-        return False
-
-
-def get_associated_deletions(
-    project: str, upstream_stable_tables: Dict[str, Set[str]]
-) -> Dict[str, Set[DeleteSource]]:
-    """Get a list of associated deletion requests tables per table based on the stable tables."""
-    client = bigquery.Client(project=project)
-
-    # deletion targets for stable tables defined in the shredder config
-    known_stable_table_sources: Dict[str, Set[DeleteSource]] = {
-        f"{target.project}.{target.dataset_id}.{target.table_id}": (
-            set(src) if isinstance(src, Iterable) else {src}
-        )
-        for target, src in DELETE_TARGETS.items()
-        if target.dataset_id.endswith("_stable")
-    }
-
-    table_to_deletions: Dict[str, Set[DeleteSource]] = {}
-
-    datasets_with_additional_deletion_requests = {}
-
-    for base_table in upstream_stable_tables:
-        if base_table.endswith(".additional_deletion_requests_v1"):
-            dataset_name = TableReference.from_string(base_table).dataset_id
-            datasets_with_additional_deletion_requests[dataset_name] = (
-                f"{dataset_name}.additional_deletion_requests_v1"
-            )
-            datasets_with_additional_deletion_requests[
-                dataset_name.replace("_derived", "_stable")
-            ] = f"{dataset_name}.additional_deletion_requests_v1"
-
-    glean_channel_names = get_glean_app_id_to_app_name_mapping()
-
-    for table_name, stable_tables in upstream_stable_tables.items():
-        deletion_tables: Set[DeleteSource] = set()
-
-        for stable_table in stable_tables:
-            if stable_table in known_stable_table_sources:
-                table_to_deletions[stable_table] = known_stable_table_sources[
-                    stable_table
-                ]
-            elif stable_table not in table_to_deletions:
-                stable_table_ref = TableReference.from_string(stable_table)
-
-                # glean table
-                if (
-                    stable_table_ref.dataset_id[: -len("_stable")]
-                    in glean_channel_names
-                ):
-                    if table_exists(
-                        client,
-                        f"{stable_table_ref.project}.{stable_table_ref.dataset_id}.deletion_request_v1",
-                    ):
-                        table_to_deletions[stable_table] = {
-                            DeleteSource(
-                                table=f"{stable_table_ref.dataset_id}.deletion_request_v1",
-                                field=GLEAN_CLIENT_ID,
-                                project=SHARED_PROD,
-                            )
-                        }
-                    else:
-                        print(f"No deletion requests for {stable_table_ref.dataset_id}")
-                        table_to_deletions[stable_table] = set()
-
-                    if (
-                        stable_table_ref.dataset_id
-                        in datasets_with_additional_deletion_requests
-                    ):
-                        table_to_deletions[stable_table].add(
-                            DeleteSource(
-                                table=datasets_with_additional_deletion_requests[
-                                    stable_table_ref.dataset_id
-                                ],
-                                field=CLIENT_ID,
-                                project=SHARED_PROD,
-                            )
-                        )
-                # unknown legacy telemetry or non-glean structured
-                else:
-                    table_to_deletions[stable_table] = set()
-
-            deletion_tables = deletion_tables.union(table_to_deletions[stable_table])
-
-        table_to_deletions[table_name] = deletion_tables
-
-    return {
-        table: deletions
-        for table, deletions in table_to_deletions.items()
-        if table in upstream_stable_tables
-    }
 
 
 def delete_source_to_dict(source: DeleteSource):
@@ -240,7 +273,7 @@ def delete_source_to_dict(source: DeleteSource):
 
 
 def get_missing_deletions(
-    associated_deletions: Dict[str, Set[DeleteSource]]
+    associated_deletions: Dict[str, Set[DeleteSource]],
 ) -> List[Dict[str, Any]]:
     """Get list of all tables with the currently configured deletion sources and the sources based on lineage."""
     # get the generated glean deletion list
@@ -258,27 +291,28 @@ def get_missing_deletions(
     for target, sources in (*glean_delete_targets.items(), *DELETE_TARGETS.items()):
         target_table = f"{target.project}.{target.table}"
 
+        # a single source can be written as (DeleteSource(...)), which isn't a tuple
+        if isinstance(sources, DeleteSource):
+            sources = (sources,)
+
         # expand per-app deletion request views into per-channel tables
         unnested_sources = set()
-        if isinstance(sources, Iterable):
-            for source in sources:
-                if (
-                    source.dataset_id in glean_app_name_to_channels
-                    and source.table_id == "deletion_request"
-                ):
-                    for channel in glean_app_name_to_channels[source.dataset_id]:
-                        unnested_sources.add(
-                            DeleteSource(
-                                table=f"{channel}_stable.deletion_request_v1",
-                                field=source.field,
-                                project=source.project,
-                                conditions=source.conditions,
-                            )
+        for source in sources:
+            if (
+                source.dataset_id in glean_app_name_to_channels
+                and source.table_id == "deletion_request"
+            ):
+                for channel in glean_app_name_to_channels[source.dataset_id]:
+                    unnested_sources.add(
+                        DeleteSource(
+                            table=f"{channel}_stable.deletion_request_v1",
+                            field=source.field,
+                            project=source.project,
+                            conditions=source.conditions,
                         )
-                else:
-                    unnested_sources.add(source)
-        else:
-            unnested_sources.add(sources)
+                    )
+            else:
+                unnested_sources.add(source)
 
         # tables not in associated_deletions likely use another id column, e.g. user_id
         detected_deletions = associated_deletions.pop(target_table, set())
@@ -344,7 +378,11 @@ def write_to_bigquery(
 
 @click.command
 @click.option(
-    "--run-date", type=click.DateTime(), help="The date to write in the output."
+    "--run-date",
+    type=click.DateTime(),
+    required=True,
+    help="The date to write in the output. Tables created within 3 days of this date"
+    " are skipped because their lineage may not be populated yet.",
 )
 @click.option(
     "--output-table",
@@ -360,13 +398,13 @@ def write_to_bigquery(
 def main(run_date, output_table, project_id):
     """Find tables in the given project that could be added to shredder."""
     # TODO: handle other id columns
-    client_id_tables = find_client_id_tables(project_id)
+    client_id_tables = find_client_id_tables(project_id, run_date.date())
 
     print(f"Found {len(client_id_tables)} client id tables.")
 
     upstream_stable_tables = get_upstream_stable_tables(client_id_tables)
 
-    associated_deletions = get_associated_deletions(project_id, upstream_stable_tables)
+    associated_deletions = get_associated_deletions(upstream_stable_tables)
 
     table_deletions = get_missing_deletions(associated_deletions)
 

@@ -12,6 +12,13 @@ labels:
   owner1: akommasani
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
+  depends_on:
+  - dag_name: bqetl_mobile_search
+    task_id: search_derived__mobile_search_clients_daily__v2
+    execution_delta: -26d21h
+  - dag_name: bqetl_search
+    task_id: search_derived__search_clients_daily__v8
+    execution_delta: -26d22h
 bigquery:
   time_partitioning:
     type: month

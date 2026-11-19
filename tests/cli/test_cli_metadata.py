@@ -1313,6 +1313,7 @@ class TestMetadata:
             / "test_derived"
             / "test_v1"
             / "metadata.yaml",
+            add_managed_label=False,
         )
         mock_publish.assert_any_call(
             "glam-fenix-dev",
@@ -1322,6 +1323,7 @@ class TestMetadata:
             / "test_stable"
             / "test_v1"
             / "metadata.yaml",
+            add_managed_label=False,
         )
 
     @patch("bigquery_etl.cli.metadata._publish_metadata")
@@ -1355,6 +1357,44 @@ class TestMetadata:
             / "test_stable"
             / "test_v1"
             / "metadata.yaml",
+            add_managed_label=False,
+        )
+
+    @patch("bigquery_etl.cli.metadata.get_credentials", return_value="creds")
+    @patch("bigquery_etl.cli.metadata.Pool")
+    @patch("bigquery_etl.cli.metadata._publish_metadata")
+    def test_metadata_publish_add_managed_label_parallel(
+        self, mock_publish, mock_pool, _creds, runner
+    ):
+        # Run the pool's work in-process so the mocked _publish_metadata records calls.
+        mock_pool.return_value.__enter__.return_value.map.side_effect = (
+            lambda func, items: [func(item) for item in items]
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            shutil.copytree(str(TEST_DIR / "sql"), tmpdirname, dirs_exist_ok=True)
+            runner.invoke(
+                publish,
+                [
+                    "test_derived.test_v1",
+                    f"--sql-dir={tmpdirname}",
+                    "--project-id=moz-fx-data-shared-prod",
+                    "--parallelism=2",
+                    "--add-managed-label",
+                ],
+                catch_exceptions=False,
+            )
+
+        mock_pool.assert_called_once_with(2)
+        mock_publish.assert_called_once_with(
+            "moz-fx-data-shared-prod",
+            "creds",
+            Path(tmpdirname)
+            / "moz-fx-data-shared-prod"
+            / "test_derived"
+            / "test_v1"
+            / "metadata.yaml",
+            add_managed_label=True,
         )
 
     def test_metadata_deprecate_default_deletion_date(self, runner):

@@ -395,6 +395,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The curent displayed item position.
+    - name: flow_seq
+      type: INTEGER
+      mode: NULLABLE
+      description: The instance's sequence number within its session. Matches `seq`
+        in the `flows` entries of the instance's tagged events.
     - name: from_version
       type: INTEGER
       mode: NULLABLE
@@ -481,6 +486,10 @@ fields:
         * The identifier of the feature that is has a malformed configuration
 
         * The feature id of the configuration that was requested'
+    - name: flow_name
+      type: STRING
+      mode: NULLABLE
+      description: The name of the flow, as declared in `flows.yaml`.
     - name: item
       type: STRING
       mode: NULLABLE
@@ -508,6 +517,11 @@ fields:
 
         * The reason for the unenrollment failure
 
+        * Why the instance ended: - "exit": an event in the flow''s `ends_on` was
+        recorded - "timeout": the flow''s `auto_close_timeout` elapsed - "session_end":
+        the session ended while the instance was active - "abnormal": the app ended
+        abnormally while the instance was active
+
         * Why the session ended. When in MANUAL mode, the reason can optionally be
         set by the application. Possible values set by Glean in AUTO or LIFECYCLE
         session management modes include: - "inactive": client went to background
@@ -518,11 +532,14 @@ fields:
 
         * The reason the migration occurred. This is one of: - "upgrade" - "invalid_version"
 
-        * The reason for the unenrollment'
+        * The reason for the unenroll...'
     - name: session_id
       type: STRING
       mode: NULLABLE
       description: 'Depending on the type of event:
+
+        * The session that owned the instance. Only present when `reason` is "abnormal",
+        since that `flow_end` is recorded outside any session.
 
         * The unique UUID of the ended session.
 
@@ -544,6 +561,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The status of this enrollment
+    - name: terminating_event
+      type: STRING
+      mode: NULLABLE
+      description: The event that closed the instance (`category.name`). Only present
+        when `reason` is "exit".
     - name: tracker_changed
       type: STRING
       mode: NULLABLE

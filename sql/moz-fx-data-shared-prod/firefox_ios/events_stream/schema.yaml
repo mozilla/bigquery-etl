@@ -374,9 +374,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Describes whether the user accepted the summarization terms of service.
+        * Whether the consent prompt was accepted.
 
-        * Whether the consent prompt was accepted.'
+        * Describes whether the user accepted the summarization terms of service.'
     - name: auto_translate
       type: BOOLEAN
       mode: NULLABLE
@@ -478,6 +478,11 @@ fields:
       description: "True for the first card recorded after the WorldCup section is\
         \ built in the current homepage session \u2014 i.e. the section's initial\
         \ impression. False for every subsequent swipe within that session."
+    - name: is_minimized
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the pill was in its minimized form (minimal address bar)
+        when tapped.
     - name: is_new_email_mask
       type: BOOLEAN
       mode: NULLABLE
@@ -1147,15 +1152,16 @@ fields:
 
         * The reason for the unenrollment failure
 
+        * Why the pill went away. One of `swipe` or `new_session`. See the `QuickAnswersReturnPillDismissReason`
+        enum for the valid values.
+
         * The selected issue category. Options are listed in the WebCompatIssueCategory
         enumeration.
 
         * Why the session ended. When in MANUAL mode, the reason can optionally be
         set by the application. Possible values set by Glean in AUTO or LIFECYCLE
         session management modes include: - "inactive": client went to background
-        (LIFECYCLE mode) - "replaced": a new session was started while one was already
-        active - "timeout": AUTO mode inactivity timeout expired - "abnormal": session
-        ended du...'
+        (LIFECYCLE mode) - "replaced": a n...'
     - name: received_url
       type: STRING
       mode: NULLABLE

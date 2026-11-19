@@ -8,7 +8,8 @@
     new exclusion differs from the DENG-11590 UDF by more than 2 profiles.
   watchers:
   - phlee@mozilla.com
-  status: Initiate
+  - rbaffourawuah@mozilla.com
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

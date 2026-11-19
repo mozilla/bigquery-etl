@@ -57,6 +57,7 @@ from bigquery_etl.metadata.validate_metadata import (
 )
 
 from ..cli.utils import (
+    flush_stdin,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -405,6 +406,8 @@ def deprecate(
             if not prompted:
                 raise
             click.echo(f"Warning: {e.message}", err=True)
+            # Drop keys pressed while waiting so they don't answer the prompt.
+            flush_stdin()
             if not click.confirm(f"Deprecate {targets} without downstream?"):
                 click.echo("Cancelled, nothing was changed.")
                 return
@@ -421,6 +424,7 @@ def deprecate(
                 options.append(f"pre-selected: {mode}")
             note = f" ({'; '.join(options)})" if options else ""
             if interactive:
+                flush_stdin()
                 picked = pick(targets, candidates, external, preselected, note)
                 if picked is None:
                     click.echo("Cancelled, nothing was changed.")

@@ -1,6 +1,9 @@
-"""Select downstream assets to deprecate along with a table."""
+"""Deprecate tables along with their downstream assets, and delete deprecated ones."""
 
+import logging
+import shutil
 import subprocess
+from datetime import date
 from enum import Enum, StrEnum
 from pathlib import Path
 from typing import Any, Sequence
@@ -18,6 +21,9 @@ from bigquery_etl.datahub.lineage import (
 )
 from bigquery_etl.dependency import extract_table_references
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.util.common import get_unittests_dir
+
+logger = logging.getLogger(__name__)
 
 # Read-only picker groups show at most this many rows.
 MAX_READ_ONLY_ROWS = 25
@@ -203,6 +209,146 @@ def recently_added(sql_dir: str) -> set[Path] | None:
         "--relative",
         "--format=",
     )
+
+
+@attrs.define
+class DeprecatedArtifact:
+    """A table or view directory whose metadata.yaml marks it as deprecated."""
+
+    path: Path
+    deletion_date: date | None
+    owners: list[str]
+
+    @classmethod
+    def from_metadata(
+        cls, metadata_file: Path | str, metadata: Metadata
+    ) -> "DeprecatedArtifact":
+        """Return the artifact for a parsed metadata.yaml."""
+        return cls(
+            path=Path(metadata_file).parent,
+            deletion_date=metadata.deletion_date,
+            owners=list(metadata.owners),
+        )
+
+    @property
+    def project(self) -> str:
+        """Return the project of the artifact."""
+        return self.path.parts[-3]
+
+    @property
+    def dataset(self) -> str:
+        """Return the dataset of the artifact."""
+        return self.path.parts[-2]
+
+    @property
+    def name(self) -> str:
+        """Return the table or view name of the artifact."""
+        return self.path.parts[-1]
+
+    @property
+    def id(self) -> str:
+        """Return project.dataset.name of the artifact."""
+        return f"{self.project}.{self.dataset}.{self.name}"
+
+    def is_past_due(self, today: date) -> bool:
+        """Return True if deletion_date is before today."""
+        return self.deletion_date is not None and self.deletion_date < today
+
+    def to_row(self) -> dict[str, Any]:
+        """Return the artifact as a row of monitoring_derived.deprecated_tables_v1."""
+        return {
+            "project_id": self.project,
+            "dataset_id": self.dataset,
+            "table_id": self.name,
+            "deletion_date": (
+                self.deletion_date.isoformat() if self.deletion_date else None
+            ),
+            "owners": self.owners,
+        }
+
+
+def get_deprecated_artifacts(sql_dir: str) -> list[DeprecatedArtifact]:
+    """Return every artifact in sql_dir whose metadata marks it as deprecated."""
+    artifacts = []
+    for metadata_file in sorted(Path(sql_dir).glob(f"*/*/*/{METADATA_FILE}")):
+        try:
+            metadata = Metadata.from_file(metadata_file)
+            if metadata.deprecated:
+                artifacts.append(
+                    DeprecatedArtifact.from_metadata(metadata_file, metadata)
+                )
+        except Exception as e:  # e.g. invalid YAML or owners
+            logger.warning(f"Skipping invalid metadata {metadata_file}: {e}")
+    return artifacts
+
+
+def artifact_paths(artifact: DeprecatedArtifact) -> list[Path]:
+    """Return the artifact's directory, and its tests/sql directory if there is one."""
+    tests = get_unittests_dir(artifact.path.parents[2])
+    mirror = tests / artifact.project / artifact.dataset / artifact.name
+    return [artifact.path] + ([mirror] if mirror.is_dir() else [])
+
+
+def delete_artifact(artifact: DeprecatedArtifact) -> list[Path]:
+    """Delete the files of an artifact and return the removed directories."""
+    paths = artifact_paths(artifact)
+    for path in paths:
+        shutil.rmtree(path)
+    return paths
+
+
+def _git_root(path: Path) -> Path | None:
+    """Return the root of the git repo containing path, or None if git fails."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=path,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return Path(result.stdout.strip())
+
+
+def find_references(
+    artifacts: list[DeprecatedArtifact],
+) -> dict[str, list[Path]] | None:
+    """Return the git-tracked files that mention each artifact, or None if git fails.
+
+    Matches dataset.name and dataset/name, leaving out the artifacts' own files.
+    Paths are relative to the root of the repo the artifact is in.
+    """
+    deleted = [p.resolve() for a in artifacts for p in artifact_paths(a)]
+    references = {}
+    for artifact in artifacts:
+        # the sql dir still exists after the artifact itself is deleted
+        root = _git_root(artifact.path.parents[2])
+        if root is None:
+            return None
+        try:
+            result = subprocess.run(
+                # dataset/name catches paths, e.g. in bqetl_project.yaml skip lists
+                ["git", "grep", "-l", "-z", "-w", "-F"]
+                + ["-e", f"{artifact.dataset}.{artifact.name}"]
+                + ["-e", f"{artifact.dataset}/{artifact.name}"],
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+        except OSError:
+            return None
+        # git grep exits with 1 when nothing matches
+        if result.returncode not in (0, 1):
+            return None
+        files = [Path(f) for f in result.stdout.split("\0") if f]
+        references[artifact.id] = [
+            f
+            for f in files
+            if not any((root / f).resolve().is_relative_to(d) for d in deleted)
+        ]
+    return references
 
 
 def used_reason(candidate: Candidate) -> str | None:

@@ -1,18 +1,25 @@
+import importlib.util
 import os
 import subprocess
+from datetime import date
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 import yaml
+from click.testing import CliRunner
 
 from bigquery_etl.deprecation import (
     MAX_READ_ONLY_ROWS,
     Candidate,
+    DeprecatedArtifact,
     DisabledReason,
     IncludeDownstream,
+    artifact_paths,
     candidate_label,
     downstream_candidates,
+    find_references,
+    get_deprecated_artifacts,
     is_unused,
     label_text,
     pick,
@@ -377,3 +384,163 @@ def test_read_only_groups_are_capped(sql_dir):
     assert section.title == f"Not in bigquery-etl: looker ({MAX_READ_ONLY_ROWS + 3})"
     assert len(rows) == MAX_READ_ONLY_ROWS + 1
     assert rows[-1][0].startswith("... and 3 more")
+
+
+TODAY = date(2026, 6, 1)
+
+
+def add_artifact(repo, name, metadata, project=PROJECT, dataset="d"):
+    """Create sql/<project>/<dataset>/<name> with a metadata.yaml and query."""
+    path = repo / "sql" / project / dataset / name
+    path.mkdir(parents=True)
+    (path / "metadata.yaml").write_text(yaml.dump(metadata))
+    (path / "query.sql").write_text("SELECT 1")
+    return path
+
+
+def deprecated(deletion_date, owners=("a@example.com",)):
+    return {
+        **BASE,
+        "owners": list(owners),
+        "deprecated": True,
+        "deletion_date": deletion_date,
+    }
+
+
+@pytest.fixture
+def repo(tmp_path):
+    """A git repo of deprecated and live artifacts, all committed but untracked_v1."""
+    add_artifact(tmp_path, "past_v1", deprecated(date(2026, 5, 31)))
+    add_artifact(tmp_path, "due_today_v1", deprecated(TODAY))
+    add_artifact(tmp_path, "no_date_v1", {**BASE, "deprecated": True})
+    add_artifact(tmp_path, "live_v1", BASE)
+    add_artifact(tmp_path, "past_v1", deprecated(date(2026, 1, 1)), dataset="d_stable")
+    add_artifact(
+        tmp_path, "past_v1", deprecated(date(2026, 1, 1)), project="moz-fx-glam-prod"
+    )
+    add_artifact(tmp_path, "invalid_v1", {**BASE, "owners": "not a list"})
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    commit(tmp_path)
+    add_artifact(tmp_path, "untracked_v1", deprecated(date(2026, 1, 1)))
+    return tmp_path
+
+
+def artifact(repo, name, dataset="d", deletion_date=None, owners=("a@example.com",)):
+    return DeprecatedArtifact(
+        path=repo / "sql" / PROJECT / dataset / name,
+        deletion_date=deletion_date,
+        owners=list(owners),
+    )
+
+
+class TestDeprecatedArtifact:
+    @pytest.mark.parametrize(
+        "deletion_date, past_due",
+        [(date(2026, 5, 31), True), (TODAY, False), (None, False)],
+    )
+    def test_is_past_due(self, tmp_path, deletion_date, past_due):
+        artifact_ = artifact(tmp_path, "t_v1", deletion_date=deletion_date)
+
+        assert artifact_.is_past_due(TODAY) is past_due
+
+    def test_deprecated_artifact_rows(self, repo):
+        rows = {
+            (r["project_id"], r["dataset_id"], r["table_id"]): r
+            for r in (a.to_row() for a in get_deprecated_artifacts(str(repo / "sql")))
+        }
+
+        assert rows[(PROJECT, "d", "past_v1")] == {
+            "project_id": PROJECT,
+            "dataset_id": "d",
+            "table_id": "past_v1",
+            "deletion_date": "2026-05-31",
+            "owners": ["a@example.com"],
+        }
+        assert rows[(PROJECT, "d", "no_date_v1")]["deletion_date"] is None
+        # live_v1 isn't deprecated and invalid_v1 can't be parsed
+        assert (PROJECT, "d", "live_v1") not in rows
+        assert (PROJECT, "d", "invalid_v1") not in rows
+
+
+def load_deprecated_tables_job():
+    """Import deprecated_tables_v1/query.py, which isn't in a package."""
+    path = (
+        Path(__file__).parent.parent
+        / "sql/moz-fx-data-shared-prod/monitoring_derived/deprecated_tables_v1/query.py"
+    )
+    spec = importlib.util.spec_from_file_location("deprecated_tables_job", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class TestDeprecatedTablesJob:
+    def test_reports_artifacts_past_their_deletion_date(self, repo, monkeypatch):
+        job = load_deprecated_tables_job()
+        monkeypatch.setenv("SLACK_API_KEY", "token")
+        sql_dir = str(repo / "sql")
+
+        with (
+            patch.object(job, "date") as mock_date,
+            patch.object(job, "bigquery"),
+            patch.object(job, "send_slack_message"),
+            patch.object(job, "format_slack_message", return_value="msg") as fmt,
+        ):
+            mock_date.today.return_value = TODAY
+            result = CliRunner().invoke(job.main, [f"--sql-dir={sql_dir}"])
+
+        assert result.exit_code == 0, result.output
+        reported = {
+            f"{r['project_id']}.{r['dataset_id']}.{r['table_id']}"
+            for r in fmt.call_args.args[1]
+        }
+        # due_today_v1 is on its deletion date, not past it
+        assert reported == {
+            f"{PROJECT}.d.past_v1",
+            f"{PROJECT}.d_stable.past_v1",
+            "moz-fx-glam-prod.d.past_v1",
+            f"{PROJECT}.d.untracked_v1",
+        }
+
+
+class TestArtifactPaths:
+    def test_artifact_paths_include_tests_mirror_only_if_present(self, repo):
+        with_tests = artifact(repo, "past_v1")
+        mirror = repo / "tests" / "sql" / PROJECT / "d" / "past_v1"
+        mirror.mkdir(parents=True)
+
+        assert artifact_paths(with_tests) == [with_tests.path, mirror]
+        assert artifact_paths(artifact(repo, "live_v1")) == [
+            repo / "sql" / PROJECT / "d" / "live_v1"
+        ]
+
+
+class TestFindReferences:
+    def test_finds_tracked_references_outside_deleted_paths(self, repo):
+        sql = repo / "sql" / PROJECT / "d"
+        (sql / "live_v1" / "query.sql").write_text("SELECT * FROM d.past_v1")
+        (sql / "past_v1" / "query.sql").write_text("SELECT * FROM d.past_v1")
+        # a longer name sharing the prefix isn't a reference
+        (sql / "no_date_v1" / "query.sql").write_text("SELECT * FROM d.past_v10")
+        mirror = repo / "tests" / "sql" / PROJECT / "d" / "past_v1"
+        mirror.mkdir(parents=True)
+        (mirror / "expect.yaml").write_text("d.past_v1")
+        # paths count too, e.g. in bqetl_project.yaml skip lists
+        (repo / "bqetl_project.yaml").write_text(f"- sql/{PROJECT}/d/past_v1/query.sql")
+        commit(repo, when=None)
+        (sql / "live_v1" / "untracked.sql").write_text("SELECT * FROM d.past_v1")
+
+        references = find_references([artifact(repo, "past_v1")])
+
+        # paths are relative to the repo root
+        assert references == {
+            f"{PROJECT}.d.past_v1": [
+                Path("bqetl_project.yaml"),
+                Path("sql") / PROJECT / "d" / "live_v1" / "query.sql",
+            ]
+        }
+
+    def test_returns_none_outside_git(self, tmp_path):
+        add_artifact(tmp_path, "past_v1", deprecated(date(2026, 1, 1)))
+
+        assert find_references([artifact(tmp_path, "past_v1")]) is None

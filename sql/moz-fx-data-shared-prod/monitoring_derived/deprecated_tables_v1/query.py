@@ -12,13 +12,12 @@ import os
 from collections import defaultdict
 from datetime import date
 from functools import lru_cache
-from pathlib import Path
 
 import click
 import requests
 from google.cloud import bigquery
 
-from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
+from bigquery_etl.deprecation import get_deprecated_artifacts
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +48,8 @@ def main(sql_dir, project, destination_dataset, destination_table, slack_channel
     """Write deprecated tables to the destination table."""
     logging.basicConfig(level=logging.INFO)
 
-    rows = get_deprecated_tables(sql_dir)
+    artifacts = get_deprecated_artifacts(sql_dir)
+    rows = [artifact.to_row() for artifact in artifacts]
     logger.info(f"Found {len(rows)} deprecated tables")
 
     client = bigquery.Client(project)
@@ -60,9 +60,10 @@ def main(sql_dir, project, destination_dataset, destination_table, slack_channel
     destination = f"{project}.{destination_dataset}.{destination_table}"
     client.load_table_from_json(rows, destination, job_config=job_config).result()
 
-    today = date.today().isoformat()
+    # same rule as `bqetl metadata delete`: deletion_date before today
+    today = date.today()
     past_deletion_date = [
-        row for row in rows if row["deletion_date"] and row["deletion_date"] < today
+        row for artifact, row in zip(artifacts, rows) if artifact.is_past_due(today)
     ]
     if not past_deletion_date:
         logger.info("No deprecated tables past their deletion date")
@@ -76,36 +77,6 @@ def main(sql_dir, project, destination_dataset, destination_table, slack_channel
         token, slack_channel, format_slack_message(token, past_deletion_date)
     )
     logger.info(f"Reported {len(past_deletion_date)} tables to {slack_channel}")
-
-
-def get_deprecated_tables(sql_dir):
-    """Return each table whose metadata has it marked as deprecated."""
-    rows = []
-    for metadata_file in sorted(Path(sql_dir).glob(f"*/*/*/{METADATA_FILE}")):
-        try:
-            metadata = Metadata.from_file(metadata_file)
-        except Exception as e:
-            logger.warning(f"Skipping invalid metadata {metadata_file}: {e}")
-            continue
-
-        if not metadata.deprecated:
-            continue
-
-        table_dir = metadata_file.parent
-        rows.append(
-            {
-                "project_id": table_dir.parent.parent.name,
-                "dataset_id": table_dir.parent.name,
-                "table_id": table_dir.name,
-                "deletion_date": (
-                    metadata.deletion_date.isoformat()
-                    if metadata.deletion_date
-                    else None
-                ),
-                "owners": metadata.owners,
-            }
-        )
-    return rows
 
 
 @lru_cache

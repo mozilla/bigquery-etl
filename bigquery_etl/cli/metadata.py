@@ -6,7 +6,8 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import date, datetime
+from fnmatch import fnmatchcase
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
@@ -31,11 +32,15 @@ from bigquery_etl.datahub.lineage import (
     get_downstream_lineage as get_downstream_lineage_from_datahub,
 )
 from bigquery_etl.deprecation import (
+    DeprecatedArtifact,
     IncludeDownstream,
+    delete_artifact,
     downstream_candidates,
+    find_references,
     pick,
     preselect,
     selection_summary,
+    tracked_files,
 )
 from bigquery_etl.metadata.parse_metadata import (
     DATASET_METADATA_FILE,
@@ -472,6 +477,126 @@ def deprecate(
 
         metadata.write(metadata_file)
         click.echo(f"Updated {metadata_file} with deprecation.")
+
+
+@metadata.command(help="""
+    Delete the directories of deprecated tables or views, and their tests/sql
+    directories. BigQuery objects are not deleted.
+
+    NAME must match the whole dataset.table, and may use wildcards. Tables whose
+    deletion_date hasn't passed need --force. If any match isn't deprecated, isn't
+    tracked by git, or has invalid metadata, nothing is deleted, even with --force.
+
+    Examples:
+
+    \b
+     ./bqetl metadata delete firefox_desktop_derived.desktop_retention_aggregates_v1
+     ./bqetl metadata delete firefox_desktop_derived.desktop_retention_aggregates_v1 --force
+    """)
+@click.argument("name")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
+@sql_dir_option
+@click.option(
+    "--force",
+    "-f",
+    is_flag=True,
+    help="Also delete deprecated tables whose deletion_date hasn't passed.",
+)
+def delete(name: str, sql_dir: str, project_id: str, force: bool) -> None:
+    """Delete the files of deprecated tables or views."""
+    if os.path.isfile(name):  # e.g. a query.sql path means its table directory
+        name = str(Path(name).parent)
+    metadata_files = sorted(
+        set(
+            paths_matching_name_pattern(
+                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+            )
+        )
+    )
+    if not os.path.exists(name):
+        # paths_matching_name_pattern matches suffixes, so d.t_v1 would match xd.t_v1
+        metadata_files = [
+            f
+            for f in metadata_files
+            if fnmatchcase(".".join(extract_from_query_path(f)), name)
+            or fnmatchcase(".".join(extract_from_query_path(f)), f"{project_id}.{name}")
+        ]
+    if not metadata_files:
+        raise click.ClickException(f"No metadata file(s) were found for: {name}")
+
+    today = date.today()
+    artifacts, problems = [], []
+    tracked: dict[Path, set[Path] | None] = {}  # tracked metadata files by sql dir
+    for metadata_file in metadata_files:
+        try:
+            metadata = Metadata.from_file(metadata_file)
+            artifact = DeprecatedArtifact.from_metadata(metadata_file, metadata)
+        except Exception as e:
+            problems.append(f"{metadata_file} is invalid: {e}")
+            continue
+        sql_root = artifact.path.parents[2]
+        if sql_root not in tracked:
+            tracked[sql_root] = tracked_files(str(sql_root))
+        tracked_in_root = tracked[sql_root]
+        if not metadata.deprecated:
+            problems.append(f"{artifact.id} is not deprecated")
+        elif tracked_in_root is None:
+            problems.append(f"{artifact.id} could not be checked with git")
+        elif Path(metadata_file).resolve() not in tracked_in_root:
+            # git can't restore it, and generated SQL comes back on the next generate
+            problems.append(f"{artifact.id} isn't tracked by git (generated SQL?)")
+        elif not force and not artifact.is_past_due(today):
+            when = (
+                f"has deletion_date {artifact.deletion_date}"
+                if artifact.deletion_date
+                else "has no deletion_date"
+            )
+            problems.append(f"{artifact.id} {when}, use --force to delete it anyway")
+        else:
+            artifacts.append(artifact)
+    if problems:
+        message = ["Nothing was deleted.", "Can't delete:"]
+        message += [f"  {problem}" for problem in problems]
+        if artifacts:
+            message += ["Can delete:"] + [f"  {a.id}" for a in artifacts]
+        raise click.ClickException("\n".join(message))
+
+    for i, artifact in enumerate(artifacts):
+        try:
+            deleted = delete_artifact(artifact)
+        except OSError as e:
+            message = [
+                f"Failed while deleting {artifact.id}, so some of its files may be "
+                f"gone: {e}"
+            ]
+            if remaining := artifacts[i + 1 :]:
+                message += ["Not attempted:"] + [f"  {a.id}" for a in remaining]
+            message.append(
+                "Run `git status` to see what was deleted, "
+                "and `git restore <path>` to bring files back."
+            )
+            raise click.ClickException("\n".join(message))
+        for path in deleted:
+            click.echo(f"Deleted {path}")
+
+    references = find_references(artifacts)
+    if references is None:
+        click.secho(
+            "Warning: could not search git for references.", fg="yellow", err=True
+        )
+        return
+    for artifact_id, files in references.items():
+        if files:
+            click.secho(
+                f"Warning: files still reference {artifact_id}:",
+                fg="yellow",
+                bold=True,
+                err=True,
+            )
+            for f in files:
+                click.echo(f"  {f}", err=True)
 
 
 def _is_interactive() -> bool:

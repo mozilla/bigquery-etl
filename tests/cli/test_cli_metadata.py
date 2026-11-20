@@ -3,7 +3,7 @@ import os
 import shutil
 import subprocess
 import tempfile
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -13,11 +13,18 @@ import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
 
-from bigquery_etl.cli.metadata import deprecate, get_downstream_lineage, publish, update
+from bigquery_etl.cli.metadata import (
+    delete,
+    deprecate,
+    get_downstream_lineage,
+    publish,
+    update,
+)
 from bigquery_etl.cli.metadata import validate as validate_command
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.datahub.auth import LoginError
 from bigquery_etl.datahub.lineage import AuthError, LineageTooLargeError
+from bigquery_etl.deprecation import delete_artifact
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
     BIGEYE_PREDEFINED_FILE,
@@ -2508,3 +2515,164 @@ class TestDeprecateDownstream:
         assert result.exit_code == 0, result.output
         assert "--since-days is ignored" in result.stderr
         assert self.deprecated(sql_dir) == {"target_v1"}
+
+
+class TestMetadataDelete:
+    PROJECT = "moz-fx-data-shared-prod"
+
+    @pytest.fixture
+    def repo(self, tmp_path):
+        """A git repo with one past-due, one future and one live table in sql/d."""
+        today = datetime.today().date()
+        for name, extra in {
+            # date objects, so yaml.dump writes them unquoted like real metadata
+            "past_v1": {"deprecated": True, "deletion_date": date(2020, 1, 1)},
+            "future_v1": {
+                "deprecated": True,
+                "deletion_date": today + relativedelta(years=1),
+            },
+            "live_v1": {},
+        }.items():
+            path = tmp_path / "sql" / self.PROJECT / "d" / name
+            path.mkdir(parents=True)
+            (path / "metadata.yaml").write_text(
+                yaml.dump(
+                    {
+                        "friendly_name": "x",
+                        "description": "x",
+                        "owners": ["a@example.com"],
+                        **extra,
+                    }
+                )
+            )
+            (path / "query.sql").write_text("SELECT 1")
+        (tmp_path / "sql" / self.PROJECT / "d" / "live_v1" / "query.sql").write_text(
+            "SELECT * FROM d.past_v1"
+        )
+        mirror = tmp_path / "tests" / "sql" / self.PROJECT / "d" / "past_v1"
+        mirror.mkdir(parents=True)
+        (mirror / "expect.yaml").write_text("[]")
+        subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
+        return tmp_path
+
+    def invoke(self, repo, name, *args):
+        return CliRunner().invoke(
+            delete,
+            [name, f"--sql-dir={repo / 'sql'}", f"--project-id={self.PROJECT}", *args],
+        )
+
+    def table(self, repo, name):
+        return repo / "sql" / self.PROJECT / "d" / name
+
+    def test_deletes_past_due_artifact_and_tests_mirror(self, repo):
+        result = self.invoke(repo, "d.past_v1")
+
+        assert result.exit_code == 0, result.output
+        assert not self.table(repo, "past_v1").exists()
+        assert not (repo / "tests" / "sql" / self.PROJECT / "d" / "past_v1").exists()
+        assert "files still reference" in result.stderr
+        assert f"sql/{self.PROJECT}/d/live_v1/query.sql" in result.stderr
+
+    def test_future_deletion_date_needs_force(self, repo):
+        result = self.invoke(repo, "d.future_v1")
+        assert result.exit_code != 0
+        assert "use --force" in result.output
+        assert self.table(repo, "future_v1").exists()
+
+        result = self.invoke(repo, "d.future_v1", "-f")
+        assert result.exit_code == 0, result.output
+        assert not self.table(repo, "future_v1").exists()
+
+    def test_missing_deletion_date_needs_force(self, repo):
+        metadata = self.table(repo, "past_v1") / "metadata.yaml"
+        content = yaml.safe_load(metadata.read_text())
+        del content["deletion_date"]
+        metadata.write_text(yaml.dump(content))
+
+        result = self.invoke(repo, "d.past_v1")
+
+        assert result.exit_code != 0
+        assert "has no deletion_date, use --force" in result.output
+
+    def test_deletes_nothing_if_any_match_is_not_deprecated(self, repo):
+        result = self.invoke(repo, "d.*", "--force")
+
+        assert result.exit_code != 0
+        # blocking matches are listed first, then the ones that could be deleted
+        output = result.output
+        cant, can = output.index("Can't delete:"), output.index("Can delete:")
+        assert cant < output.index("live_v1 is not deprecated") < can
+        assert can < output.index("d.future_v1") and can < output.index("d.past_v1")
+        for name in ("past_v1", "future_v1", "live_v1"):
+            assert self.table(repo, name).exists()
+
+    def test_deletes_nothing_if_any_match_has_invalid_metadata(self, repo):
+        (self.table(repo, "live_v1") / "metadata.yaml").write_text("owners: oops")
+
+        result = self.invoke(repo, "d.*", "--force")
+
+        assert result.exit_code != 0
+        assert "live_v1/metadata.yaml is invalid" in result.output
+        assert self.table(repo, "past_v1").exists()
+
+    def add_copy_of_past(self, repo, name, track=True):
+        """Add a past-due table named name, tracked by git unless track is False."""
+        shutil.copytree(self.table(repo, "past_v1"), self.table(repo, name))
+        if track:
+            subprocess.run(["git", "add", "."], cwd=repo, check=True)
+
+    def test_untracked_artifacts_are_not_deleted(self, repo):
+        self.add_copy_of_past(repo, "untracked_v1", track=False)
+
+        result = self.invoke(repo, "d.*_v1", "-f")
+
+        assert result.exit_code != 0
+        assert "untracked_v1 isn't tracked by git" in result.output
+        assert self.table(repo, "untracked_v1").exists()
+        assert self.table(repo, "past_v1").exists()
+
+    def test_failed_deletion_reports_what_was_not_deleted(self, repo):
+        self.add_copy_of_past(repo, "third_v1")
+        real_delete = delete_artifact
+
+        def fail_on_past(artifact):
+            if artifact.name == "past_v1":
+                raise PermissionError("Permission denied")
+            return real_delete(artifact)
+
+        # sorted, so future_v1 is deleted, then past_v1 fails before third_v1
+        with patch("bigquery_etl.cli.metadata.delete_artifact", fail_on_past):
+            result = self.invoke(repo, "d.[fpt]*", "-f")
+
+        assert result.exit_code != 0
+        assert "Failed while deleting" in result.output and "past_v1" in result.output
+        assert "Not attempted:" in result.output and "third_v1" in result.output
+        assert "git restore" in result.output
+        assert not self.table(repo, "future_v1").exists()
+        assert self.table(repo, "third_v1").exists()
+
+    @pytest.mark.parametrize("file_name", ["query.sql", "metadata.yaml"])
+    def test_file_path_deletes_its_table(self, repo, file_name):
+        result = self.invoke(repo, str(self.table(repo, "past_v1") / file_name))
+
+        assert result.exit_code == 0, result.output
+        assert not self.table(repo, "past_v1").exists()
+        assert not (repo / "tests" / "sql" / self.PROJECT / "d" / "past_v1").exists()
+
+    @pytest.mark.parametrize("name", ["d.past_v1", "past_v1"])
+    def test_name_must_match_whole_dataset_and_table(self, repo, name):
+        # a suffix match on d.past_v1 would also delete xd.past_v1
+        other = repo / "sql" / self.PROJECT / "xd" / "past_v1"
+        shutil.copytree(self.table(repo, "past_v1"), other)
+
+        result = self.invoke(repo, name)
+
+        if name == "past_v1":  # a bare table name matches nothing
+            assert result.exit_code != 0
+            assert "No metadata file(s) were found" in result.output
+            assert self.table(repo, "past_v1").exists()
+        else:
+            assert result.exit_code == 0, result.output
+            assert not self.table(repo, "past_v1").exists()
+        assert other.exists()

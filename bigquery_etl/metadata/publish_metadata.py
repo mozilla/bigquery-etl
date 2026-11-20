@@ -10,6 +10,8 @@ from ..util import standard_args
 from .parse_metadata import ExternalDataFormat, Metadata
 
 METADATA_FILE = "metadata.yaml"
+# Marks artifacts deployed by bigquery-etl, so removed ones can be cleaned up.
+MANAGED_LABEL = "managed"
 DEFAULT_PATTERN = (
     f"{ConfigLoader.get('default', 'project', fallback='moz-fx-data-shared-prod')}:*.*"
 )
@@ -32,7 +34,9 @@ class InvalidExternalDataConfigException(Exception):
     """Raised invalid config for external data tables."""
 
 
-def publish_metadata(client, project, dataset, table, metadata):
+def publish_metadata(
+    client, project, dataset, table, metadata, add_managed_label=False
+):
     """Push metadata to BigQuery tables."""
     try:
         table_ref = client.dataset(dataset).table(table)
@@ -57,6 +61,8 @@ def publish_metadata(client, project, dataset, table, metadata):
             # TODO: in the future we can consider updating the table expiration date based on deletion_date
         if metadata.monitoring and metadata.monitoring.enabled:
             table.labels["monitoring"] = "true"
+        if add_managed_label:
+            table.labels[MANAGED_LABEL] = ""
 
         client.update_table(table, ["friendly_name", "description", "labels"])
         print("Published metadata for: {}.{}.{}".format(project, dataset, table))

@@ -1,0 +1,14 @@
+2026-11-19:
+  start_date: 2026-02-23
+  end_date: 2026-11-17
+  reason: https://mozilla-hub.atlassian.net/browse/DENG-11568 - backfill the new table
+    from the first day of Firefox 150 (nightly) to the day before the first scheduled
+    run
+  watchers:
+  - phlee@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_partition_offset: false

@@ -57,6 +57,7 @@ from bigquery_etl.metadata.validate_metadata import (
 )
 
 from ..cli.utils import (
+    flush_stdin,
     parallelism_option,
     paths_matching_name_pattern,
     project_id_option,
@@ -266,12 +267,20 @@ def _update_dataset_metadata(retained_dataset_roles, dataset_info):
     type=bool,
     help="Skip metadata publishing for tables in *_stable datasets which are managed by infra deploys.",
 )
+@click.option(
+    "--add-managed-label",
+    "--add_managed_label",
+    is_flag=True,
+    default=False,
+    help='Add a label "managed" to published tables for lifecycle management',
+)
 def publish(
     name: str,
     sql_dir: str | None,
     project_id: str | None,
     parallelism: int,
     skip_stable_datasets: bool,
+    add_managed_label: bool,
 ) -> None:
     """Publish Bigquery metadata."""
     table_metadata_files = paths_matching_name_pattern(
@@ -296,15 +305,25 @@ def publish(
 
         with Pool(parallelism) as pool:
             pool.map(
-                partial(_publish_metadata, project_id, credentials),
+                partial(
+                    _publish_metadata,
+                    project_id,
+                    credentials,
+                    add_managed_label=add_managed_label,
+                ),
                 table_metadata_files,
             )
     else:
         for metadata_file in table_metadata_files:
-            _publish_metadata(project_id, credentials=None, metadata_file=metadata_file)
+            _publish_metadata(
+                project_id,
+                credentials=None,
+                metadata_file=metadata_file,
+                add_managed_label=add_managed_label,
+            )
 
 
-def _publish_metadata(project_id, credentials, metadata_file):
+def _publish_metadata(project_id, credentials, metadata_file, add_managed_label=False):
     project, dataset, table = extract_from_query_path(metadata_file)
     try:
         metadata = Metadata.from_file(metadata_file)
@@ -314,6 +333,7 @@ def _publish_metadata(project_id, credentials, metadata_file):
             dataset,
             table,
             metadata,
+            add_managed_label=add_managed_label,
         )
     except FileNotFoundError:
         print(f"No metadata file for: {project}.{dataset}.{table}")
@@ -405,6 +425,8 @@ def deprecate(
             if not prompted:
                 raise
             click.echo(f"Warning: {e.message}", err=True)
+            # Drop keys pressed while waiting so they don't answer the prompt.
+            flush_stdin()
             if not click.confirm(f"Deprecate {targets} without downstream?"):
                 click.echo("Cancelled, nothing was changed.")
                 return
@@ -421,6 +443,7 @@ def deprecate(
                 options.append(f"pre-selected: {mode}")
             note = f" ({'; '.join(options)})" if options else ""
             if interactive:
+                flush_stdin()
                 picked = pick(targets, candidates, external, preselected, note)
                 if picked is None:
                     click.echo("Cancelled, nothing was changed.")

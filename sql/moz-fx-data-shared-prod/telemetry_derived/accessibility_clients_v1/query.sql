@@ -1,3 +1,4 @@
+-- TODO: remove this comment - CI test change
 WITH a11y_consumers_instantiators AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,

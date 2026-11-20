@@ -2,7 +2,7 @@
 
 ## Stage Deploys in Continuous Integration
 
-Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's CI (continuous integration), now implemented via [GitHub Actions](https://github.com/mozilla/bigquery-etl/blob/main/.github/workflows/build.yml) (previously CircleCI), deploys these changes to a stage environment and uses these stage artifacts to run its various checks. The step-by-step description below reflects the legacy CircleCI implementation and may not exactly match the current GitHub Actions workflow. The GitHub Actions workflow also supports a manual `workflow_dispatch` input, `skip-stage-deploys`, to skip stage deployments for a given run. 
+Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's CI (continuous integration), now implemented via [GitHub Actions](https://github.com/mozilla/bigquery-etl/blob/main/.github/workflows/build.yml) (previously CircleCI), deploys these changes to a stage environment and uses these stage artifacts to run its various checks. The step-by-step description below reflects the legacy CircleCI implementation and may not exactly match the current GitHub Actions workflow. The GitHub Actions workflow also supports manual `workflow_dispatch` inputs, `skip-stage-deploys`, to skip stage deployments for a given run, and `trigger-sql-generation`, to force SQL generation. 
 
 A `decide-runs` job in the workflow determines which validation jobs (for example `validate-routines`, `validate-sql`, `validate-bqetl`, `deploy`) run based on which files changed in the pull request.
 

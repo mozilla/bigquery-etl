@@ -30,7 +30,7 @@ Deploying artifacts to stage follows the following steps:
     * By default the table expiration is set to 1 hour
     * This step will also automatically remove any tables and datasets that got previously deployed, are older than an hour but haven't been removed (for example due to some CI check failing)
 
-After CI checks have passed and the pull-request has been approved, changes can be merged to `main`. Once a new version of bigquery-etl has been published the changes can be deployed to production through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment). For more information on artifact deployments to production see: https://docs.telemetry.mozilla.org/concepts/pipeline/artifact_deployment.html
+After CI checks have passed and the pull-request has been approved, changes can be merged to `main`. Once a new version of bigquery-etl has been published the changes can be deployed to production through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment), which also supports a `generate_sql` parameter to optionally run SQL generation as part of the deployment. For more information on artifact deployments to production see: https://docs.telemetry.mozilla.org/concepts/pipeline/artifact_deployment.html
 
 ## Local Deploys to Stage
 

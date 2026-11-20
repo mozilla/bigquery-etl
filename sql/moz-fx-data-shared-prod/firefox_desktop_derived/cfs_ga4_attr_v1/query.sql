@@ -97,7 +97,17 @@ SELECT
   ga4.ad_crosschannel_primary_channel_group AS ga4_ad_crosschannel_primary_channel_group,
   ga4.ad_crosschannel_default_channel_group AS ga4_ad_crosschannel_default_channel_group,
   cfs.app_build_id,
-  cfs.startup_profile_selection_reason_first AS startup_profile_selection_reason
+  cfs.startup_profile_selection_reason_first AS startup_profile_selection_reason,
+  `moz-fx-data-shared-prod`.udf.funnel_derived_clients(
+    cfs.normalized_os,
+    cfs.first_seen_date,
+    cfs.app_build_id,
+    cfs.attribution.source,
+    JSON_VALUE(cfs.attribution_ext.ua),
+    cfs.startup_profile_selection_reason_first,
+    -- Glean reports 'default' for non-partner builds where legacy reports NULL
+    NULLIF(cfs.distribution_id, 'default')
+  ) AS funnel_derived
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` cfs
 LEFT JOIN

@@ -17,11 +17,12 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  sql_generator: gecko_trace
 
 scheduling:
   dag_name: bqetl_gecko_trace
   task_group: {{ app_id }}
-  date_partition_parameter: null
+  partition_parameter: null
   parameters: ["submission_date:DATE:{% raw %}{{ds}}{% endraw %}"]
 
 bigquery:

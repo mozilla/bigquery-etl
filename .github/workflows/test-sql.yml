@@ -112,7 +112,9 @@ jobs:
           GOOGLE_PROJECT_ID: ${{ steps.auth-stage.outputs.project_id }}
           GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
         run: |
-          PATH="$BQETL_VENV/bin:$PATH" "$BQETL_ROOT/script/entrypoint" -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
+          # Rerun only on transient Workload Identity token refresh failures
+          PATH="$BQETL_VENV/bin:$PATH" "$BQETL_ROOT/script/entrypoint" -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine \
+            --reruns 2 --reruns-delay 5 --only-rerun RefreshError
       - name: Copy generated SQL/tests for debugging
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2

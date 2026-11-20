@@ -9,7 +9,7 @@
   override_retention_limit: true
   override_depends_on_past_end_date: false
   override_depends_on_past_null_partition: false
-  ignore_date_partition_offset: false
+  ignore_partition_offset: false
   query_script_entrypoint: main
   query_script_date_arg: date
   query_script_args:

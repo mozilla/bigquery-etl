@@ -18,6 +18,6 @@ bigquery:
     fields: [sample_id, country]
 scheduling:
   dag_name: bqetl_mobile_activation
-  date_partition_parameter: submission_date
+  partition_parameter: submission_date
 deprecated: true
 deletion_date: 2026-10-01

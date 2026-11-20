@@ -23,6 +23,7 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..metadata.publish_metadata import MANAGED_LABEL
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
 from ..util.common import block_coding_agents
@@ -224,7 +225,7 @@ def publish(
         views = [view for view in views if view.path not in DryRun.skipped_files()]
     if add_managed_label:
         for view in views:
-            view.labels["managed"] = ""
+            view.labels[MANAGED_LABEL] = ""
     if not force:
         has_changes = partial(_view_has_changes, target_project, credentials)
 
@@ -474,7 +475,7 @@ def _list_managed_views(
          table_name)
       WHERE
         option_name = "labels"
-      AND CONTAINS_SUBSTR(option_value, 'STRUCT("managed", "")')
+      AND CONTAINS_SUBSTR(option_value, 'STRUCT("{MANAGED_LABEL}", "")')
     """
 
     # running a query against information schema instead of using the API to list tables is much faster

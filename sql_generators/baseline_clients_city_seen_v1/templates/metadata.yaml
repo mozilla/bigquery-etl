@@ -22,7 +22,7 @@ scheduling:
   dag_name: bqetl_baseline_clients_city_seen
   task_name: {{ app_name }}_{{ table_name }}
   depends_on_past: true
-  date_partition_parameter: null
+  partition_parameter: null
   parameters:
     - {% raw %}submission_date:DATE:{{ds}}{% endraw %}
 bigquery:

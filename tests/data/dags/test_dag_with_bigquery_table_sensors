@@ -34,7 +34,7 @@ default_args = {
     "end_date": None,
     "email": ["test@example.org", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
-    "retry_delay": datetime.timedelta(seconds=3600),
+    "retry_delay": datetime.timedelta(hours=1),
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 2,
@@ -59,10 +59,10 @@ with DAG(
         table_id="baz_{{ ds_nodash }}",
         gcp_conn_id="google_cloud_shared_prod",
         deferrable=True,
-        poke_interval=datetime.timedelta(seconds=1800),
-        timeout=datetime.timedelta(seconds=43200),
+        poke_interval=datetime.timedelta(minutes=30),
+        timeout=datetime.timedelta(hours=12),
         retries=1,
-        retry_delay=datetime.timedelta(seconds=600),
+        retry_delay=datetime.timedelta(minutes=10),
     )
 
     wait_for_foo_bar_baz_partition = BigQueryTablePartitionExistenceSensor(
@@ -73,10 +73,10 @@ with DAG(
         partition_id="{{ ds_nodash }}",
         gcp_conn_id="google_cloud_shared_prod",
         deferrable=True,
-        poke_interval=datetime.timedelta(seconds=900),
-        timeout=datetime.timedelta(seconds=21600),
+        poke_interval=datetime.timedelta(minutes=15),
+        timeout=datetime.timedelta(hours=6),
         retries=3,
-        retry_delay=datetime.timedelta(seconds=300),
+        retry_delay=datetime.timedelta(minutes=5),
     )
 
     test__non_incremental_query__v1 = bigquery_etl_query(
@@ -87,7 +87,8 @@ with DAG(
         owner="test@example.com",
         doc_md="### test\n\ntest\n\n**Owners:** test@example.com",
         email=["telemetry-alerts@mozilla.com", "test@example.com", "test@example.org"],
-        date_partition_parameter="submission_date",
+        partition_parameter="submission_date:DATE:{{ logical_date.format('YYYY-MM-DD') }}",
+        destination_partition="{{ logical_date.format('YYYYMMDD') }}",
         depends_on_past=True,
         arguments=["--append_table"],
     )

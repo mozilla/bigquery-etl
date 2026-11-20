@@ -8,9 +8,9 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_deletion_request_volume
+  partition_parameter: null
   referenced_tables:
     - ['moz-fx-data-shared-prod', '*_live', '*']
-  date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:

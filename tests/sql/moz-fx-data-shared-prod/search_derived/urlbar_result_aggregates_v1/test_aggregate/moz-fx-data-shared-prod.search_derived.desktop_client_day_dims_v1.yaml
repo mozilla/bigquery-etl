@@ -1,0 +1,17 @@
+- &dims
+  submission_date: "2026-10-28"
+  client_id: a
+  country: US
+  normalized_channel: release
+  os: Windows
+  app_version_major: 150
+  normalized_default_search_engine: Google
+  is_default_browser: true
+- <<: *dims
+  client_id: b
+- <<: *dims
+  client_id: c
+# Another day's row for d doesn't give d dims today.
+- <<: *dims
+  submission_date: "2026-10-27"
+  client_id: d

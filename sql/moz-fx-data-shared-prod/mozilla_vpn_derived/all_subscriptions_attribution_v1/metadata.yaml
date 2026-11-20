@@ -10,7 +10,7 @@ labels:
   incremental: true
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
+  partition_parameter: date
 bigquery:
   time_partitioning:
     type: day

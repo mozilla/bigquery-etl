@@ -348,7 +348,7 @@ class TestBackfill:
         """--reinitialize-table is persisted and allows the depends_on_past null-partition combo."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
@@ -378,7 +378,7 @@ class TestBackfill:
         """--reinitialize-sampling-batch-size is persisted on the entry."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
@@ -406,7 +406,7 @@ class TestBackfill:
         on the depends_on_past null-partition combo without reinitializing."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
@@ -442,7 +442,7 @@ class TestBackfill:
         rejects the depends_on_past null-partition combo."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(os.path.join(QUERY_DIR, "metadata.yaml"), "w") as f:
@@ -462,14 +462,14 @@ class TestBackfill:
             in result.output
         )
 
-    def test_create_backfill_backfill_date_partition_parameter(self, runner):
-        """backfill_date_partition_parameter makes a null-date_partition_parameter table
+    def test_create_backfill_backfill_partition_parameter(self, runner):
+        """backfill_partition_parameter makes a null-partition_parameter table
         backfill per partition, so the depends_on_past null-partition guard doesn't apply.
         """
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
-            "backfill_date_partition_parameter": "submission_date",
+            "partition_parameter": None,
+            "backfill_partition_parameter": "submission_date",
             "parameters": [self.HOURLY_DATE_PARAMETER],
             "depends_on_past": True,
         }
@@ -492,16 +492,16 @@ class TestBackfill:
     @pytest.mark.parametrize(
         "scheduling,bigquery",
         [
-            # date_partition_parameter already selects the partition
+            # partition_parameter already selects the partition
             (
-                {"backfill_date_partition_parameter": "submission_date"},
+                {"backfill_partition_parameter": "submission_date"},
                 {"time_partitioning": {"type": "day", "field": "submission_date"}},
             ),
             # unpartitioned table has no partition to select
             (
                 {
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "submission_date",
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
                     "parameters": ["submission_date:DATE:{{ds}}"],
                 },
                 None,
@@ -509,16 +509,16 @@ class TestBackfill:
             # no scheduling parameter to replace
             (
                 {
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "submission_date",
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
                 },
                 {"time_partitioning": {"type": "day", "field": "submission_date"}},
             ),
             # names a parameter that isn't the templated one
             (
                 {
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "day",
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "day",
                     "parameters": ["submission_date:DATE:{{ds}}"],
                 },
                 {"time_partitioning": {"type": "day", "field": "submission_date"}},
@@ -526,26 +526,25 @@ class TestBackfill:
             # names a parameter that isn't a DATE
             (
                 {
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "submission_date",
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
                     "parameters": ["submission_date:STRING:{{ds}}"],
                 },
                 {"time_partitioning": {"type": "day", "field": "submission_date"}},
             ),
-            # Airflow ignores the offset when date_partition_parameter is null, but
-            # backfills would apply it
+            # a partition offset already targets a specific partition
             (
                 {
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "submission_date",
-                    "date_partition_offset": -27,
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
+                    "partition_offset": "-27d",
                     "parameters": ["submission_date:DATE:{{ds}}"],
                 },
                 {"time_partitioning": {"type": "day", "field": "submission_date"}},
             ),
         ],
     )
-    def test_create_backfill_backfill_date_partition_parameter_invalid(
+    def test_create_backfill_backfill_partition_parameter_invalid(
         self, runner, scheduling, bigquery
     ):
         metadata = TABLE_METADATA_CONF.copy()
@@ -564,7 +563,7 @@ class TestBackfill:
         )
 
         assert result.exit_code == 1
-        assert "backfill_date_partition_parameter is set" in result.output
+        assert "backfill_partition_parameter is set" in result.output
 
     HOURLY_DESTINATION_TABLE = (
         "test_query_v1${{ (execution_date - macros.timedelta(hours=1))"
@@ -595,14 +594,14 @@ class TestBackfill:
             },
         ],
     )
-    def test_create_backfill_templated_partition_without_backfill_date_partition_parameter_fails(
+    def test_create_backfill_templated_partition_without_backfill_partition_parameter_fails(
         self, runner, scheduling
     ):
-        """A null date_partition_parameter table that picks its partition through Airflow
-        templates is rejected at create unless it sets backfill_date_partition_parameter,
+        """A null partition_parameter table that picks its partition through Airflow
+        templates is rejected at create unless it sets backfill_partition_parameter,
         instead of failing later in initiate."""
         metadata = TABLE_METADATA_CONF.copy()
-        metadata["scheduling"] = {"date_partition_parameter": None, **scheduling}
+        metadata["scheduling"] = {"partition_parameter": None, **scheduling}
         metadata["bigquery"] = {
             "time_partitioning": {"type": "day", "field": "submission_date"}
         }
@@ -619,7 +618,7 @@ class TestBackfill:
 
         assert result.exit_code == 1
         assert "targets its partition through a templated" in result.output
-        assert "backfill_date_partition_parameter" in result.output
+        assert "backfill_partition_parameter" in result.output
 
     @pytest.mark.parametrize(
         "scheduling,bigquery",
@@ -627,7 +626,7 @@ class TestBackfill:
             # {{ds}} is substituted by backfills
             (
                 {
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": ["submission_date:DATE:{{ds}}"],
                 },
                 {"time_partitioning": {"type": "day", "field": "submission_date"}},
@@ -635,7 +634,7 @@ class TestBackfill:
             # templated parameters that aren't DATE don't pick the partition
             (
                 {
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": ["run_id:STRING:{{run_id}}"],
                 },
                 {"time_partitioning": {"type": "day", "field": "submission_date"}},
@@ -643,7 +642,7 @@ class TestBackfill:
             # unpartitioned tables are written whole
             (
                 {
-                    "date_partition_parameter": None,
+                    "partition_parameter": None,
                     "parameters": [HOURLY_DATE_PARAMETER],
                 },
                 None,
@@ -670,15 +669,15 @@ class TestBackfill:
 
         assert "targets its partition through a templated" not in result.output
 
-    def test_create_backfill_backfill_date_partition_parameter_other_templated_date_fails(
+    def test_create_backfill_backfill_partition_parameter_other_templated_date_fails(
         self, runner
     ):
-        """backfill_date_partition_parameter only covers the parameter it names, so
+        """backfill_partition_parameter only covers the parameter it names, so
         another templated DATE parameter is still rejected."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
-            "backfill_date_partition_parameter": "submission_date",
+            "partition_parameter": None,
+            "backfill_partition_parameter": "submission_date",
             "destination_table": self.HOURLY_DESTINATION_TABLE,
             "parameters": [
                 self.HOURLY_DATE_PARAMETER,
@@ -709,7 +708,7 @@ class TestBackfill:
         binding scheduling parameters, so templated partition targets don't matter."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "destination_table": self.HOURLY_DESTINATION_TABLE,
             "parameters": [self.HOURLY_DATE_PARAMETER],
         }
@@ -750,8 +749,8 @@ class TestBackfill:
             # hourly table in a daily partition, like ads_derived.ad_metrics
             (
                 {
-                    "date_partition_parameter": None,
-                    "backfill_date_partition_parameter": "submission_date",
+                    "partition_parameter": None,
+                    "backfill_partition_parameter": "submission_date",
                     "parameters": ["submission_date:DATE:{{ds}}"],
                 },
                 "submission_hour",
@@ -1194,7 +1193,7 @@ class TestBackfill:
         """Validation should fail if partition param is null on a table with depends on past."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1226,7 +1225,7 @@ class TestBackfill:
         entry sets reinitialize_table and the query uses is_init()."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1258,7 +1257,7 @@ class TestBackfill:
         """reinitialize_table doesn't bypass the check if the query has no is_init()."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1293,7 +1292,7 @@ class TestBackfill:
         """
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1329,7 +1328,7 @@ class TestBackfill:
         """A completed override entry must still pass re-validation, not just Initiate ones."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1363,7 +1362,7 @@ class TestBackfill:
         """A stale Complete override must not let a new override-less Initiate entry pass."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1410,7 +1409,7 @@ class TestBackfill:
         one, validation fails even though the metadata guard itself is bypassed."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1442,7 +1441,7 @@ class TestBackfill:
         both must fail rather than silently letting the override win."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -1479,7 +1478,7 @@ class TestBackfill:
         acts on), not whichever entry happens to be newest by entry date."""
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         with open(
@@ -3406,7 +3405,7 @@ class TestBackfill:
         prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
@@ -3457,17 +3456,17 @@ class TestBackfill:
         Unlike a normal depends_on_past backfill, it must SKIP the staging ref-rewrite and the
         previous-partition seed: the custom query reads its own prod partition (`* REPLACE`), so
         repointing that read at the empty staging table would copy empty partitions over prod,
-        and _initialize_previous_partition would raise on the null date_partition_parameter.
+        and _initialize_previous_partition would raise on the null partition_parameter.
         Uses real time_partitioning metadata and does not mock _initialize_previous_partition,
         so a regression that re-enables the block surfaces here instead of being hidden.
         """
         prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
-        # Real first_seen-style partitioning; a null date_partition_parameter
+        # Real first_seen-style partitioning; a null partition_parameter
         # means the previous-partition seed cannot resolve a partition id.
         metadata["bigquery"] = {
             "time_partitioning": {"type": "day", "field": "first_seen_date"}
@@ -3511,13 +3510,13 @@ class TestBackfill:
         assert mock_context.invoke.call_args.kwargs["custom_query_path"] == Path(
             custom_query_path
         )
-        # date_partition_parameter is null, so backfill would truncate the whole
+        # partition_parameter is null, so backfill would truncate the whole
         # staging table each run, leaving only the last date. The override binds
         # submission_date so each run writes its own staging$YYYYMMDD partition.
         scheduling_overrides = json.loads(
             mock_context.invoke.call_args.kwargs["scheduling_overrides"]
         )
-        assert scheduling_overrides["date_partition_parameter"] == "submission_date"
+        assert scheduling_overrides["partition_parameter"] == "submission_date"
 
     @patch("bigquery_etl.cli.backfill.is_authenticated", return_value=True)
     @patch("google.cloud.bigquery.Client")
@@ -3548,7 +3547,7 @@ class TestBackfill:
         )
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         metadata["bigquery"] = {
@@ -3604,7 +3603,7 @@ class TestBackfill:
         prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
         metadata = TABLE_METADATA_CONF.copy()
         metadata["scheduling"] = {
-            "date_partition_parameter": None,
+            "partition_parameter": None,
             "depends_on_past": True,
         }
         (Path(QUERY_DIR) / "metadata.yaml").write_text(yaml.dump(metadata))
@@ -4037,7 +4036,7 @@ class TestBackfill:
         """Partition offset should be used to copy the correct partition."""
         metadata = TABLE_METADATA_CONF_DEPENDS_ON_PAST.copy()
         metadata["bigquery"] = {"time_partitioning": {"type": "day"}}
-        metadata["scheduling"] = {"date_partition_offset": -7, "depends_on_past": True}
+        metadata["scheduling"] = {"partition_offset": "-7d", "depends_on_past": True}
         with open(METADATA_FILE, "w") as f:
             f.write(yaml.dump(metadata))
 
@@ -4218,10 +4217,10 @@ class TestBackfill:
         self, mock_copy_table
     ):
         """An override_depends_on_past_null_partition backfill ran per-partition against a table whose
-        date_partition_parameter is null. The partition must be resolved from the
+        partition_parameter is null. The partition must be resolved from the
         partitioning field so each partition copies individually, rather than returning a
         null partition (which raises) or copying the whole table."""
-        # Like clients_first_seen_v3: depends_on_past, null date_partition_parameter,
+        # Like clients_first_seen_v3: depends_on_past, null partition_parameter,
         # day-partitioned on first_seen_date.
         metadata_conf = {
             "friendly_name": "test",
@@ -4229,7 +4228,7 @@ class TestBackfill:
             "owners": ["test@example.org"],
             "scheduling": {
                 "depends_on_past": True,
-                "date_partition_parameter": None,
+                "partition_parameter": None,
             },
             "bigquery": {
                 "time_partitioning": {
@@ -4286,7 +4285,7 @@ class TestBackfill:
             "owners": ["test@example.org"],
             "scheduling": {
                 "depends_on_past": True,
-                "date_partition_parameter": None,
+                "partition_parameter": None,
             },
             "bigquery": {
                 "time_partitioning": {
@@ -4339,7 +4338,7 @@ class TestBackfill:
             "owners": ["test@example.org"],
             "scheduling": {
                 "depends_on_past": True,
-                "date_partition_parameter": None,
+                "partition_parameter": None,
             },
             "bigquery": {
                 "time_partitioning": {
@@ -4381,11 +4380,11 @@ class TestBackfill:
         assert copied_partitions == ["202101", "202102", "202103"]
 
     @patch("bigquery_etl.cli.backfill._copy_table")
-    def test_copy_backfill_staging_to_prod_backfill_date_partition_parameter(
+    def test_copy_backfill_staging_to_prod_backfill_partition_parameter(
         self, mock_copy_table
     ):
-        """A table with a null date_partition_parameter that sets
-        backfill_date_partition_parameter (e.g. hourly runs into a daily partition) copies
+        """A table with a null partition_parameter that sets
+        backfill_partition_parameter (e.g. hourly runs into a daily partition) copies
         each backfilled partition individually instead of raising on a null partition.
         """
         metadata_conf = {
@@ -4393,8 +4392,8 @@ class TestBackfill:
             "description": "test",
             "owners": ["test@example.org"],
             "scheduling": {
-                "date_partition_parameter": None,
-                "backfill_date_partition_parameter": "submission_date",
+                "partition_parameter": None,
+                "backfill_partition_parameter": "submission_date",
             },
             "bigquery": {
                 "time_partitioning": {
@@ -4439,7 +4438,7 @@ class TestBackfill:
     def test_copy_backfill_staging_to_prod_null_partition_param_without_override_raises(
         self, mock_copy_table
     ):
-        """Without the override, a partitioned table with a null date_partition_parameter
+        """Without the override, a partitioned table with a null partition_parameter
         cannot resolve a per-partition target: get_backfill_partition returns None and
         complete raises. This is the pre-existing gap that override_depends_on_past_null_partition closes.
         """
@@ -4449,7 +4448,7 @@ class TestBackfill:
             "owners": ["test@example.org"],
             "scheduling": {
                 "depends_on_past": True,
-                "date_partition_parameter": None,
+                "partition_parameter": None,
             },
             "bigquery": {
                 "time_partitioning": {

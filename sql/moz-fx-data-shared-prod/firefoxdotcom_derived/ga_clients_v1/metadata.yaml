@@ -8,7 +8,7 @@ owners:
 scheduling:
   depends_on_past: true
   dag_name: bqetl_ga4_firefoxdotcom
-  date_partition_parameter: null
+  partition_parameter: null
   parameters: ["session_date:DATE:{{ds}}"]
 monitoring:
   enabled: true

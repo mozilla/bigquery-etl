@@ -12,6 +12,7 @@ from bigquery_etl.datahub.lineage import (
     format_text,
     get_downstream_lineage,
     is_stale_looker_tmp,
+    merge_lineage,
     qualified_name,
     sql_path,
     table_urn,
@@ -408,8 +409,16 @@ class TestDataHubClient:
             }
         )
         assert client.usage(["a", "b"]) == {
-            "a": {"queries_30d": 7, "users_30d": 3, "last_query": "2025-10-04"},
-            "b": {"queries_30d": None, "users_30d": None, "last_query": None},
+            "a": {
+                "queries_30d": 7,
+                "users_30d": 3,
+                "last_query": "2025-10-04",
+            },
+            "b": {
+                "queries_30d": None,
+                "users_30d": None,
+                "last_query": None,
+            },
         }
 
     def test_usage_is_batched(self, client):
@@ -446,18 +455,18 @@ class TestGetDownstreamLineage:
         gone = result(table_urn("p.d.gone"), "DATASET", removed=True)
         client = self.make_client(self.assets(live, gone))
 
-        assets = get_downstream_lineage(client, "p.d.t")
+        assets = get_downstream_lineage(client, ["p.d.t"])
         assert [a["urn"] for a in assets] == [table_urn("p.d.live")]
 
-        assets = get_downstream_lineage(client, "p.d.t", include_deleted=True)
+        assets = get_downstream_lineage(client, ["p.d.t"], include_deleted=True)
         assert len(assets) == 2
 
     def test_drops_old_looker_tmp_copies(self):
         old = result(table_urn("mozdata.looker_tmp.LR_4M91H1700000000000_x"), "DATASET")
         client = self.make_client(self.assets(old))
-        assets = get_downstream_lineage(client, "p.d.t", looker_tmp_days=3)
+        assets = get_downstream_lineage(client, ["p.d.t"], looker_tmp_days=3)
         assert assets == []
-        assets = get_downstream_lineage(client, "p.d.t", looker_tmp_days=0)
+        assets = get_downstream_lineage(client, ["p.d.t"], looker_tmp_days=0)
         assert len(assets) == 1
 
     def test_adds_usage_to_bigquery_datasets_only(self):
@@ -467,27 +476,39 @@ class TestGetDownstreamLineage:
         client = self.make_client(
             self.assets(table, chart), usage={table_urn("p.d.a"): stats}
         )
-        assets = get_downstream_lineage(client, "p.d.t", include_usage=True)
+        assets = get_downstream_lineage(client, ["p.d.t"], include_usage=True)
         client.usage.assert_called_once_with([table_urn("p.d.a")])
-        assert {k: assets[0][k] for k in stats} == stats
-        assert assets[1]["queries_30d"] is None
+        by_type = {a["type"]: a for a in assets}
+        assert {k: by_type["DATASET"][k] for k in stats} == stats
+        assert by_type["CHART"]["queries_30d"] is None
+
+    def test_several_tables_are_merged_and_usage_fetched_once(self):
+        shared = result(table_urn("p.d.shared"), "DATASET")
+        client = self.make_client(self.assets(shared))
+        assets = get_downstream_lineage(
+            client, ["p.d.t1", "p.d.t2"], include_usage=True
+        )
+        searched = [c.args[0] for c in client.search_downstream.call_args_list]
+        assert searched == [table_urn("p.d.t1"), table_urn("p.d.t2")]
+        assert [a["urn"] for a in assets] == [table_urn("p.d.shared")]
+        client.usage.assert_called_once_with([table_urn("p.d.shared")])
 
     def test_types_are_sent_to_datahub(self):
         chart = result("urn:li:chart:(redash,1)", "CHART", platform="redash")
         client = self.make_client(self.assets(chart))
-        get_downstream_lineage(client, "p.d.t", include_usage=True, types={"CHART"})
+        get_downstream_lineage(client, ["p.d.t"], include_usage=True, types={"CHART"})
         assert client.search_downstream.call_args[1]["types"] == {"CHART"}
         client.usage.assert_not_called()
 
     def test_usage_is_off_by_default(self):
         client = self.make_client(self.assets(result(table_urn("p.d.a"), "DATASET")))
-        assets = get_downstream_lineage(client, "p.d.t")
+        assets = get_downstream_lineage(client, ["p.d.t"])
         client.usage.assert_not_called()
         assert assets[0]["queries_30d"] is None
 
     def test_since_days_becomes_a_time_window(self):
         client = self.make_client([])
-        get_downstream_lineage(client, "p.d.t", since_days=90)
+        get_downstream_lineage(client, ["p.d.t"], since_days=90)
         since_ms = client.search_downstream.call_args[0][2]
         expected = (time.time() - 90 * 86400) * 1000
         assert abs(since_ms - expected) < 60000
@@ -584,3 +605,13 @@ class TestFormatText:
         asset = self.asset(queries_30d=5, users_30d=2, last_query="2026-10-04")
         header, _ = table_rows(format_text("p.d.t", [asset]))
         assert header == ["DEGREE", "TYPE", "NAME"]
+
+
+def test_merge_lineage_keeps_closest_degree_and_sorts():
+    def asset(name, degree):
+        return {"urn": name, "degree": degree, "type": "DATASET", "name": name}
+
+    assert merge_lineage([[asset("b", 3), asset("a", 2)], [asset("b", 1)]]) == [
+        asset("b", 1),
+        asset("a", 2),
+    ]

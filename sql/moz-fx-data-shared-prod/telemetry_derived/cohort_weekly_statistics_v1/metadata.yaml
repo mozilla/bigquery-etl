@@ -9,7 +9,7 @@ labels:
   owner1: kik
 scheduling:
   dag_name: bqetl_cohort_retention
-  date_partition_parameter: null
+  partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   range_partitioning: null

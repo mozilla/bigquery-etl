@@ -18,7 +18,7 @@ labels:
 scheduling:
   dag_name: bqetl_subplat_hourly
   # The whole table is overwritten every time, not a specific date partition.
-  date_partition_parameter: null
+  partition_parameter: null
   # Override `referenced_tables` to ignore the reference to `monthly_active_service_subscriptions_v1`,
   # because DAG generation would otherwise output an external task sensor for that which would only
   # work for one bqetl_subplat_hourly DAG run per day.

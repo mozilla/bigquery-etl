@@ -132,8 +132,9 @@ pings_imputed AS (
 resource_bytes AS (
   -- Bytes published to each topic and delivered on each subscription. Only
   -- delivered message bytes are billed for subscriptions, not ack or modack
-  -- bytes. Keyed by project so same-named resources in different projects
-  -- are kept apart.
+  -- bytes. Messages are delivered by streaming pull or unary pull (used by
+  -- structured-raw.decoder until 2026-10-12). Keyed by project so same-named
+  -- resources in different projects are kept apart.
   SELECT
     IF(metric = 'pubsub_topic_byte_cost', 'topic', 'subscription') AS resource_type,
     project_id,
@@ -158,7 +159,7 @@ resource_bytes AS (
       )
       OR (
         metric = 'pubsub_subscription_byte_cost'
-        AND mozfun.map.get_key(labels, 'operation_type') = 'streaming_pull_messages'
+        AND mozfun.map.get_key(labels, 'operation_type') IN ('pull', 'streaming_pull_messages')
       )
     )
   GROUP BY

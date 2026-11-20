@@ -4,6 +4,8 @@ This is a quick guide of how to perform common workflows in bigquery-etl using t
 
 For any workflow, the bigquery-etl repositiory needs to be locally available, for example by cloning the repository, and the `bqetl` CLI needs to be installed by running `./bqetl bootstrap`.
 
+AI coding agents working in this repository must follow the additional restrictions in [AGENTS.md](https://github.com/mozilla/bigquery-etl/blob/main/AGENTS.md), including using only allow-listed non-prod `--target`s and impersonating the sandbox service account for `query run`, `deploy`, and `query backfill` commands.
+
 ## Adding a new scheduled query
 
 The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/) provides a more detailed guide on creating scheduled queries. For testing changes against a personal or shared development environment before opening a PR, see the [Development workflows](https://mozilla.github.io/bigquery-etl/cookbooks/development_workflows/) cookbook.

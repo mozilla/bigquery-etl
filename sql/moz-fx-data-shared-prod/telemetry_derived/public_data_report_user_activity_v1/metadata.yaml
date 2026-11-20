@@ -1,6 +1,9 @@
 friendly_name: |-
   Firefox Public Data Report User Activity
 description: |-
+  DO NOT BACKFILL. Past weeks hold the figures data.firefox.com published; a backfill
+  replaces them with figures recomputed from today's sources, which shredder has since changed.
+
   Data used to populate https://data.firefox.com/dashboard/user-activity.
   A row for every country in static.country_names_v1 is created, including duplicates if
   a country code has multiple associated names.

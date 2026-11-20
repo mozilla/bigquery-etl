@@ -7,22 +7,45 @@ from bigquery_etl.metadata.publish_metadata import publish_metadata
 TEST_DIR = Path(__file__).parent.parent
 
 
+METADATA_FILE = (
+    TEST_DIR
+    / "data"
+    / "test_sql"
+    / "moz-fx-data-test-project"
+    / "test"
+    / "incremental_query_v1"
+    / "metadata.yaml"
+)
+
+
 class TestPublishMetadata(object):
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_publish_metadata_with_managed_label(
+        self, mock_bigquery_table, mock_bigquery_client
+    ):
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        publish_metadata(
+            mock_bigquery_client(),
+            "test_project",
+            "test_dataset",
+            "test_table",
+            metadata,
+            add_managed_label=True,
+        )
+
+        labels = mock_bigquery_client().update_table.call_args[0][0].labels
+        assert labels["managed"] == ""
+        assert labels["owner1"] == "test"
+
     @patch("google.cloud.bigquery.Client")
     @patch("google.cloud.bigquery.Table")
     def test_publish_metadata(self, mock_bigquery_table, mock_bigquery_client):
         mock_bigquery_client().get_table.return_value = mock_bigquery_table()
 
-        metadata_file = (
-            TEST_DIR
-            / "data"
-            / "test_sql"
-            / "moz-fx-data-test-project"
-            / "test"
-            / "incremental_query_v1"
-            / "metadata.yaml"
-        )
-        metadata = Metadata.from_file(metadata_file)
+        metadata = Metadata.from_file(METADATA_FILE)
 
         project = "test_project"
         dataset = "test_dataset"

@@ -1,0 +1,124 @@
+# Reusable workflow, called from build.yml here and from mozilla/private-bigquery-etl.
+#
+# Jobs run in the caller's context: the checkout is the caller's repo, and secrets,
+# vars and the dev environment come from it too. A caller other than bigquery-etl sets
+# clone-bigquery-etl so the bqetl tooling is cloned into bigquery-etl/.
+#
+# Expects the caller's deploy-changes-to-stage job to have uploaded the
+# staged-generated-sql artifact earlier in the same run.
+name: Validate Views
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: Python version the caller's build job resolved (the venv cache key includes it)
+        type: string
+        default: '3.11'
+      clone-bigquery-etl:
+        description: >-
+          Clone bigquery-etl, at the commit this workflow was called at, for the bqetl tooling
+          (set by callers other than bigquery-etl)
+        type: boolean
+        default: false
+      sql-dir-artifact:
+        description: >-
+          Name of an artifact from this run whose sql/ directory is passed as --sql-dir, limiting
+          validation to the views it defines. Empty validates the views in the staged sql/.
+        type: string
+        default: ''
+    secrets:
+      GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL:
+        description: Service account for the dry run function. Not needed if it's a dev environment secret in the caller's repo.
+        required: false
+
+permissions: {}
+
+jobs:
+  validate-views:
+    name: Validate Views
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment:
+      name: dev
+      deployment: false
+    env:
+      # Where the setup-bqetl action put the bigquery-etl checkout and its venv
+      BQETL_ROOT: ${{ inputs.clone-bigquery-etl && 'bigquery-etl' || '.' }}
+      BQETL_VENV: ${{ inputs.clone-bigquery-etl && 'bigquery-etl/venv' || '.venv' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      # Clone the commit this workflow was called at, so the tooling and the
+      # setup-bqetl action always match the workflow version the caller pinned
+      - name: Clone bigquery-etl
+        if: inputs.clone-bigquery-etl
+        env:
+          BQETL_REPO: ${{ job.workflow_repository }}
+          BQETL_SHA: ${{ job.workflow_sha }}
+        run: |
+          if [ -z "$BQETL_REPO" ] || [ -z "$BQETL_SHA" ]; then
+            echo "::error::job.workflow_repository / job.workflow_sha not set; can't tell which bigquery-etl commit to clone"
+            exit 1
+          fi
+          git init -q bigquery-etl
+          git -C bigquery-etl fetch -q --depth 1 --filter=blob:none \
+            "https://github.com/$BQETL_REPO.git" "$BQETL_SHA"
+          git -C bigquery-etl checkout -q FETCH_HEAD
+          echo "Using $BQETL_REPO at $BQETL_SHA"
+      - name: Set up bqetl
+        if: inputs.clone-bigquery-etl
+        uses: ./bigquery-etl/.github/actions/setup-bqetl
+        with:
+          path: bigquery-etl
+          python-version: ${{ inputs.python-version }}
+      - name: Set up bqetl
+        if: ${{ !inputs.clone-bigquery-etl }}
+        uses: ./.github/actions/setup-bqetl
+        with:
+          python-version: ${{ inputs.python-version }}
+      - if: inputs.sql-dir-artifact != ''
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: ${{ inputs.sql-dir-artifact }}
+          path: /tmp/workspace/${{ inputs.sql-dir-artifact }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: staged-generated-sql
+          path: /tmp/workspace/staged-generated-sql
+      - name: Move sql deployed on stage into place
+        run: |
+          rm -rf sql/
+          cp -r /tmp/workspace/staged-generated-sql/sql sql
+          rm -rf tests/
+          cp -r /tmp/workspace/staged-generated-sql/tests tests
+      - name: Authenticate to GCP (OIDC)
+        id: auth-dryrun
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093  # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GCPV2_GITHUB_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
+          token_format: 'id_token'
+          id_token_audience: 'https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/dryrun'
+          id_token_include_email: true
+      - name: Validate views
+        env:
+          GOOGLE_GHA_ID_TOKEN: ${{ steps.auth-dryrun.outputs.id_token }}
+          SQL_DIR_ARTIFACT: ${{ inputs.sql-dir-artifact }}
+        run: |
+          args=()
+          if [ -n "$SQL_DIR_ARTIFACT" ]; then
+            args=(--sql-dir "/tmp/workspace/$SQL_DIR_ARTIFACT/sql")
+          fi
+          PATH="$BQETL_VENV/bin:$PATH" "$BQETL_ROOT/script/bqetl" view validate "${args[@]}"
+      - name: Copy generated SQL for debugging
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: validate-views-debug-sql
+          path: sql

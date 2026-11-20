@@ -1,14 +1,16 @@
 friendly_name: Events
 description: |-
-  Please provide a description for the query
-owners: []
+  Legacy events imported from parquet.
+owners:
+- bewu@mozilla.com
+labels:
+  owner1: bewu
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
     expiration_days: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential/data-viewers
+workgroup_access: []
+deprecated: true
+deletion_date: 2027-01-01

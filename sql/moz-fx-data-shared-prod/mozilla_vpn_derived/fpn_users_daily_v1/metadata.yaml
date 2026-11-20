@@ -1,0 +1,25 @@
+---
+friendly_name: Firefox VPN Users Daily
+description: >
+  Daily count of Firefox VPN (FPN) users, i.e. rows in the Guardian
+  proxy_entitlements table. Replaces the guardian_fpn_users_totalCountOf
+  Cloud Monitoring metric as the source for KPI dashboards.
+  Each partition is a snapshot of the table taken when the ETL ran, so
+  backfilling past dates will not reproduce historical counts.
+owners:
+  - jozhou@mozilla.com
+  - phlee@mozilla.com
+  - srose@mozilla.com
+labels:
+  application: mozilla_vpn
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null

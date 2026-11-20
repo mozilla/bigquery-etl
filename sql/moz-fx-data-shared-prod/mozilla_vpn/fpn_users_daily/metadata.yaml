@@ -1,0 +1,7 @@
+friendly_name: Firefox VPN Users Daily
+description: >
+  Daily count of Firefox VPN (FPN) users.
+owners:
+- jozhou@mozilla.com
+- phlee@mozilla.com
+- srose@mozilla.com

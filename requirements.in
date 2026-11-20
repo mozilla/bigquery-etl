@@ -29,7 +29,7 @@ google-cloud-dlp==3.38.0
 google-cloud-storage==3.8.0
 isort==5.12.0
 Jinja2==3.1.6
-jmespath==1.0.1
+jmespath==1.1.0
 jsonschema==4.25.1
 PyJWT==2.15.0
 looker-sdk==26.12.0
@@ -60,14 +60,14 @@ pytest-xdist==3.8.0
 pytest==8.4.2
 PyYAML==6.0.3
 questionary==2.1.1
-rich-click==1.9.7
+rich-click==1.9.9
 smart_open==6.4.0
 sqlglot==28.5.0
 sqlparse==0.5.3
 stripe==6.4.0
 symbolic==12.16.3
 siggen==2.2.20241029
-tomli==2.3.0 # for backwards compatibility with python < 3.11
+tomli==2.5.0 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.9.0.20251008
 types-pytz==2025.2.0.20251108
 types-PyYAML==6.0.12.20250915

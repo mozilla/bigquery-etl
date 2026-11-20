@@ -42,7 +42,8 @@ RETURNS STRING AS (
         '/firefox/firefox-enterprise/',
         '/firefox/mobile/firefox-enterprise/',
         '/firefox-preview/firefox/mobile/firefox-enterprise/',
-        '/firefox-enterprise/'
+        '/firefox-enterprise/',
+        '/firefox/thunderbird/firefox-enterprise/'
       )
       THEN 'Firefox Enterprise'
     WHEN source = 'GA4'
@@ -313,6 +314,10 @@ SELECT
   assert.equals(
     'Firefox Enterprise',
     customer_experience.normalize_product('/firefox/firefox-enterprise/mobile/', 'GA4')
+  ),
+  assert.equals(
+    'Firefox Enterprise',
+    customer_experience.normalize_product('/firefox/thunderbird/firefox-enterprise/', 'GA4')
   ),
   assert.equals('Other', customer_experience.normalize_product('/contributor/thunderbird/', 'GA4')),
   assert.equals(

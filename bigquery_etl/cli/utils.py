@@ -3,6 +3,7 @@
 import fnmatch
 import os
 import re
+import sys
 from fnmatch import fnmatchcase
 from functools import cache
 from glob import glob
@@ -94,6 +95,20 @@ def is_authenticated():
     except DefaultCredentialsError:
         return False
     return True
+
+
+def flush_stdin() -> None:
+    """Discard keystrokes typed while no prompt was active."""
+    if sys.stdin is None or not sys.stdin.isatty():
+        return
+    try:
+        import termios
+    except ImportError:  # Windows
+        return
+    try:
+        termios.tcflush(sys.stdin, termios.TCIFLUSH)
+    except (termios.error, OSError, ValueError):
+        pass
 
 
 def is_valid_project(ctx, param, value):

@@ -30,7 +30,7 @@ default_args = {
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
-    "retry_delay": datetime.timedelta(seconds=1800),
+    "retry_delay": datetime.timedelta(minutes=30),
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 2,
@@ -71,7 +71,7 @@ with DAG(
         email=["telemetry-alerts@mozilla.com", "test@example.org"],
         depends_on_past=False,
         partition_parameter="submission_date:DATE:{{ logical_date.format('YYYY-MM-DD') }}",
-        retry_delay=datetime.timedelta(seconds=300),
+        retry_delay=datetime.timedelta(minutes=5),
         retries=1,
     )
 

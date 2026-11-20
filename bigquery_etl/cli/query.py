@@ -1,4 +1,5 @@
 """bigquery-etl CLI query command."""
+# test
 
 import concurrent.futures
 import copy

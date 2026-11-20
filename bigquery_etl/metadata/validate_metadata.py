@@ -16,11 +16,7 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 from ..util import extract_from_query_path, standard_args
-from ..util.common import (
-    extract_last_group_by_from_query,
-    get_unittests_dir,
-    project_dirs,
-)
+from ..util.common import extract_last_group_by_from_query, project_dirs
 from .parse_metadata import (
     DEFAULT_DESCRIPTION_IN_METADATA,
     METADATA_FILE,
@@ -347,23 +343,7 @@ def validate_asset_level(query_dir, metadata):
         )
 
         # Check unittest.
-        unittest_path = os.path.join("tests", query_dir)
-        results["unittests"] = os.path.exists(unittest_path) and any(
-            name.startswith("test_") for name in os.listdir(unittest_path)
-        )
-
-        # `os.path.join("tests", query_dir)` collapses to `query_dir` when it is
-        # absolute (e.g. `--sql-dir=/tmp/workspace/private-generated-sql/sql`), so
-        # resolve the tests dir relative to the sql dir root instead.
-        if not results["unittests"]:
-            query_path = Path(query_dir)
-            if len(query_path.parents) >= 4:
-                new_unittest_path = get_unittests_dir(query_path.parents[2]) / Path(
-                    *query_path.parts[-3:]
-                )
-                results["unittests"] = new_unittest_path.exists() and any(
-                    name.startswith("test_") for name in os.listdir(new_unittest_path)
-                )
+        results["unittests"] = any((Path(query_dir) / "tests").glob("test_*.yaml"))
 
         # Check scheduler.
         results["scheduler"] = (

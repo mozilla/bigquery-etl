@@ -1,0 +1,481 @@
+sources:
+  moz-fx-ads-prod.adm.blocks:
+    - _file: source_file.json
+      _line: 1
+      _fivetran_synced: "2024-01-01 02:00:00"
+      _modified: "2024-01-01 01:00:00"
+      date: "2023-12-31"
+      id: 123
+      queryType: branded
+  moz-fx-data-shared-prod.contextual_services.quicksuggest_click:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      context_id: a
+      metadata:
+        geo:
+          subdivision1: AZ
+        user_agent:
+          os: "Windows 11"
+          version: "116.0.0"
+      normalized_country_code: US
+      advertiser: ad1
+      release_channel: release
+      position: 1
+      request_id: "HASH123"
+      match_type: "firefox-suggest"
+      scenario: online
+      improve_suggest_experience_checked: true
+  moz-fx-data-shared-prod.contextual_services.quicksuggest_impression:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      context_id: a
+      metadata:
+        geo:
+          subdivision1: AZ
+        user_agent:
+          os: "Windows 11"
+          version: "116.0.0"
+      normalized_country_code: US
+      advertiser: ad1
+      release_channel: release
+      position: 1
+      request_id: "HASH123"
+      match_type: "firefox-suggest"
+      scenario: online
+      improve_suggest_experience_checked: true
+  moz-fx-data-shared-prod.contextual_services.topsites_click:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      context_id: a
+      metadata:
+        geo:
+          subdivision1: AZ
+        user_agent:
+          os: "Windows 11"
+          version: "116.0.0"
+      normalized_country_code: US
+      advertiser: ad1
+      release_channel: release
+      position: 1
+      reporting_url: "http://foo.com"
+  moz-fx-data-shared-prod.contextual_services.topsites_impression:
+    - &topsites_impression_base
+      submission_timestamp: "2030-01-01 01:00:00"
+      context_id: a
+      metadata:
+        geo:
+          subdivision1: AZ
+        user_agent:
+          os: "Windows 11"
+          version: "116.0.0"
+      normalized_country_code: US
+      advertiser: ad1
+      release_channel: release
+      position: 1
+      reporting_url: "http://foo.com"
+    - <<: *topsites_impression_base
+    - <<: *topsites_impression_base
+      context_id: b
+    - <<: *topsites_impression_base
+      advertiser: ad2
+  moz-fx-data-shared-prod.fenix.fx_suggest:
+    - &fenix_suggest_base
+      submission_timestamp: "2030-01-01 01:00:00"
+      metrics: &fenix_suggest_metrics
+        quantity:
+          fx_suggest_block_id: 123
+          fx_suggest_position: 1
+        string:
+          fx_suggest_advertiser: ad4
+          fx_suggest_ping_type: fxsuggest-impression
+          fx_suggest_country: null
+        uuid:
+          fx_suggest_context_id: fenix-b
+      metadata:
+        geo:
+          subdivision1: DC
+        user_agent:
+          os: Android
+          version: "130"
+      normalized_channel: release
+      normalized_country_code: US
+    - <<: *fenix_suggest_base
+      metrics:
+        <<: *fenix_suggest_metrics
+        string:
+          fx_suggest_advertiser: ad4
+          fx_suggest_ping_type: fxsuggest-impression
+          fx_suggest_country: VN
+      metadata:
+        geo:
+          subdivision1: null
+        user_agent:
+          os: Android
+      normalized_country_code: null
+    - <<: *fenix_suggest_base
+      metrics:
+        <<: *fenix_suggest_metrics
+        string:
+          fx_suggest_advertiser: ad4
+          fx_suggest_ping_type: fxsuggest-someotherevent
+  moz-fx-data-shared-prod.firefox_desktop.quick_suggest:
+    - &quick_suggest_click
+      submission_timestamp: "2030-01-01 01:00:00"
+      normalized_channel: release
+      metadata:
+        geo:
+          subdivision1: AZ
+        user_agent:
+          os: "Windows 11"
+          version: "130"
+      metrics: &quick_suggest_click_metrics
+        boolean:
+          quick_suggest_improve_suggest_experience: true
+        quantity:
+          quick_suggest_position: 1
+        string: &quick_suggest_click_strings
+          quick_suggest_advertiser: ad1
+          quick_suggest_block_id: "123"
+          quick_suggest_match_type: firefox-suggest
+          quick_suggest_ping_type: quicksuggest-click
+          quick_suggest_request_id: HASH123
+        uuid:
+          quick_suggest_context_id: a
+      normalized_country_code: US
+    - <<: *quick_suggest_click
+      metrics:
+        <<: *quick_suggest_click_metrics
+        string:
+          <<: *quick_suggest_click_strings
+          quick_suggest_ping_type: quicksuggest-impression
+    - <<: *quick_suggest_click
+      metadata:
+        geo:
+          subdivision1: null
+        user_agent:
+          os: "Windows 11"
+      metrics:
+        <<: *quick_suggest_click_metrics
+        string:
+          <<: *quick_suggest_click_strings
+          quick_suggest_country: DE
+      normalized_country_code: null
+    - <<: *quick_suggest_click
+      metadata:
+        geo:
+          subdivision1: BC
+        user_agent:
+          os: "Windows 11"
+          version: "130"
+      metrics:
+        <<: *quick_suggest_click_metrics
+        string:
+          <<: *quick_suggest_click_strings
+          quick_suggest_country: US
+        uuid:
+          quick_suggest_context_id: c
+      normalized_country_code: CA
+    - <<: *quick_suggest_click
+      metadata:
+        geo:
+          subdivision1: WA
+        user_agent:
+          os: "Windows 11"
+      metrics:
+        <<: *quick_suggest_click_metrics
+        string:
+          <<: *quick_suggest_click_strings
+          quick_suggest_country: null
+        uuid:
+          quick_suggest_context_id: d
+      normalized_country_code: US
+  moz-fx-data-shared-prod.firefox_desktop.top_sites:
+    - &top_sites_click
+      submission_timestamp: "2030-01-01 01:00:00"
+      client_info:
+        app_channel: release
+      metadata:
+        geo:
+          subdivision1: AZ
+        user_agent:
+          os: "Windows 11"
+      metrics: &top_sites_click_metrics
+        quantity:
+          top_sites_position: 1
+        string:
+          top_sites_advertiser: ad1
+          top_sites_ping_type: topsites-click
+        url:
+          top_sites_reporting_url: "http://foo.com"
+        uuid:
+          top_sites_context_id: a
+      normalized_country_code: US
+    - &top_sites_impression
+      <<: *top_sites_click
+      metrics: &top_sites_impression_metrics
+        <<: *top_sites_click_metrics
+        string:
+          top_sites_advertiser: ad1
+          top_sites_ping_type: topsites-impression
+    - <<: *top_sites_impression
+    - <<: *top_sites_impression
+      metrics:
+        <<: *top_sites_impression_metrics
+        uuid:
+          top_sites_context_id: b
+    - <<: *top_sites_impression
+      metrics:
+        <<: *top_sites_impression_metrics
+        string:
+          top_sites_advertiser: ad2
+          top_sites_ping_type: topsites-impression
+  moz-fx-data-shared-prod.firefox_ios.fx_suggest:
+    - &firefox_ios_suggest_base
+      submission_timestamp: "2030-01-01 01:00:00"
+      metrics: &firefox_ios_suggest_metrics
+        quantity:
+          fx_suggest_block_id: 123
+          fx_suggest_position: 1
+        string:
+          fx_suggest_advertiser: ad4
+          fx_suggest_ping_type: fxsuggest-impression
+        uuid:
+          fx_suggest_context_id: fenix-b
+      metadata:
+        geo:
+          subdivision1: DC
+        user_agent:
+          version: "130"
+      normalized_channel: release
+      normalized_country_code: US
+    - <<: *firefox_ios_suggest_base
+      metrics:
+        <<: *firefox_ios_suggest_metrics
+        string:
+          fx_suggest_advertiser: ad4
+          fx_suggest_ping_type: fxsuggest-impression
+          fx_suggest_country: VN
+      metadata:
+        geo:
+          subdivision1: null
+        user_agent:
+          os: Android
+      normalized_country_code: US
+  moz-fx-data-shared-prod.org_mozilla_fenix.topsites_impression:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      metrics:
+        uuid:
+          top_sites_context_id: fenix-a
+        string:
+          top_sites_contile_advertiser: ad3
+        url2:
+          top_sites_contile_reporting_url: 'https://somedomain.com'
+      events:
+        - name: contile_click
+          extra:
+            - key: position
+              value: '1'
+      metadata:
+        geo:
+          subdivision1: NY
+      normalized_country_code: US
+      normalized_os: Android
+  moz-fx-data-shared-prod.org_mozilla_firefox.topsites_impression:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      metrics:
+        uuid:
+          top_sites_context_id: fenix-a
+        string:
+          top_sites_contile_advertiser: ad3
+        url2:
+          top_sites_contile_reporting_url: 'https://somedomain.com'
+      events:
+        - name: contile_click
+          extra:
+            - key: position
+              value: '1'
+      metadata:
+        geo:
+          subdivision1: NY
+      normalized_country_code: US
+      normalized_os: Android
+  moz-fx-data-shared-prod.org_mozilla_firefox_beta.topsites_impression:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      metrics:
+        uuid:
+          top_sites_context_id: fenix-a
+        string:
+          top_sites_contile_advertiser: ad3
+        url2:
+          top_sites_contile_reporting_url: 'https://somedomain.com'
+      events:
+        - name: contile_click
+          extra:
+            - key: position
+              value: '1'
+      metadata:
+        geo:
+          subdivision1: NY
+      normalized_country_code: US
+      normalized_os: Android
+  moz-fx-data-shared-prod.org_mozilla_ios_firefox.topsites_impression:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      metrics:
+        uuid:
+          top_site_context_id: null
+          top_sites_context_id: fenix-a
+        string:
+          top_site_contile_advertiser: null
+          top_sites_contile_advertiser: ad3
+      events:
+        - name: contile_click
+          extra:
+            - key: position
+              value: '1'
+      metadata:
+        geo:
+          subdivision1: NY
+      normalized_country_code: US
+      normalized_os: iOS
+  moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.topsites_impression:
+    - submission_timestamp: "2030-01-01 01:00:00"
+      metrics:
+        uuid:
+          top_site_context_id: null
+          top_sites_context_id: fenix-a
+        string:
+          top_site_contile_advertiser: null
+          top_sites_contile_advertiser: ad3
+      events:
+        - name: contile_click
+          extra:
+            - key: position
+              value: '1'
+      metadata:
+        geo:
+          subdivision1: NY
+      normalized_country_code: US
+      normalized_os: iOS
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2030-01-01
+
+expect:
+  - &expect_suggest_base
+    submission_date: "2030-01-01"
+    source: suggest
+    provider: merino
+    event_type: click
+    form_factor: desktop
+    country: DE
+    advertiser: ad1
+    release_channel: release
+    match_type: "firefox-suggest"
+    normalized_os: Windows
+    suggest_data_sharing_enabled: true
+    position: 1
+    event_count: 1
+    user_count: 1
+    query_type: branded
+  - <<: *expect_suggest_base
+    event_type: impression
+    country: US
+    subdivision1: AZ
+  - <<: *expect_suggest_base
+    country: US
+    subdivision1: AZ
+  - <<: *expect_suggest_base
+    country: CA
+    subdivision1: BC
+  - submission_date: "2030-01-01"
+    source: suggest
+    provider: merino
+    event_type: click
+    form_factor: desktop
+    advertiser: ad1
+    release_channel: release
+    match_type: "firefox-suggest"
+    normalized_os: Windows
+    suggest_data_sharing_enabled: true
+    position: 1
+    event_count: 1
+    user_count: 1
+    query_type: branded
+  - &expect_suggest_mobile
+    submission_date: "2030-01-01"
+    source: suggest
+    provider: remote settings
+    event_type: impression
+    form_factor: phone
+    country: US
+    subdivision1: DC
+    advertiser: ad4
+    release_channel: release
+    match_type: "firefox-suggest"
+    normalized_os: Android
+    position: 1
+    event_count: 1
+    user_count: 1
+    query_type: branded
+  - <<: *expect_suggest_mobile
+    normalized_os: iOS
+  - &expect_suggest_mobile_ohttp
+    submission_date: "2030-01-01"
+    source: suggest
+    provider: remote settings
+    event_type: impression
+    form_factor: phone
+    country: VN
+    advertiser: ad4
+    release_channel: release
+    match_type: "firefox-suggest"
+    normalized_os: Android
+    position: 1
+    event_count: 1
+    user_count: 1
+    query_type: branded
+  - <<: *expect_suggest_mobile_ohttp
+    normalized_os: iOS
+  - &expect_topsites_base
+    submission_date: "2030-01-01"
+    source: topsites
+    provider: contile
+    event_type: click
+    form_factor: desktop
+    country: US
+    subdivision1: AZ
+    advertiser: ad1
+    release_channel: release
+    normalized_os: Windows
+    position: 1
+    event_count: 1
+    user_count: 1
+  - <<: *expect_topsites_base
+    event_type: impression
+    event_count: 3
+    user_count: 2
+  - <<: *expect_topsites_base
+    event_type: impression
+    advertiser: ad2
+  - &expect_base_mobile
+    submission_date: "2030-01-01"
+    source: topsites
+    provider: contile
+    event_type: click
+    form_factor: phone
+    country: US
+    subdivision1: NY
+    advertiser: ad3
+    release_channel: release
+    normalized_os: Android
+    position: 1
+    event_count: 1
+    user_count: 1
+  - <<: *expect_base_mobile
+    release_channel: beta
+  - <<: *expect_base_mobile
+    release_channel: nightly
+  - <<: *expect_base_mobile
+    normalized_os: iOS
+  - <<: *expect_base_mobile
+    normalized_os: iOS
+    release_channel: beta

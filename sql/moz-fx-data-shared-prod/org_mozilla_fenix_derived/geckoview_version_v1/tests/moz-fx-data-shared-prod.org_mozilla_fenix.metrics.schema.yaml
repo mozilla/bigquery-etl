@@ -1,0 +1,25 @@
+fields:
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: REQUIRED
+- name: client_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: app_build
+    type: STRING
+    mode: NULLABLE
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: gecko_version
+      type: STRING
+      mode: NULLABLE
+    - name: geckoview_version
+      type: STRING
+      mode: NULLABLE

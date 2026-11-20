@@ -1,0 +1,194 @@
+sources:
+  moz-fx-data-shared-prod.telemetry.main:
+    - client_id: a
+      sample_id: 1
+      submission_timestamp: 2019-04-01 00:00
+      normalized_app_name: Firefox
+      environment:
+        addons:
+          active_addons:
+            - key: foo
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17000
+                foreign_install: 0
+            - key: baz
+              value:
+                is_web_extension: false
+                is_system: null
+                install_day: 17001
+                foreign_install: 0
+            - key: boz
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17003
+                foreign_install: null
+        profile:
+          creation_date: 17390.0
+    - client_id: b
+      sample_id: 1
+      submission_timestamp: 2019-04-01 00:00
+      normalized_app_name: Firefox
+      environment:
+        addons:
+          active_addons:
+            - key: foo
+              value:
+                is_web_extension: false
+                is_system: true
+                install_day: 17004
+                foreign_install: 0
+            - key: baz
+              value:
+                is_web_extension: null
+                is_system: false
+                install_day: 17005
+                foreign_install: 0
+        profile:
+          creation_date: 17288.0
+    - client_id: c
+      sample_id: 1
+      submission_timestamp: 2019-04-01 00:00
+      normalized_app_name: Firefox
+      environment:
+        addons:
+          active_addons:
+            - key: foo
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17000
+                foreign_install: 1
+            - key: baz
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17000
+                foreign_install: 0
+        profile:
+          creation_date: 16957.0
+    - client_id: d
+      sample_id: 1
+      submission_timestamp: 2019-04-01 00:00
+      normalized_app_name: Firefox
+      environment:
+        addons:
+          active_addons:
+            - key: foo
+              value:
+                is_web_extension: true
+                is_system: false
+                install_day: 17001
+                foreign_install: 0
+            - key: baz
+              value:
+                is_web_extension: null
+                is_system: false
+                install_day: 16999
+                foreign_install: 0
+        profile:
+          creation_date: 16540.0
+    - client_id: e
+      sample_id: 1
+      submission_timestamp: 2019-04-01 00:00
+      normalized_app_name: Firefox
+      environment:
+        addons:
+          active_addons:
+            - key: mozilla-foo
+              value:
+                is_web_extension: true
+                is_system: false
+                install_day: 17000
+                foreign_install: 0
+            - key: cliqz-baz
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17001
+                foreign_install: 0
+            - key: boz@unified-urlbar
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17002
+                foreign_install: 0
+            - key: baz
+              value:
+                is_web_extension: false
+                is_system: true
+                install_day: 17003
+                foreign_install: 0
+            - key: foo
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17004
+                foreign_install: 1
+            - key: boz
+              value:
+                is_web_extension: false
+                is_system: false
+                install_day: 17005
+                foreign_install: 0
+        profile:
+          creation_date: 16983.0
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2019-04-01
+
+expect:
+  - submission_date: '2019-04-01'
+    sample_id: 1
+    client_id: a
+    n_self_installed_addons: 2
+    n_shield_addons: 0
+    n_foreign_installed_addons: 0
+    n_system_addons: 0
+    n_web_extensions: 0
+    first_addon_install_date: '20160718'
+    profile_creation_date: '20170812'
+  - submission_date: '2019-04-01'
+    sample_id: 1
+    client_id: b
+    n_self_installed_addons: 1
+    n_shield_addons: 0
+    n_foreign_installed_addons: 0
+    n_system_addons: 1
+    n_web_extensions: 0
+    first_addon_install_date: '20160723'
+    profile_creation_date: '20170502'
+  - submission_date: '2019-04-01'
+    sample_id: 1
+    client_id: c
+    n_self_installed_addons: 1
+    n_shield_addons: 0
+    n_foreign_installed_addons: 1
+    n_system_addons: 0
+    n_web_extensions: 0
+    first_addon_install_date: '20160718'
+    profile_creation_date: '20160605'
+  - submission_date: '2019-04-01'
+    sample_id: 1
+    client_id: d
+    n_self_installed_addons: 2
+    n_shield_addons: 0
+    n_foreign_installed_addons: 0
+    n_system_addons: 0
+    n_web_extensions: 1
+    first_addon_install_date: '20160717'
+    profile_creation_date: '20150415'
+  - submission_date: '2019-04-01'
+    sample_id: 1
+    client_id: e
+    n_self_installed_addons: 1
+    n_shield_addons: 0
+    n_foreign_installed_addons: 1
+    n_system_addons: 1
+    n_web_extensions: 1
+    first_addon_install_date: '20160723'
+    profile_creation_date: '20160701'

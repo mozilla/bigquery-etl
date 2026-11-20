@@ -3,7 +3,6 @@
 import logging
 import multiprocessing
 import re
-import shutil
 import sys
 from collections import defaultdict
 from collections.abc import MutableMapping
@@ -43,7 +42,7 @@ from bigquery_etl.metadata.publish_metadata import MANAGED_LABEL
 from bigquery_etl.routine.parse_routine import ROUTINE_FILES, RawRoutine
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util import extract_from_query_path
-from bigquery_etl.util.common import block_coding_agents, get_bqetl_project_root, render
+from bigquery_etl.util.common import block_coding_agents, render, rewrite_sql_tests
 from bigquery_etl.util.parallel_topological_sorter import ParallelTopologicalSorter
 from bigquery_etl.util.target import (
     MATERIALIZED_VIEW,
@@ -59,8 +58,6 @@ from bigquery_etl.util.target import (
     resolve_partition_for,
 )
 from bigquery_etl.view import View
-
-ROOT = Path(__file__).parent.parent.parent
 
 log = logging.getLogger(__name__)
 
@@ -230,7 +227,7 @@ log = logging.getLogger(__name__)
     "--rewrite-tests/--no-rewrite-tests",
     "rewrite_tests",
     default=None,
-    help="For --target deploys, copy and rename SQL tests under tests/sql/ to "
+    help="For --target deploys, copy SQL tests and rename their source IDs to "
     "match the target paths. Defaults to the target's `rewrite_tests` setting "
     "in bqetl_targets.yaml; use this to override per run.",
 )
@@ -241,13 +238,6 @@ log = logging.getLogger(__name__)
     default=None,
     help="Override the target's default table expiration (in hours). Defaults "
     "to the target's `expire_after_hours` setting in bqetl_targets.yaml.",
-)
-@click.option(
-    "--test-dir",
-    "--test_dir",
-    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
-    default=None,
-    help="Test directory for --rewrite-tests (defaults to tests/sql at repo root).",
 )
 @defer_option()
 @isolated_option()
@@ -279,7 +269,6 @@ def deploy(
     routine_gcs_path,
     rewrite_tests,
     expire_after_hours,
-    test_dir,
     defer_to_target,
     isolated,
 ):
@@ -460,10 +449,7 @@ def deploy(
         )
 
         if rewrite_tests:
-            _rewrite_tests_for_target(
-                source_to_target_paths,
-                test_dir or (get_bqetl_project_root() or ROOT) / "tests" / "sql",
-            )
+            _rewrite_tests_for_target(source_to_target_paths)
 
         client = bigquery.Client(project=target.project_id)
         seen_datasets: set = set()
@@ -529,34 +515,23 @@ def deploy(
     _report_results(results)
 
 
-def _rewrite_tests_for_target(
-    source_to_target_paths: Dict[Path, Path],
-    test_dir: Path,
-) -> None:
-    """Copy and rename SQL tests so they target the deployed artifacts.
+def _rewrite_tests_for_target(source_to_target_paths: Dict[Path, Path]) -> None:
+    """Copy SQL tests to the deployed artifacts, renaming source IDs to target IDs.
 
-    For each (source, target) artifact pair, copies
-    `tests/sql/<src_project>/<src_dataset>/<src_table>/` into
-    `tests/sql/<tgt_project>/<tgt_dataset>/<tgt_table>/`, then renames any
-    fixture files in the new tree whose basenames encode a source identity
-    (e.g. `proj.dataset.table.yaml` for input fixtures, or
-    `proj.dataset.table.expected.yaml` for the artifact's own expected
-    output) to the corresponding target identity. Renaming covers both
-    the deployed artifact's own fixtures and input fixtures whose stems
-    match any other deployed artifact.
+    For each (source, target) artifact pair, copies `<source_dir>/tests/` into
+    `<target_dir>/tests/`, renaming any test source IDs and source schema files
+    that match a deployed artifact to the corresponding target ID.
     """
-    if not test_dir.exists():
-        return
 
-    # Queries that read a stubbed table (e.g. stable tables) are rewritten to the stub,
-    # so the test fixtures for that table must be renamed too.
     def _source_identity(source_path: Path) -> Tuple[str, str, str]:
+        # Queries that read a stubbed table (e.g. stable tables) are rewritten to the stub,
+        # so the test sources for that table must be renamed too.
         return read_source_identity_from_manifest(
             source_path
         ) or extract_from_query_path(source_path)
 
-    # Build a lookup keyed by every form of source identity that fixture
-    # filenames can use: full `<proj>.<ds>.<tbl>` and short `<ds>.<tbl>`.
+    # Build a lookup keyed by every form of source identity that tests can use:
+    # full `<proj>.<ds>.<tbl>` and short `<ds>.<tbl>`.
     # Maps to the equivalent target identity in full form.
     src_to_tgt_id: Dict[str, str] = {}
     for source_path, target_path in source_to_target_paths.items():
@@ -566,29 +541,11 @@ def _rewrite_tests_for_target(
         src_to_tgt_id[f"{src[1]}.{src[2]}"] = ".".join(tgt)
 
     for source_path, target_path in source_to_target_paths.items():
-        src = _source_identity(source_path)
-        tgt = extract_from_query_path(target_path)
-        src_test_dir = test_dir.joinpath(*src)
-        if not src_test_dir.exists():
-            continue
-        tgt_test_dir = test_dir.joinpath(*tgt)
-        shutil.copytree(src_test_dir, tgt_test_dir, dirs_exist_ok=True)
-
-        for test_file in tgt_test_dir.rglob("*"):
-            if not test_file.is_file():
-                continue
-            suffix = test_file.suffix
-            stem = test_file.name[: -len(suffix)] if suffix else test_file.name
-            schema_part = ""
-            if stem.endswith(".schema"):
-                stem = stem[: -len(".schema")]
-                schema_part = ".schema"
-            tgt_id = src_to_tgt_id.get(stem)
-            if tgt_id is None:
-                continue
-            new_path = test_file.parent / f"{tgt_id}{schema_part}{suffix}"
-            if not new_path.exists():
-                test_file.rename(new_path)
+        source_tests_dir = source_path.parent / "tests"
+        if source_path != target_path and source_tests_dir.is_dir():
+            rewrite_sql_tests(
+                source_tests_dir, target_path.parent / "tests", src_to_tgt_id
+            )
 
 
 def _strip_materialized_view(target_file: Path) -> Path:

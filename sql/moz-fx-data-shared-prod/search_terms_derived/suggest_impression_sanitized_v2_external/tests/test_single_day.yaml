@@ -1,0 +1,162 @@
+sources:
+  moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1:
+    - submission_timestamp: "2021-01-01 12:00:00"
+      request_id: rid1
+      search_query: null
+      advertiser: shoe store
+      block_id: 101
+      context_id: cid1
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: OH
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: nightly
+      position: 1
+      reporting_url: "url1"
+      scenario: "online"
+      version: "94.0.2"
+    - submission_timestamp: "2021-01-01 12:03:00"
+      request_id: null
+      search_query: " NEW GUI"
+      advertiser: awesome guitar store
+      block_id: 102
+      context_id: cid2
+      sample_id: null
+      is_clicked: true
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: AK
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: nightly
+      position: 2
+      reporting_url: "url2"
+      scenario: "online"
+      version: "94.0.2"
+    - submission_timestamp: "2021-01-01 12:07:00"
+      request_id: rid7
+      search_query: null
+      advertiser: null
+      block_id: 107
+      context_id: cid7
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: AZ
+      normalized_os: macOS
+      normalized_os_version: "10.9"
+      release_channel: beta
+      position: 7
+      reporting_url: "url7"
+      scenario: "online"
+      version: "94.0.2"
+  moz-fx-data-shared-prod.search_terms_derived.remotesettings_suggestions_v1:
+    - keywords:
+        - "shoes fo"
+        - "shoes for"
+        - "shoes for "
+        - "shoes for m"
+    - keywords:
+        - "new gui"
+        - "new guit"
+        - "new guita"
+        - "new guitar"
+  suggest-searches-prod-a30f.logs.stdout:
+    - timestamp: "2021-01-01 12:00:01.456789"
+      jsonPayload:
+        type: web.suggest.request
+        fields:
+          rid: rid1
+          query: " Shoes for "
+          country: US
+          region: none
+          dma: none
+          form_factor: desktop
+          browser: firefox(96)
+          os_family: windows
+    - timestamp: "2021-01-01 12:07:00.223"
+      jsonPayload:
+        type: web.suggest.request
+        fields:
+          rid: rid7
+          query: "this is an odd query that won't be allowed"
+          country: US
+          region: none
+          dma: none
+          form_factor: desktop
+          browser: firefox(96)
+          os_family: macos
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: '2021-01-01'
+
+expect:
+  - advertiser: shoe store
+    block_id: 101
+    context_id: cid1
+    country: US
+    is_clicked: false
+    locale: en-US
+    merino_browser: firefox(96)
+    merino_country: US
+    merino_form_factor: desktop
+    merino_os_family: windows
+    merino_timestamp: 2021-01-01T12:00:01+00:00
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    position: 1
+    region: OH
+    normalized_channel: nightly
+    reporting_url: url1
+    sanitized_query: "shoes for "
+    scenario: online
+    submission_timestamp: 2021-01-01T12:00:00+00:00
+    version: "94"
+  - advertiser: awesome guitar store
+    block_id: 102
+    context_id: cid2
+    country: US
+    is_clicked: true
+    locale: en-US
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    position: 2
+    region: AK
+    normalized_channel: nightly
+    reporting_url: url2
+    sanitized_query: "new gui"
+    scenario: online
+    submission_timestamp: 2021-01-01T12:03:00+00:00
+    version: "94"
+  - block_id: 107
+    context_id: cid7
+    country: US
+    is_clicked: false
+    locale: en-US
+    merino_browser: firefox(96)
+    merino_country: US
+    merino_form_factor: desktop
+    merino_os_family: macos
+    merino_timestamp: 2021-01-01T12:07:00+00:00
+    normalized_os: macOS
+    normalized_os_version: "10.9"
+    position: 7
+    region: AZ
+    normalized_channel: beta
+    reporting_url: url7
+    sanitized_query: <disallowed>
+    scenario: online
+    submission_timestamp: 2021-01-01T12:07:00+00:00
+    version: "94"

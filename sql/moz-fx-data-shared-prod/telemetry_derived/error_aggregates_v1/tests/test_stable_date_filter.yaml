@@ -1,0 +1,180 @@
+sources:
+  moz-fx-data-shared-prod.telemetry.core:
+    - submission_timestamp: 2000-01-01 06:23:38.936633 UTC
+      normalized_channel: beta
+      display_version: stable
+      metadata:
+        uri:
+          app_version: stable
+          app_build_id: '30190729203625'
+          app_name: Fennec
+      normalized_os: Android
+      normalized_os_version: '23'
+      arch: arm64-v8a
+      normalized_country_code: IN
+      durations: '3600'
+  moz-fx-data-shared-prod.telemetry_derived.core_live:
+    - submission_timestamp: 2000-01-01 06:23:38.936633 UTC
+      normalized_channel: beta
+      display_version: live
+      metadata:
+        uri:
+          app_version: live
+          app_build_id: '30190729203625'
+          app_name: Fennec
+      normalized_os: Android
+      normalized_os_version: '23'
+      arch: arm64-v8a
+      normalized_country_code: IN
+      durations: '3600'
+  moz-fx-data-shared-prod.telemetry_live.crash_v4:
+    - submission_timestamp: 2000-01-01 20:56:27.000832 UTC
+      normalized_channel: release
+      environment:
+        build:
+          version: live
+          build_id: '30190729203625'
+          architecture: aarch64
+      normalized_os: Android
+      normalized_os_version: '28'
+      application:
+        display_version: live
+      metadata:
+        uri:
+          app_name: Fennec
+      normalized_country_code: US
+      payload:
+        process_type: main
+        metadata:
+          startup_crash: '0'
+          ipc_channel_error: null
+  moz-fx-data-shared-prod.telemetry_live.main_v5:
+    - submission_timestamp: 2000-01-01 00:00:54.466276 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      application:
+        display_version: live
+      metadata:
+        uri:
+          app_name: Firefox
+      environment:
+        build:
+          architecture: x86
+          version: live
+          build_id: '30190729203625'
+      normalized_country_code: ID
+      payload:
+        info:
+          subsession_length: '3600'
+        keyed_histograms:
+          subprocess_crashes_with_dump: []
+  moz-fx-data-shared-prod.telemetry_stable.crash_v4:
+    - submission_timestamp: 2000-01-01 20:56:27.000832 UTC
+      normalized_channel: release
+      normalized_os: Android
+      normalized_os_version: '28'
+      environment:
+        build:
+          version: stable
+          build_id: '30190729203625'
+          architecture: aarch64
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Fennec
+      normalized_country_code: US
+      payload:
+        process_type: main
+        metadata:
+          startup_crash: '0'
+          ipc_channel_error: null
+  moz-fx-data-shared-prod.telemetry_stable.main_v5:
+    - submission_timestamp: 2000-01-01 00:00:54.466276 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      environment:
+        build:
+          architecture: x86
+          version: stable
+          build_id: '30190729203625'
+      normalized_country_code: ID
+      payload:
+        info:
+          subsession_length: '3600'
+        keyed_histograms:
+          subprocess_crashes_with_dump: []
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2000-01-01
+
+expect:
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T06:20:00+00:00'
+    channel: beta
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Fennec
+    os_name: Android
+    os_version: '23'
+    architecture: arm64-v8a
+    country: IN
+    count: 1
+    main_crashes: 0
+    content_crashes: 0
+    startup_crashes: 0
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 0
+    gmplugin_crashes: 0
+    usage_hours: 1.0
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T00:00:00+00:00'
+    channel: release
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Firefox
+    os_name: Windows
+    os_version: '6.1'
+    architecture: x86
+    country: ID
+    count: 1
+    main_crashes: 0
+    content_crashes: 0
+    startup_crashes: 0
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 0
+    gmplugin_crashes: 0
+    usage_hours: 1.0
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T20:55:00+00:00'
+    channel: release
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Fennec
+    os_name: Android
+    os_version: '28'
+    architecture: aarch64
+    country: US
+    count: 1
+    main_crashes: 1
+    content_crashes: 0
+    startup_crashes: 0
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 0
+    gmplugin_crashes: 0
+    usage_hours: 0.0

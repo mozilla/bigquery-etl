@@ -1,0 +1,24 @@
+sources:
+  moz-fx-data-shared-prod.telemetry.core:
+    - sample_id: 0
+      client_id: new-instance
+      submission_timestamp: 2021-03-02T00:00:00
+    - sample_id: 0
+      client_id: existing-instance-with-new-ping
+      submission_timestamp: 2021-03-02T00:00:00
+  moz-fx-data-shared-prod.telemetry_derived.core_clients_first_seen_v1:
+    - client_id: existing-instance
+      first_seen_date: 2021-03-01
+    - client_id: existing-instance-with-new-ping
+      first_seen_date: 2021-03-01
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2021-03-02
+
+is_init: false
+
+expect:
+  - client_id: new-instance
+    first_seen_date: 2021-03-02

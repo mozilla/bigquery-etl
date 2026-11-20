@@ -1,0 +1,138 @@
+sources:
+  moz-fx-data-shared-prod.acoustic_external.suppression_list_v1:
+    # acoustic suppression_list_v1
+    # User 1 only on Acoustic
+    - email: USER1@email.com
+      suppressed_timestamp: 2020-01-01 00:00:00+00:00
+      suppression_reason: bounced
+    # User 2 Acoustic and braze unsubscribe
+    - email: user2@email.com
+      suppressed_timestamp: 2020-02-01 00:00:00+00:00
+    # User 3 Acoustic and braze unsubscribe and braze hard bounce
+    - email: user3@email.com
+      suppressed_timestamp: 2020-03-01 00:00:00+00:00
+    # User 4 Acoustic, braze unsubscribe, braze hard bounce and MoFo
+    - email: user4@email.com
+      suppressed_timestamp: 2020-04-01 00:00:00+00:00
+  # User 5 braze unsubscribe
+  # User 6 braze hard bounce
+  # User 7 MoFo
+  moz-fx-data-shared-prod.braze_external.braze_currents_firefox_hard_bounces_v1:
+    # braze Firefox hard bounces
+    # User 1 only on Acoustic
+    # User 2 Acoustic and braze unsubscribe
+    # User 3 Acoustic and braze unsubscribe and braze hard bounce
+    - email_address: user3@email.com
+      time: 1646096400
+    # User 4 Acoustic, braze unsubscribe, braze hard bounce and MoFo
+    - email_address: user4@email.com
+      time: 1648771200
+    # User 5 braze unsubscribe
+    # User 6 braze hard bounce
+    - email_address: user6@email.com
+      time: 1654041600
+  # User 7 MoFo
+  moz-fx-data-shared-prod.braze_external.braze_currents_firefox_unsubscribe_v1:
+    # braze unsubscribes
+    # User 1 only on Acoustic
+    # User 2 Acoustic and braze unsubscribe
+    - email_address: user2@email.com
+      time: 1612141200
+    # User 3 Acoustic and braze unsubscribe and braze hard bounce
+    - email_address: user3@email.com
+      time: 1614560400
+    # User 4 Acoustic, braze unsubscribe, braze hard bounce and MoFo
+    - email_address: user4@email.com
+      time: 1617235200
+    # User 5 braze unsubscribe
+    - email_address: user5@email.com
+      time: 1619827200
+  # User 6 braze hard bounce
+  # User 7 MoFo
+  moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_hard_bounces_v1:
+    # expect
+    # User 1 only on Acoustic
+    # User 2 Acoustic and braze unsubscribe
+    # User 3 Acoustic and braze unsubscribe and braze firefox hard bounce
+    # User 4 Acoustic, braze unsubscribe, braze firefox hard bounce and MoFo
+    # User 5 braze firefox unsubscribe
+    # User 6 braze Firefox hard bounce
+    # User 7 MoFo
+    # User 8 braze Mozilla hard bounce
+    - email_address: user8@email.com
+      time: 1722470400
+  moz-fx-data-shared-prod.braze_external.braze_currents_pocket_hard_bounces_v1:
+    # expect
+    # User 1 only on Acoustic
+    # User 2 Acoustic and braze unsubscribe
+    # User 3 Acoustic and braze unsubscribe and braze firefox hard bounce
+    # User 4 Acoustic, braze unsubscribe, braze firefox hard bounce and MoFo
+    # User 5 braze firefox unsubscribe
+    # User 6 braze Firefox hard bounce
+    # User 7 MoFo
+    # User 8 braze Mozilla hard bounce
+    # User 9 braze Pocket hard bounce
+    - email_address: user9@email.com
+      time: 1750032000
+  # User 10 braze Pocket unsubscribes
+  moz-fx-data-shared-prod.braze_external.braze_currents_pocket_unsubscribe_v1:
+    # expect
+    # User 1 only on Acoustic
+    # User 2 Acoustic and braze unsubscribe
+    # User 3 Acoustic and braze unsubscribe and braze firefox hard bounce
+    # User 4 Acoustic, braze unsubscribe, braze firefox hard bounce and MoFo
+    # User 5 braze firefox unsubscribe
+    # User 6 braze Firefox hard bounce
+    # User 7 MoFo
+    # User 8 braze Mozilla hard bounce
+    # User 9 braze Pocket hard bounce
+    # User 10 braze Pocket unsubscribes
+    - email_address: user10@email.com
+      time: 1750032000
+
+parameters: []
+
+expect:
+  # expect
+  # User 1 only on Acoustic
+  - email: user1@email.com
+    suppressed_timestamp: 2020-01-01 00:00:00+00:00
+    suppression_reason: bounced
+    suppression_source: Acoustic
+  # User 2 Acoustic and braze unsubscribe
+  - email: user2@email.com
+    suppressed_timestamp: 2020-02-01 00:00:00+00:00
+    suppression_source: Acoustic
+  # User 3 Acoustic and braze unsubscribe and braze firefox hard bounce
+  - email: user3@email.com
+    suppressed_timestamp: 2020-03-01 00:00:00+00:00
+    suppression_source: Acoustic
+  # User 4 Acoustic, braze unsubscribe, braze firefox hard bounce and MoFo
+  - email: user4@email.com
+    suppressed_timestamp: 2020-04-01 00:00:00+00:00
+    suppression_source: Acoustic
+  # User 5 braze firefox unsubscribe
+  - email: user5@email.com
+    suppressed_timestamp: 2021-05-01 00:00:00+00:00
+    suppression_reason: clicked header
+    suppression_source: Braze Firefox unsubscribe
+  # User 6 braze Firefox hard bounce
+  - email: user6@email.com
+    suppressed_timestamp: 2022-06-01 00:00:00+00:00
+    suppression_reason: hard bounce
+    suppression_source: Braze Firefox hard bounce
+  # User 8 braze Mozilla hard bounce
+  - email: user8@email.com
+    suppressed_timestamp: 2024-08-01 00:00:00+00:00
+    suppression_reason: hard bounce
+    suppression_source: Braze Mozilla hard bounce
+  # User 9 braze Pocket hard bounce
+  - email: user9@email.com
+    suppressed_timestamp: 2025-06-16 00:00:00+00:00
+    suppression_reason: hard bounce
+    suppression_source: Braze Pocket hard bounce
+  # User 10 braze Pocket unsubscribe
+  - email: user10@email.com
+    suppressed_timestamp: 2025-06-16 00:00:00+00:00
+    suppression_reason: clicked header
+    suppression_source: Braze Pocket unsubscribe

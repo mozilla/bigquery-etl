@@ -1,0 +1,102 @@
+sources:
+  moz-fx-data-shared-prod.org_mozilla_fenix_stable.baseline_v1:
+    - sample_id: 0
+      client_info:
+        client_id: single-instance
+        attribution:
+          campaign: FIRST_CAMPAIGN
+          content: FIRST_CONTENT
+          medium: FIRST_MEDIUM
+          source: FIRST_SOURCE
+          term: FIRST_TERM
+        distribution:
+          name: MOZILLA_ONLINE
+      submission_timestamp: 2021-03-01T00:00:00
+    - sample_id: 0
+      client_info:
+        client_id: multiple-instances
+        attribution:
+          campaign: FIRST_CAMPAIGN
+          content: FIRST_CONTENT
+          medium: FIRST_MEDIUM
+          source: FIRST_SOURCE
+          term: FIRST_TERM
+        distribution:
+          name: MOZILLA_ONLINE
+      submission_timestamp: 2021-03-01T00:00:00
+    - sample_id: 0
+      client_info:
+        client_id: multiple-instances
+        attribution:
+          campaign: FIRST_CAMPAIGN
+          content: FIRST_CONTENT
+          medium: FIRST_MEDIUM
+          source: FIRST_SOURCE
+          term: FIRST_TERM
+        distribution:
+          name: MOZILLA_ONLINE
+      submission_timestamp: 2021-03-02T00:00:00
+    - sample_id: 0
+      client_info:
+        client_id: core-first-seen
+        attribution:
+          campaign: FIRST_CAMPAIGN
+          content: FIRST_CONTENT
+          medium: FIRST_MEDIUM
+          source: FIRST_SOURCE
+          term: FIRST_TERM
+        distribution:
+          name: MOZILLA_ONLINE
+      submission_timestamp: 2021-03-01T00:00:00
+  moz-fx-data-shared-prod.org_mozilla_fenix_stable.migration_v1:
+    - sample_id: 0
+      client_info:
+        client_id: core-first-seen
+      submission_timestamp: 2021-03-01T00:00:00
+      metrics:
+        uuid:
+          migration_telemetry_identifiers_fennec_client_id: core-id
+  moz-fx-data-shared-prod.telemetry_derived.core_clients_first_seen_v1:
+    - client_id: core-id
+      first_seen_date: 2021-02-01
+    - client_id: some-other-id
+      first_seen_date: 2019-01-01
+
+parameters: []
+
+is_init: true
+
+expect:
+  - client_id: single-instance
+    submission_date: 2021-03-01
+    first_seen_date: 2021-03-01
+    attribution:
+      campaign: FIRST_CAMPAIGN
+      content: FIRST_CONTENT
+      medium: FIRST_MEDIUM
+      source: FIRST_SOURCE
+      term: FIRST_TERM
+    distribution:
+      name: MOZILLA_ONLINE
+  - client_id: multiple-instances
+    submission_date: 2021-03-01
+    first_seen_date: 2021-03-01
+    attribution:
+      campaign: FIRST_CAMPAIGN
+      content: FIRST_CONTENT
+      medium: FIRST_MEDIUM
+      source: FIRST_SOURCE
+      term: FIRST_TERM
+    distribution:
+      name: MOZILLA_ONLINE
+  - client_id: core-first-seen
+    submission_date: 2021-03-01
+    first_seen_date: 2021-02-01
+    attribution:
+      campaign: FIRST_CAMPAIGN
+      content: FIRST_CONTENT
+      medium: FIRST_MEDIUM
+      source: FIRST_SOURCE
+      term: FIRST_TERM
+    distribution:
+      name: MOZILLA_ONLINE

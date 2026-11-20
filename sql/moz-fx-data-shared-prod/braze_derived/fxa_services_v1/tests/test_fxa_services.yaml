@@ -1,0 +1,52 @@
+sources:
+  moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1:
+    # mock FxA emails
+    # uid_1 primary email -> used
+    - uid: uid_1
+      email: user_1@mail.com
+      isPrimary: true
+    # uid_1 secondary email -> ignored (not primary)
+    - uid: uid_1
+      email: user_1_secondary@mail.com
+      isPrimary: false
+    # uid_2 has only a non-primary email -> uid_2 is dropped entirely
+    - uid: uid_2
+      email: user_2@mail.com
+      isPrimary: false
+  moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_account_authorizations_v1:
+    # mock OAuth ToS authorizations
+    # uid_1: 'sync' authorized under two clients on different dates -> collapses to MIN
+    - uid: uid_1
+      service: sync
+      firstAuthorizedTosAt: 2026-05-01 10:00:00+00:00
+    - uid: uid_1
+      service: sync
+      firstAuthorizedTosAt: 2026-05-03 10:00:00+00:00
+    # uid_1: 'smartwindow' authorized once
+    - uid: uid_1
+      service: smartwindow
+      firstAuthorizedTosAt: 2026-05-05 10:00:00+00:00
+    # uid_1: null service -> dropped by WHERE service IS NOT NULL
+    - uid: uid_1
+      firstAuthorizedTosAt: 2026-05-06 10:00:00+00:00
+    # uid_2: has a service but no primary email -> dropped by the INNER JOIN
+    - uid: uid_2
+      service: sync
+      firstAuthorizedTosAt: 2026-05-02 10:00:00+00:00
+
+parameters: []
+
+expect:
+  # expect: one row per (uid, service) for users with a primary email; null services
+  # and users without a primary email are excluded; duplicate (uid, service) rows
+  # collapse to the earliest first_authorized_tos_at
+  # uid_1 / sync -> MIN(2026-05-01, 2026-05-03)
+  - uid: uid_1
+    email: user_1@mail.com
+    service: sync
+    first_authorized_tos_at: 2026-05-01 10:00:00+00:00
+  # uid_1 / smartwindow
+  - uid: uid_1
+    email: user_1@mail.com
+    service: smartwindow
+    first_authorized_tos_at: 2026-05-05 10:00:00+00:00

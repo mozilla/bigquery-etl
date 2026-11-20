@@ -1,0 +1,93 @@
+sources:
+  moz-fx-data-shared-prod.telemetry.buildhub2:
+    - submission_timestamp: "2019-01-01 00:00:00.000000 UTC"
+      build:
+        build:
+          id: first
+  moz-fx-data-shared-prod.telemetry_stable.main_v5:
+    - &base
+      client_id: test
+      sample_id: 0
+      submission_timestamp: "2019-07-17 17:19:39.844336 UTC"
+      normalized_os: first
+      normalized_channel: nightly
+      document_id: avg_1
+    - <<: *base
+      payload:
+        {
+          "keyed_histograms":
+            {
+              "addon_content_policy_shim_blocking_loading_ms":
+                [{"key": "google.urlbar", "value": '{
+                      "histogram_type": 1,
+                      "values": {"1":0, "56": 9,
+                      "397": 1, "3": 26, "149": 1, "1056": 0, "8": 7, "21": 235}
+                      }'}, {"key": "google.searchbar", "value": '{
+                      "histogram_type": 1,
+                      "values": {"1":0, "56": 9, "397": 1, "21": 235}
+                      }'}],
+            },
+        }
+      application: {"channel": nightly, "version": first, "build_id": first}
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2019-07-17
+  - name: sample_size
+    type: INT64
+    value: 10
+
+expect:
+  - submission_date: '2019-07-17'
+    sample_id: 0
+    client_id: test
+    os: first
+    app_version: first
+    app_build_id: first
+    channel: nightly
+    histogram_aggregates:
+      - metric: addon_content_policy_shim_blocking_loading_ms
+        metric_type: histogram-exponential
+        key: google.urlbar
+        process: parent
+        agg_type: summed_histogram
+        bucket_range:
+          first_bucket: 1
+          last_bucket: 60000
+          num_buckets: 20
+        value:
+          - key: '1'
+            value: 0
+          - key: '3'
+            value: 26
+          - key: '8'
+            value: 7
+          - key: '21'
+            value: 235
+          - key: '56'
+            value: 9
+          - key: '149'
+            value: 1
+          - key: '397'
+            value: 1
+          - key: '1056'
+            value: 0
+      - metric: addon_content_policy_shim_blocking_loading_ms
+        metric_type: histogram-exponential
+        key: google.searchbar
+        process: parent
+        agg_type: summed_histogram
+        bucket_range:
+          first_bucket: 1
+          last_bucket: 60000
+          num_buckets: 20
+        value:
+          - key: '1'
+            value: 0
+          - key: '21'
+            value: 235
+          - key: '56'
+            value: 9
+          - key: '397'
+            value: 1

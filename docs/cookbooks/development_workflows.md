@@ -420,13 +420,13 @@ stage:
   dataset: "{{ artifact.dataset_id }}_{{ artifact.project_id }}_{{ git.commit }}"
   grant_dryrun_access: true     # READER for dry_run.function_accounts
   expire_after_hours: 12         # auto-GC by `target clean --delete-expired`
-  rewrite_tests: true            # mirror tests/sql/<src>/ → tests/sql/<tgt>/
+  rewrite_tests: true            # copy <src>/tests/ → <tgt>/tests/, renaming sources
 ```
 
 CLI flags `--rewrite-tests/--no-rewrite-tests` and `--expire-after-hours=N`
 override per-run if needed. For personal `dev` targets, leave these unset —
 your dev datasets stay private (no service-account access), persist across
-iterations, and don't touch your `tests/sql/` tree.
+iterations, and don't get copies of SQL tests.
 
 ## Future Enhancements
 

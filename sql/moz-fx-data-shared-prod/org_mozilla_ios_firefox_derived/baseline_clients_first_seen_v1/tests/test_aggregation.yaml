@@ -1,0 +1,96 @@
+sources:
+  moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_first_seen_v1:
+    - client_id: existing-instance
+      submission_date: 2021-03-01
+      first_seen_date: 2021-03-01
+      sample_id: 0
+      attribution:
+        campaign: FIRST_CAMPAIGN
+        content: FIRST_CONTENT
+        medium: FIRST_MEDIUM
+        source: FIRST_SOURCE
+        term: FIRST_TERM
+      distribution:
+        name: MOZILLA_ONLINE
+    - client_id: existing-instance-with-new-ping
+      submission_date: 2021-03-01
+      first_seen_date: 2021-03-01
+      sample_id: 0
+      attribution:
+        campaign: FIRST_CAMPAIGN
+        content: FIRST_CONTENT
+        medium: FIRST_MEDIUM
+        source: FIRST_SOURCE
+        term: FIRST_TERM
+      distribution:
+        name: MOZILLA_ONLINE
+  moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.baseline_v1:
+    - sample_id: 0
+      client_info:
+        client_id: new-instance
+        attribution:
+          campaign: FIRST_CAMPAIGN
+          content: FIRST_CONTENT
+          medium: FIRST_MEDIUM
+          source: FIRST_SOURCE
+          term: FIRST_TERM
+        distribution:
+          name: MOZILLA_ONLINE
+      submission_timestamp: 2021-03-02T00:00:00
+    - sample_id: 0
+      client_info:
+        client_id: existing-instance-with-new-ping
+        attribution:
+          campaign: FIRST_CAMPAIGN
+          content: FIRST_CONTENT
+          medium: FIRST_MEDIUM
+          source: FIRST_SOURCE
+          term: FIRST_TERM
+        distribution:
+          name: MOZILLA_ONLINE
+      submission_timestamp: 2021-03-02T00:00:00
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2021-03-02
+
+is_init: false
+
+expect:
+  - client_id: existing-instance
+    submission_date: 2021-03-01
+    first_seen_date: 2021-03-01
+    sample_id: 0
+    attribution:
+      campaign: FIRST_CAMPAIGN
+      content: FIRST_CONTENT
+      medium: FIRST_MEDIUM
+      source: FIRST_SOURCE
+      term: FIRST_TERM
+    distribution:
+      name: MOZILLA_ONLINE
+  - client_id: existing-instance-with-new-ping
+    submission_date: 2021-03-01
+    first_seen_date: 2021-03-01
+    sample_id: 0
+    attribution:
+      campaign: FIRST_CAMPAIGN
+      content: FIRST_CONTENT
+      medium: FIRST_MEDIUM
+      source: FIRST_SOURCE
+      term: FIRST_TERM
+    distribution:
+      name: MOZILLA_ONLINE
+  - client_id: new-instance
+    submission_date: 2021-03-02
+    first_seen_date: 2021-03-02
+    sample_id: 0
+    attribution:
+      campaign: FIRST_CAMPAIGN
+      content: FIRST_CONTENT
+      medium: FIRST_MEDIUM
+      source: FIRST_SOURCE
+      term: FIRST_TERM
+    distribution:
+      name: MOZILLA_ONLINE

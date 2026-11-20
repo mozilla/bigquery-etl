@@ -1,0 +1,50 @@
+sources:
+  moz-fx-data-shared-prod.fenix.baseline_clients_daily:
+    - client_id: client-dup
+      sample_id: 35
+      first_seen_date: 2026-06-21
+      submission_date: 2026-06-21
+      first_run_date: 2026-06-21
+      normalized_channel: release
+      is_new_profile: true
+      device_model: Redmi K20 Pro
+      device_manufacturer: Xiaomi
+    - client_id: client-dup
+      sample_id: 35
+      first_seen_date: 2026-06-21
+      submission_date: 2026-06-21
+      first_run_date: 2026-06-21
+      normalized_channel: beta
+      is_new_profile: true
+      device_model: Redmi K20 Pro
+      device_manufacturer: Xiaomi
+  moz-fx-data-shared-prod.fenix.first_session: []
+  moz-fx-data-shared-prod.fenix.metrics: []
+  moz-fx-data-shared-prod.fenix.new_profile_activation: []
+  moz-fx-data-shared-prod.fenix.play_store_attribution: []
+  moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1: []
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2026-06-21
+
+is_init: false
+
+expect:
+  - client_id: client-dup
+    sample_id: 35
+    first_seen_date: 2026-06-21
+    submission_date: 2026-06-21
+    first_run_date: 2026-06-21
+    channel: release
+    device_model: Redmi K20 Pro
+    device_manufacturer: Xiaomi
+    last_reported_channel: release
+    last_reported_device_model: Redmi K20 Pro
+    last_reported_device_manufacturer: Xiaomi
+    last_reported_date: 2026-06-21
+    metadata:
+      reported_first_session_ping: false
+      reported_metrics_ping: false
+      reported_baseline_ping: true

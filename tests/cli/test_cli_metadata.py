@@ -486,8 +486,9 @@ class TestMetadata:
                     f.write(yaml.safe_dump(schema))
 
             if with_unittests:
-                unittest_path = os.path.join("tests", self.test_path, "test_query_v1")
-                os.makedirs(unittest_path, exist_ok=True)
+                unittest_path = Path(self.test_path) / "tests"
+                unittest_path.mkdir(exist_ok=True)
+                (unittest_path / "test_query_v1.yaml").write_text("")
 
             if with_bigeye_metrics:
                 bigeye_metrics = {
@@ -829,9 +830,8 @@ class TestMetadata:
 
     def write_generated_tree(self, with_tests_dir=True, with_test_case=True):
         """Create the absolute layout CI builds under /tmp/workspace/private-generated-sql:
-        <root>/sql/<project>/<dataset>/<table> and, optionally,
-        <root>/tests/sql/<project>/<dataset>/<table>, with or without the
-        test_query_v1 child that makes the folder count as a unit test.
+        <root>/sql/<project>/<dataset>/<table> and, optionally, a `tests` folder in it,
+        with or without the test_query_v1.yaml file that counts as a unit test.
         """
         root = Path.cwd() / "private-generated-sql"
         table_dir = (
@@ -876,15 +876,15 @@ class TestMetadata:
         (table_dir / "query.sql").write_text("SELECT column_1 FROM test_table")
 
         if with_tests_dir:
-            tests_dir = root / "tests" / Path(*table_dir.parts[-4:])
-            os.makedirs(tests_dir / "test_query_v1" if with_test_case else tests_dir)
+            tests_dir = table_dir / "tests"
+            tests_dir.mkdir()
+            if with_test_case:
+                (tests_dir / "test_query_v1.yaml").write_text("")
 
         return table_dir
 
-    def test_level_gold_absolute_sql_dir_finds_tests_next_to_sql(self, runner, capfd):
-        """Absolute query_dir: os.path.join("tests", query_dir) drops "tests", so the
-        tests folder is resolved from the sql dir root instead.
-        """
+    def test_level_gold_absolute_sql_dir_finds_tests(self, runner, capfd):
+        """Absolute query_dir with a test in its tests folder."""
         with runner.isolated_filesystem():
             table_dir = self.write_generated_tree(with_tests_dir=True)
 
@@ -895,8 +895,8 @@ class TestMetadata:
             assert "Metadata level gold achieved!" in capfd.readouterr().out
 
     def test_level_gold_absolute_sql_dir_without_tests(self, runner, capfd):
-        """Same absolute layout without a tests/sql folder: unittests are still
-        reported as missing.
+        """Same absolute layout without a tests folder: unittests are reported as
+        missing.
         """
         with runner.isolated_filesystem():
             table_dir = self.write_generated_tree(with_tests_dir=False)
@@ -910,8 +910,8 @@ class TestMetadata:
     def test_level_gold_absolute_sql_dir_tests_dir_without_test_case(
         self, runner, capfd
     ):
-        """The tests folder exists next to the sql dir but holds no test_ entry:
-        unittests are reported as missing.
+        """The tests folder exists but holds no test_*.yaml file: unittests are
+        reported as missing.
         """
         with runner.isolated_filesystem():
             table_dir = self.write_generated_tree(

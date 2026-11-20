@@ -1,0 +1,15 @@
+fields:
+- name: build
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: build
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: REQUIRED

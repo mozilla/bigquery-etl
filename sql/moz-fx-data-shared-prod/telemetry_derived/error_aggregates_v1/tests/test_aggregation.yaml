@@ -1,0 +1,365 @@
+sources:
+  moz-fx-data-shared-prod.telemetry.core:
+    - submission_timestamp: 2000-01-01 00:00:00.000000 UTC
+      normalized_channel: beta
+      display_version: stable
+      metadata:
+        uri:
+          app_version: stable
+          app_build_id: '30190729203625'
+          app_name: Fennec
+      normalized_os: Android
+      normalized_os_version: '23'
+      arch: arm64-v8a
+      normalized_country_code: IN
+      durations: '3600'
+    - submission_timestamp: 2000-01-01 00:04:00.000000 UTC
+      normalized_channel: beta
+      display_version: stable
+      metadata:
+        uri:
+          app_version: stable
+          app_build_id: '30190729203625'
+          app_name: Fennec
+      normalized_os: Android
+      normalized_os_version: '23'
+      arch: arm64-v8a
+      normalized_country_code: IN
+      durations: '3600'
+    - submission_timestamp: 2000-01-01 00:04:00.000000 UTC
+      normalized_channel: release
+      display_version: stable
+      metadata:
+        uri:
+          app_version: stable
+          app_build_id: '30190729203625'
+          app_name: Fennec
+      normalized_os: Android
+      normalized_os_version: '23'
+      arch: arm64-v8a
+      normalized_country_code: IN
+      durations: '3600'
+  moz-fx-data-shared-prod.telemetry_derived.core_live: []
+  moz-fx-data-shared-prod.telemetry_live.crash_v4: []
+  moz-fx-data-shared-prod.telemetry_live.main_v5: []
+  moz-fx-data-shared-prod.telemetry_stable.crash_v4:
+    - submission_timestamp: 2000-01-01 00:00:00.000000 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      environment:
+        build:
+          version: stable
+          build_id: '30190729203625'
+          architecture: x86
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      normalized_country_code: US
+      payload:
+        process_type: main
+        metadata:
+          startup_crash: '0'
+          ipc_channel_error: null
+    - submission_timestamp: 2000-01-01 00:02:00.000000 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      environment:
+        build:
+          version: stable
+          build_id: '30190729203625'
+          architecture: x86
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      normalized_country_code: US
+      payload:
+        process_type: content
+        metadata:
+          startup_crash: '0'
+          ipc_channel_error: ShutDownKill
+    - submission_timestamp: 2000-01-01 00:03:00.000000 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      environment:
+        build:
+          version: stable
+          build_id: '30190729203625'
+          architecture: x86
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      normalized_country_code: US
+      payload:
+        process_type: main
+        metadata:
+          startup_crash: '1'
+          ipc_channel_error: null
+    - submission_timestamp: 2000-01-01 00:03:00.000000 UTC
+      normalized_channel: beta
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      environment:
+        build:
+          version: stable
+          build_id: '30190729203625'
+          architecture: x86
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      normalized_country_code: US
+      payload:
+        process_type: main
+        metadata:
+          startup_crash: '1'
+          ipc_channel_error: null
+    - submission_timestamp: 2000-01-01 00:05:00.000000 UTC
+      normalized_channel: beta
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      environment:
+        build:
+          version: stable
+          build_id: '30190729203625'
+          architecture: x86
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      normalized_country_code: US
+      payload:
+        process_type: main
+        metadata:
+          startup_crash: '1'
+          ipc_channel_error: null
+  moz-fx-data-shared-prod.telemetry_stable.main_v5:
+    - submission_timestamp: 2000-01-01 00:00:00.000000 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      environment:
+        build:
+          architecture: x86
+          version: stable
+          build_id: '30190729203625'
+      normalized_country_code: US
+      payload:
+        info:
+          subsession_length: '3600'
+        keyed_histograms:
+          subprocess_crashes_with_dump:
+            - key: gpu
+              value: '{"sum": 2}'
+    - submission_timestamp: 2000-01-01 00:05:00.000000 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      environment:
+        build:
+          architecture: x86
+          version: stable
+          build_id: '30190729203625'
+      normalized_country_code: US
+      payload:
+        info:
+          subsession_length: '3600'
+        keyed_histograms:
+          subprocess_crashes_with_dump:
+            - key: gmplugin
+              value: '{"sum": 2}'
+            - key: plugin
+              value: '{"sum": 1}'
+    - submission_timestamp: 2000-01-01 00:05:00.000000 UTC
+      normalized_channel: beta
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      environment:
+        build:
+          architecture: x86
+          version: stable
+          build_id: '30190729203625'
+      normalized_country_code: US
+      payload:
+        info:
+          subsession_length: '3600'
+        keyed_histograms:
+          subprocess_crashes_with_dump:
+            - key: gmplugin
+              value: '{"sum": 2}'
+            - key: plugin
+              value: '{"sum": 1}'
+    - submission_timestamp: 2000-01-01 00:06:00.000000 UTC
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: '6.1'
+      application:
+        display_version: stable
+      metadata:
+        uri:
+          app_name: Firefox
+      environment:
+        build:
+          architecture: x86
+          version: stable
+          build_id: '30190729203625'
+      normalized_country_code: US
+      payload:
+        info:
+          subsession_length: '3600'
+        keyed_histograms:
+          subprocess_crashes_with_dump:
+            - key: gmplugin
+              value: '{"sum": 1}'
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2000-01-01
+
+expect:
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T00:00:00+00:00'
+    channel: beta
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Fennec
+    os_name: Android
+    os_version: '23'
+    architecture: arm64-v8a
+    country: IN
+    count: 2
+    main_crashes: 0
+    content_crashes: 0
+    startup_crashes: 0
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 0
+    gmplugin_crashes: 0
+    usage_hours: 2.0
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T00:00:00+00:00'
+    channel: release
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Fennec
+    os_name: Android
+    os_version: '23'
+    architecture: arm64-v8a
+    country: IN
+    count: 1
+    main_crashes: 0
+    content_crashes: 0
+    startup_crashes: 0
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 0
+    gmplugin_crashes: 0
+    usage_hours: 1.0
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T00:00:00+00:00'
+    channel: release
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Firefox
+    os_name: Windows
+    os_version: '6.1'
+    architecture: x86
+    country: US
+    count: 4
+    main_crashes: 2
+    content_crashes: 0
+    startup_crashes: 1
+    content_shutdown_crashes: 1
+    gpu_crashes: 2
+    plugin_crashes: 0
+    gmplugin_crashes: 0
+    usage_hours: 1.0
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T00:05:00+00:00'
+    channel: release
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Firefox
+    os_name: Windows
+    os_version: '6.1'
+    architecture: x86
+    country: US
+    count: 2
+    main_crashes: 0
+    content_crashes: 0
+    startup_crashes: 0
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 1
+    gmplugin_crashes: 3
+    usage_hours: 2.0
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T00:00:00+00:00'
+    channel: beta
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Firefox
+    os_name: Windows
+    os_version: '6.1'
+    architecture: x86
+    country: US
+    count: 1
+    main_crashes: 1
+    content_crashes: 0
+    startup_crashes: 1
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 0
+    gmplugin_crashes: 0
+    usage_hours: 0.0
+  - submission_date: '2000-01-01'
+    window_start: '2000-01-01T00:05:00+00:00'
+    channel: beta
+    version: stable
+    display_version: stable
+    build_id: '30190729203625'
+    application: Firefox
+    os_name: Windows
+    os_version: '6.1'
+    architecture: x86
+    country: US
+    count: 2
+    main_crashes: 1
+    content_crashes: 0
+    startup_crashes: 1
+    content_shutdown_crashes: 0
+    gpu_crashes: 0
+    plugin_crashes: 1
+    gmplugin_crashes: 2
+    usage_hours: 1.0

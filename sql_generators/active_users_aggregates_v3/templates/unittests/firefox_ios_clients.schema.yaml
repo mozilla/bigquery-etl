@@ -1,0 +1,46 @@
+fields:
+- name: app_name
+  type: STRING
+- name: client_id
+  type: STRING
+- name: sample_id
+  type: INTEGER
+- name: first_seen_date
+  type: DATE
+- name: first_reported_country
+  type: STRING
+- name: first_reported_isp
+  type: STRING
+- name: channel
+  type: STRING
+- name: device_manufacturer
+  type: STRING
+- name: device_model
+  type: STRING
+- name: os_version
+  type: STRING
+- name: app_version
+  type: STRING
+- name: submission_timestamp
+  type: TIMESTAMP
+- name: adjust_ad_group
+  type: STRING
+- name: adjust_campaign
+  type: STRING
+- name: adjust_creative
+  type: STRING
+- name: adjust_network
+  type: STRING
+- name: metadata
+  type: RECORD
+  fields:
+  - name: is_reported_first_session_ping
+    type: BOOLEAN
+  - name: is_reported_metrics_ping
+    type: BOOLEAN
+  - name: adjust_info__source_ping
+    type: STRING
+- name: is_suspicious_device_client
+  type: BOOLEAN
+- name: is_activated
+  type: BOOLEAN

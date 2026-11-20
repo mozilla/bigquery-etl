@@ -1,0 +1,182 @@
+fields:
+- name: segment
+  type: STRING
+- name: normalized_app_id
+  type: STRING
+- name: days_since_seen
+  type: INTEGER
+- name: days_since_active
+  type: INTEGER
+- name: days_since_created_profile
+  type: INTEGER
+- name: days_since_seen_session_start
+  type: INTEGER
+- name: days_since_seen_session_end
+  type: INTEGER
+- name: days_since_visited_1_uri
+  type: INTEGER
+- name: days_seen_bits
+  type: INTEGER
+- name: days_active_bits
+  type: INTEGER
+- name: days_created_profile_bits
+  type: INTEGER
+- name: submission_date
+  type: DATE
+- name: client_id
+  type: STRING
+- name: sample_id
+  type: INTEGER
+- name: first_run_date
+  type: DATE
+- name: durations
+  type: INTEGER
+- name: days_seen_session_start_bits
+  type: INTEGER
+- name: days_seen_session_end_bits
+  type: INTEGER
+- name: normalized_channel
+  type: STRING
+- name: normalized_os
+  type: STRING
+- name: normalized_os_version
+  type: STRING
+- name: android_sdk_version
+  type: STRING
+- name: locale
+  type: STRING
+- name: city
+  type: STRING
+- name: country
+  type: STRING
+- name: app_build
+  type: STRING
+- name: app_channel
+  type: STRING
+- name: app_display_version
+  type: STRING
+- name: architecture
+  type: STRING
+- name: device_manufacturer
+  type: STRING
+- name: device_model
+  type: STRING
+- name: telemetry_sdk_build
+  type: STRING
+- name: first_seen_date
+  type: DATE
+- name: is_new_profile
+  type: BOOLEAN
+- name: distribution_id
+  type: STRING
+- name: geo_subdivision
+  type: STRING
+- name: profile_group_id
+  type: STRING
+- name: install_source
+  type: STRING
+- name: windows_build_number
+  type: INTEGER
+- name: browser_engagement_uri_count
+  type: INTEGER
+- name: browser_engagement_active_ticks
+  type: INTEGER
+- name: legacy_telemetry_client_id
+  type: STRING
+- name: is_default_browser
+  type: BOOLEAN
+- name: attribution
+  type: RECORD
+  fields:
+  - name: campaign
+    type: STRING
+  - name: content
+    type: STRING
+  - name: medium
+    type: STRING
+  - name: source
+    type: STRING
+  - name: term
+    type: STRING
+- name: distribution
+  type: RECORD
+  fields:
+  - name: name
+    type: STRING
+- name: attribution_dltoken
+  type: STRING
+- name: attribution_dlsource
+  type: STRING
+- name: attribution_experiment
+  type: STRING
+- name: attribution_variation
+  type: STRING
+- name: attribution_ua
+  type: STRING
+- name: experiments
+  type: RECORD
+  fields:
+  - name: key
+    type: STRING
+  - name: value
+    type: RECORD
+    fields:
+    - name: branch
+      type: STRING
+    - name: extra
+      type: RECORD
+      fields:
+      - name: type
+        type: STRING
+      - name: enrollment_id
+        type: STRING
+- name: days_visited_1_uri_bits
+  type: INTEGER
+- name: active_hours_sum
+  type: FLOAT
+- name: startup_profile_selection_reason_first
+  type: STRING
+- name: app_name
+  type: STRING
+- name: activity_segment
+  type: STRING
+- name: is_dau
+  type: BOOLEAN
+- name: is_wau
+  type: BOOLEAN
+- name: is_mau
+  type: BOOLEAN
+- name: is_daily_user
+  type: BOOLEAN
+- name: is_weekly_user
+  type: BOOLEAN
+- name: is_monthly_user
+  type: BOOLEAN
+- name: is_mobile
+  type: BOOLEAN
+- name: isp
+  type: STRING
+- name: device_type
+  type: STRING
+- name: first_seen_year
+  type: INTEGER
+- name: app_version
+  type: STRING
+- name: app_version_major
+  type: NUMERIC
+- name: app_version_minor
+  type: NUMERIC
+- name: app_version_patch_revision
+  type: NUMERIC
+- name: app_version_is_major_release
+  type: BOOLEAN
+- name: os
+  type: STRING
+- name: os_version
+  type: STRING
+- name: os_version_major
+  type: INTEGER
+- name: os_version_minor
+  type: INTEGER
+- name: channel
+  type: STRING

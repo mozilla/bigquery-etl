@@ -1,0 +1,235 @@
+sources:
+  moz-fx-data-marketing-prod.65789850.ga_sessions_20230331:
+    - clientId: client1
+      visitId: '1'
+      visitNumber: 1
+      date: '20230331'
+      visitStartTime: 1
+      geoNetwork:
+        country: "earlierCountry"
+        region: "earlierRegion"
+        city: "earlierCity"
+      trafficSource:
+        adwordsClickInfo:
+          campaignId: 1
+          gclId: "earlierGclid"
+        campaign: "earlierCampaign"
+        source: "earlierSource"
+        medium: "earlierMedium"
+        adContent: "earlierContent"
+        keyword: "earlierKeyword"
+      device:
+        deviceCategory: "earlierDeviceCategory"
+        mobileDeviceModel: "earlierMobileDeviceModel"
+        mobileDeviceInfo: "earlierMobileDeviceInfo"
+        operatingSystem: "earlierOperatingSystem"
+        operatingSystemVersion: "earlierOperatingSystemVersion"
+        language: "earlierLanguage"
+        browser: "earlierBrowser"
+        browserVersion: "earlierBrowserVersion"
+      totals:
+        pageviews: 1
+        timeOnSite: 11
+      hits:
+        - page:
+            pagePath: "/en-GB/firefox/session"
+          appInfo:
+            landingScreenName: first
+          eventInfo:
+            eventCategory: "/firefox/ Interactions"
+            eventAction: Stub Session ID
+            eventLabel: earlierStubSessionId
+          hitNumber: 1
+          type: EVENT
+        - page:
+            pagePath: "/en-GB/firefox/session"
+          appInfo:
+            landingScreenName: second
+          eventInfo:
+            eventCategory: "/firefox/ Interactions"
+            eventAction: Stub Session ID
+            eventLabel: laterStubSessionId
+          hitNumber: 2
+          type: EVENT
+        - page:
+            pagePath: "/en-GB/firefox/"
+          appInfo:
+            landingScreenName: third
+          eventInfo:
+            eventCategory: "/firefox/ Interactions"
+            eventAction: Firefox Download
+            eventLabel: Firefox for Desktop
+          hitNumber: 3
+          type: EVENT
+    - clientId: client1
+      visitId: '1'
+      visitNumber: 1
+      date: '20230331'
+      visitStartTime: 2
+      geoNetwork:
+        country: "laterCountry"
+        region: "laterRegion"
+        city: "laterCity"
+      trafficSource:
+        adwordsClickInfo:
+          campaignId: 2
+          gclId: "laterGclid"
+        campaign: "laterCampaign"
+        source: "laterSource"
+        medium: "laterMedium"
+        adContent: "laterContent"
+        keyword: "laterKeyword"
+      device:
+        deviceCategory: "laterDeviceCategory"
+        mobileDeviceModel: "laterMobileDeviceModel"
+        mobileDeviceInfo: "laterMobileDeviceInfo"
+        operatingSystem: "laterOperatingSystem"
+        operatingSystemVersion: "laterOperatingSystemVersion"
+        language: "laterLanguage"
+        browser: "laterBrowser"
+        browserVersion: "laterBrowserVersion"
+      totals:
+        pageviews: 1
+        timeOnSite: 22
+      hits:
+        - page:
+            pagePath: "/en-GB/firefox/"
+          appInfo:
+            landingScreenName: fourth
+          eventInfo:
+            eventCategory: "/firefox/ Interactions"
+            eventAction: Firefox Download
+            eventLabel: Firefox for Android
+          hitNumber: 4
+          type: EVENT
+  moz-fx-data-marketing-prod.65789850.ga_sessions_intraday_20230331:
+    - clientId: clientIntraday
+      visitId: '1'
+      visitNumber: 1
+      date: '20230331'
+      visitStartTime: 1
+      geoNetwork:
+        country: "earlierCountry"
+        region: "earlierRegion"
+        city: "earlierCity"
+      trafficSource:
+        adwordsClickInfo:
+          campaignId: 1
+          gclId: "earlierGclid"
+        campaign: "earlierCampaign"
+        source: "earlierSource"
+        medium: "earlierMedium"
+        adContent: "earlierContent"
+        keyword: "earlierKeyword"
+      device:
+        deviceCategory: "earlierDeviceCategory"
+        mobileDeviceModel: "earlierMobileDeviceModel"
+        mobileDeviceInfo: "earlierMobileDeviceInfo"
+        operatingSystem: "earlierOperatingSystem"
+        operatingSystemVersion: "earlierOperatingSystemVersion"
+        language: "earlierLanguage"
+        browser: "earlierBrowser"
+        browserVersion: "earlierBrowserVersion"
+      totals:
+        pageviews: 1
+        timeOnSite: 11
+      hits:
+        - page:
+            pagePath: "/en-GB/firefox/session"
+          appInfo:
+            landingScreenName: first
+          eventInfo:
+            eventCategory: "/firefox/ Interactions"
+            eventAction: Stub Session ID
+            eventLabel: earlierStubSessionId
+          hitNumber: 1
+          type: EVENT
+        - page:
+            pagePath: "/en-GB/firefox/session"
+          appInfo:
+            landingScreenName: second
+          eventInfo:
+            eventCategory: "/firefox/ Interactions"
+            eventAction: Stub Session ID
+            eventLabel: laterStubSessionId
+          hitNumber: 2
+          type: EVENT
+        - page:
+            pagePath: "/en-GB/firefox/"
+          appInfo:
+            landingScreenName: third
+          eventInfo:
+            eventCategory: "/firefox/ Interactions"
+            eventAction: Firefox Download
+            eventLabel: Firefox for Desktop
+          hitNumber: 3
+          type: EVENT
+
+parameters:
+  - name: session_date
+    type: DATE
+    value: 2023-03-31
+
+expect:
+  - ga_client_id: client1
+    ga_session_id: client11
+    session_date: 2023-03-31
+    is_first_session: true
+    session_number: 1
+    time_on_site: 33
+    pageviews: 2
+    country: earlierCountry
+    region: earlierRegion
+    city: earlierCity
+    campaign_id: "1"
+    gclid: "earlierGclid"
+    campaign: "earlierCampaign"
+    source: "earlierSource"
+    medium: "earlierMedium"
+    content: "earlierContent"
+    term: "earlierKeyword"
+    device_category: "earlierDeviceCategory"
+    mobile_device_model: "earlierMobileDeviceModel"
+    mobile_device_string: "earlierMobileDeviceInfo"
+    os: "earlierOperatingSystem"
+    os_version: "earlierOperatingSystemVersion"
+    language: "earlierLanguage"
+    browser: "earlierBrowser"
+    browser_version: "earlierBrowserVersion"
+    had_download_event: true
+    last_reported_install_target: "android_release"
+    all_reported_install_targets: ["desktop_release", "android_release"]
+    last_reported_stub_session_id: "laterStubSessionId"
+    all_reported_stub_session_ids: ["earlierStubSessionId", "laterStubSessionId"]
+    landing_screen: first
+  - ga_client_id: clientIntraday
+    ga_session_id: clientIntraday1
+    session_date: 2023-03-31
+    is_first_session: true
+    session_number: 1
+    time_on_site: 11
+    pageviews: 1
+    country: earlierCountry
+    region: earlierRegion
+    city: earlierCity
+    campaign_id: "1"
+    gclid: "earlierGclid"
+    campaign: "earlierCampaign"
+    source: "earlierSource"
+    medium: "earlierMedium"
+    content: "earlierContent"
+    term: "earlierKeyword"
+    device_category: "earlierDeviceCategory"
+    mobile_device_model: "earlierMobileDeviceModel"
+    mobile_device_string: "earlierMobileDeviceInfo"
+    os: "earlierOperatingSystem"
+    os_version: "earlierOperatingSystemVersion"
+    language: "earlierLanguage"
+    browser: "earlierBrowser"
+    browser_version: "earlierBrowserVersion"
+    had_download_event: true
+    last_reported_install_target: "desktop_release"
+    all_reported_install_targets: ["desktop_release"]
+    last_reported_stub_session_id: "laterStubSessionId"
+    all_reported_stub_session_ids: ["earlierStubSessionId", "laterStubSessionId"]
+    landing_screen: first

@@ -111,8 +111,8 @@ class Target:
     # When set, the dataset is also labeled `expires_on=<unix-millis>` so a
     # sweeper can GC datasets.
     expire_after_hours: Optional[int] = attr.ib(default=None)
-    # When True, --target deploys copy and rename SQL tests under tests/sql/
-    # to match target paths so pytest can run against staged artifacts.
+    # When True, --target deploys copy SQL tests and rename their sources to
+    # match target paths so pytest can run against staged artifacts.
     rewrite_tests: bool = attr.ib(default=False)
     # SA to impersonate while this target is active; bqetl sets
     # CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT automatically. ADC must hold

@@ -1,0 +1,52 @@
+fields:
+- name: client_info
+  type: RECORD
+  fields:
+  - name: client_id
+    type: STRING
+  - name: first_run_date
+    type: STRING
+- name: sample_id
+  type: INTEGER
+- name: normalized_channel
+  type: STRING
+- name: submission_timestamp
+  type: TIMESTAMP
+- name: ping_info
+  type: RECORD
+  fields:
+  - name: seq
+    type: INTEGER
+- name: metrics
+  type: RECORD
+  fields:
+  - name: string
+    type: RECORD
+    fields:
+    - name: first_session_campaign
+      type: STRING
+    - name: first_session_network
+      type: STRING
+    - name: first_session_adgroup
+      type: STRING
+    - name: first_session_creative
+      type: STRING
+    - name: first_session_distribution_id
+      type: STRING
+    - name: play_store_attribution_campaign
+      type: STRING
+    - name: play_store_attribution_content
+      type: STRING
+    - name: play_store_attribution_medium
+      type: STRING
+    - name: play_store_attribution_source
+      type: STRING
+    - name: play_store_attribution_term
+      type: STRING
+    - name: meta_attribution_app
+      type: STRING
+  - name: text2
+    type: RECORD
+    fields:
+    - name: play_store_attribution_install_referrer_response
+      type: STRING

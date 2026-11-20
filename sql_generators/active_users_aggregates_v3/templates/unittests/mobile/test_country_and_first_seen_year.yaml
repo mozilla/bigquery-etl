@@ -1,0 +1,80 @@
+sources:
+  {{ project }}.{{ dataset }}.active_users:
+    # country null should result in ??. first_seen_year_new calculated correctly.
+    - submission_date: 2020-01-01
+      app_name: {{ app_name }}
+      client_id: client-1
+      sample_id: 0
+      first_seen_date: 2000-01-01
+      is_dau: False
+      is_wau: False
+      is_mau: False
+    # country not null. first_seen_year_new calculated correctly.
+    - submission_date: 2020-01-01
+      app_name: {{ app_name }}
+      client_id: client-2
+      sample_id: 2
+      country: CO
+      first_seen_date: 2010-11-01
+      is_dau: True
+      is_wau: True
+      is_mau: True
+  {{ project }}.{{ dataset }}.metrics_clients_last_seen:
+    # additional combinations for active users
+    - submission_date: 2020-01-05
+      client_id: client-1
+    - submission_date: 2020-01-05
+      client_id: client-2
+{% if dataset == "fenix" %}
+  {{ project }}.{{ dataset }}.firefox_android_clients:
+    # additional combinations for active users
+    - first_seen_date: 2010-01-05
+      client_id: client-1
+    - first_seen_date: 2010-01-05
+      client_id: client-2
+{% endif %}
+{% if dataset == "firefox_ios" %}
+  {{ project }}.{{ dataset }}.firefox_ios_clients:
+    # additional combinations for active users
+    - first_seen_date: 2010-01-05
+      client_id: client-1
+    - first_seen_date: 2010-01-05
+      client_id: client-2
+{% endif %}
+{% if dataset == "focus_android" %}
+  {{ project }}.telemetry.core_clients_last_seen:
+    []
+{% endif %}
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2020-01-01
+
+expect:
+  - submission_date: 2020-01-01
+    app_name: {{ app_name }}
+    attributed: False
+    first_seen_year: 2000
+    country: ??
+    os_version_major: 0
+    os_version_minor: 0
+    daily_users: 0
+    weekly_users: 0
+    monthly_users: 0
+    dau: 0
+    wau: 0
+    mau: 0
+  - submission_date: 2020-01-01
+    app_name: {{ app_name }}
+    attributed: False
+    first_seen_year: 2010
+    country: CO
+    os_version_major: 0
+    os_version_minor: 0
+    daily_users: 0
+    weekly_users: 0
+    monthly_users: 0
+    dau: 1
+    wau: 1
+    mau: 1

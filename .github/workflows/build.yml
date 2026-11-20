@@ -86,7 +86,6 @@ jobs:
             dags.yaml
             .github/workflows/**
             bigquery_etl/query_scheduling/**
-            tests/sql/**
             bqetl_project.yaml
           base_sha: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
       - id: changed-files-bqetl
@@ -417,16 +416,6 @@ jobs:
                 cp "$generated_file" "/tmp/workspace/generated-sql/sql/$relative_path"
               fi
             done < <(find sql -name metadata.yaml -print0)
-
-            # Run only the generators with a templates/unittests/ folder, into a temporary folder, when SQL generation is skipped (no sql_generators/ change,
-            # no deleted or renamed SQL file, not a push to main, no manual trigger).
-            # Keep only their tests/ output for metadata validation.
-            for unittests_dir in sql_generators/*/templates/unittests; do
-              PATH=".venv/bin:$PATH" script/bqetl generate "$(basename "$(dirname "$(dirname "$unittests_dir")")")" \
-                --output-dir /tmp/generated-tests-temporary/sql/ \
-                --target-project moz-fx-data-shared-prod
-            done
-            cp -r /tmp/generated-tests-temporary/tests /tmp/workspace/generated-sql/tests
           fi
 
           PATH=".venv/bin:$PATH" script/bqetl query schema render \
@@ -440,12 +429,6 @@ jobs:
             --sql-dir /tmp/workspace/generated-sql/sql/ \
             /tmp/workspace/generated-sql/sql/
           PATH=".venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
-
-          # Moves the generated tests out of generated-sql into their own artifact, generated-unittests,
-          # which the validate-metadata and deploy-changes-to-stage jobs download;
-          # private CI downloads only generated-sql, so it never receives them
-          mkdir -p /tmp/workspace/generated-unittests
-          mv /tmp/workspace/generated-sql/tests /tmp/workspace/generated-unittests/tests
       - name: Copy schema cache for reuse in other jobs
         run: |
           mkdir -p /tmp/workspace/schema-cache
@@ -456,10 +439,6 @@ jobs:
         with:
           name: generated-sql
           path: /tmp/workspace/generated-sql
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
-        with:
-          name: generated-unittests
-          path: /tmp/workspace/generated-unittests
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: schema-cache
@@ -684,15 +663,6 @@ jobs:
         run: |
           rm -rf sql/
           cp -r /tmp/workspace/generated-sql/sql sql
-      # Copies the generated tests into tests/sql/ only when the changed flag is true, so test-sql runs them
-      - if: needs.generate-sql.outputs.generated-sql-changed == 'true'
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
-        with:
-          name: generated-unittests
-          path: /tmp/workspace/generated-unittests
-      - name: Move generated unit tests into place
-        if: needs.generate-sql.outputs.generated-sql-changed == 'true'
-        run: cp -r /tmp/workspace/generated-unittests/tests/sql/. tests/sql/
       - name: Pull in generated-sql branch from remote
         env:
           GENERATED_SQL_COMMIT: ${{ needs.generate-sql.outputs.generated-sql-commit }}
@@ -850,7 +820,6 @@ jobs:
       # Needs the generated SQL artifact
       run: ${{ needs.generate-sql.result == 'success' }}
       python-version: ${{ needs.build.outputs.python-version }}
-      generated-unittests-artifact: generated-unittests
 
   validate-monitoring:
     name: Validate Monitoring

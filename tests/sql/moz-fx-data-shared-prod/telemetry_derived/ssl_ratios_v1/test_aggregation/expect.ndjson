@@ -1,5 +1,0 @@
-{"country": "DE", "non_ssl_loads": 100, "os": "Linux", "reporting_ratio": 0.5, "ssl_loads": 50, "submission_date": "2019-08-01"}
-{"country": "DE", "non_ssl_loads": 4, "os": "Windows_NT", "reporting_ratio": 1.0, "ssl_loads": 2, "submission_date": "2019-08-01"}
-{"country": "MX", "non_ssl_loads": 10, "os": "Windows_NT", "reporting_ratio": 1.0, "ssl_loads": 20, "submission_date": "2019-08-01"}
-{"country": "US", "non_ssl_loads": 20, "os": "Darwin", "reporting_ratio": 1.0, "ssl_loads": 30, "submission_date": "2019-08-01"}
-{"country": "US", "non_ssl_loads": 5, "os": "Windows_NT", "reporting_ratio": 0.4, "ssl_loads": 5, "submission_date": "2019-08-01"}

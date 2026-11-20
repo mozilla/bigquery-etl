@@ -1,0 +1,59 @@
+sources:
+  moz-fx-data-shared-prod.fenix.referrals:
+    # Android reports the code under `referrals_code`, not `browser_referral_code`.
+    # c-android-release shares the code and channel with the desktop row, so the two
+    # platforms must fold into a single row with install_count 2 — desktop and Fenix
+    # client_id namespaces are disjoint, so the distinct count is safe.
+    - submission_timestamp: '2026-08-17 12:00:00'
+      normalized_channel: release
+      client_info:
+        client_id: c-android-release
+      metrics:
+        string:
+          referrals_code: '1WYYSNCNGE6S7WKGF'
+    # a second code, Android only
+    - submission_timestamp: '2026-08-17 13:00:00'
+      normalized_channel: release
+      client_info:
+        client_id: c-android-other
+      metrics:
+        string:
+          referrals_code: '4QRSTVWXY0123456Z'
+  moz-fx-data-shared-prod.firefox_desktop.referrals:
+    # One shared invite code used across platforms and channels. Desktop release
+    # collapses together with the Fenix release row below; the nightly row stays
+    # separate because normalized_channel is part of the grain.
+    - submission_timestamp: '2026-08-17 10:00:00'
+      normalized_channel: release
+      client_info:
+        client_id: c-desktop-release
+      metrics:
+        string:
+          browser_referral_code: '1WYYSNCNGE6S7WKGF'
+    - submission_timestamp: '2026-08-17 11:00:00'
+      normalized_channel: nightly
+      client_info:
+        client_id: c-desktop-nightly
+      metrics:
+        string:
+          browser_referral_code: '1WYYSNCNGE6S7WKGF'
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: "2026-08-17"
+
+expect:
+  # desktop release + Android release fold into one row; nightly stays separate
+  - submission_date: "2026-08-17"
+    invite_code: "1WYYSNCNGE6S7WKGF"
+    install_count: 2
+    normalized_channel: "release"
+  - submission_date: "2026-08-17"
+    invite_code: "1WYYSNCNGE6S7WKGF"
+    install_count: 1
+    normalized_channel: "nightly"
+  - submission_date: "2026-08-17"
+    invite_code: "4QRSTVWXY0123456Z"
+    install_count: 1
+    normalized_channel: "release"

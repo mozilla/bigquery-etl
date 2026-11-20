@@ -1,0 +1,110 @@
+sources:
+  moz-fx-data-bq-fivetran.fivetran_log.incremental_mar:
+    - destination_id: destination_1
+      measured_date: 2023-01-03
+      connection_name: connector_1
+      table_name: table_1
+      free_type: PAID
+      incremental_rows: 1
+    - destination_id: destination_1
+      measured_date: 2023-02-05
+      connection_name: connector_2
+      table_name: table_2
+      free_type: PaID
+      incremental_rows: 2
+    - destination_id: destination_3
+      measured_date: 2023-03-18
+      connection_name: connector_1
+      table_name: table_3
+      free_type: FREE_SYNCH
+      incremental_rows: 333
+    - destination_id: destination_1
+      measured_date: 2023-04-08
+      connection_name: connector_2
+      table_name: table_4
+      free_type: SYSTEM
+      incremental_rows: 400
+    - destination_id: destination_3
+      measured_date: 2023-05-17
+      connection_name: connector_1
+      table_name: table_5
+      free_type: FREE_someThing
+      incremental_rows: 51
+    - destination_id: destination_3
+      measured_date: 2023-06-06
+      connection_name: connector_17
+      table_name: table_6
+      free_type: something_FREE
+      incremental_rows: 66
+    - destination_id: destination_3
+      measured_date: 2023-07-13
+      connection_name: connector_1
+      table_name: table_7
+      free_type: something_ELSE
+      incremental_rows: 7
+    - destination_id: destination_3
+      measured_date: 2023-08-12
+      connection_name: connector_1
+      table_name: table_8
+      free_type: this_IS_free
+      incremental_rows: 812
+
+parameters: []
+
+expect:
+  - measured_date: 2023-01-03
+    measured_month: 2023-01-01
+    destination_id: destination_1
+    connector: connector_1
+    table_name: table_1
+    billing_type: paid
+    active_rows: 1
+  - measured_date: 2023-02-05
+    measured_month: 2023-02-01
+    destination_id: destination_1
+    connector: connector_2
+    table_name: table_2
+    billing_type: paid
+    active_rows: 2
+  - measured_date: 2023-03-18
+    measured_month: 2023-03-01
+    destination_id: destination_3
+    connector: connector_1
+    table_name: table_3
+    billing_type: free_synch
+    active_rows: 333
+  - measured_date: 2023-04-08
+    measured_month: 2023-04-01
+    destination_id: destination_1
+    connector: connector_2
+    table_name: table_4
+    billing_type: free_system
+    active_rows: 400
+  - measured_date: 2023-05-17
+    measured_month: 2023-05-01
+    destination_id: destination_3
+    connector: connector_1
+    table_name: table_5
+    billing_type: free_something
+    active_rows: 51
+  - measured_date: 2023-06-06
+    measured_month: 2023-06-01
+    destination_id: destination_3
+    connector: connector_17
+    table_name: table_6
+    billing_type: something_free
+    active_rows: 66
+  - measured_date: 2023-07-13
+    measured_month: 2023-07-01
+    destination_id: destination_3
+    connector: connector_1
+    table_name: table_7
+    billing_type: free_something_else
+    active_rows: 7
+  - measured_date: 2023-08-12
+    measured_month: 2023-08-01
+    destination_id: destination_3
+    connector: connector_1
+    table_name: table_8
+    billing_type: this_is_free
+    active_rows: 812

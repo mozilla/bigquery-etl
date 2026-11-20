@@ -1,0 +1,767 @@
+sources:
+  moz-fx-data-shared-prod.firefox_desktop.baseline_active_users:
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c1
+      country: US
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c2
+      country: US
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c3
+      country: DE
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c4
+      country: US
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c5
+      country: FR
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c6
+      country: US
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c7
+      country: XX
+      channel: release
+      os: Windows
+      is_dau: false
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c8
+      country: YY
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: MozillaOnline
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c9
+      country: GB
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c10
+      country: RU
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-20'
+      sample_id: 0
+      client_id: c11
+      country: ZZ
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c12
+      country: JP
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c13
+      country: IT
+      channel: release
+      os: Mac
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c14
+      country: BR
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c15
+      country: AR
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c16
+      country: ES
+      channel: release
+      os: Windows
+      is_dau: true
+      app_name: Firefox Desktop
+  moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1:
+    - submission_timestamp: '2026-09-21 08:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c1
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: bing
+          search_engine_default_engine_id: bing
+    - submission_timestamp: '2026-09-21 20:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c1
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+    - submission_timestamp: '2026-09-22 03:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c1
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: bing
+          search_engine_default_engine_id: bing
+    - submission_timestamp: '2026-09-21 09:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c2
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+    - submission_timestamp: '2026-09-21 09:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c3
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: null
+          search_engine_default_engine_id: bing
+    - submission_timestamp: '2026-09-21 09:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c4
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: null
+          search_engine_default_engine_id: other-Bing Search
+    - submission_timestamp: '2026-09-21 09:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c9
+        distribution:
+          name: acer-001
+      metrics:
+        string:
+          search_engine_default_provider_id: bing
+          search_engine_default_engine_id: bing
+    - submission_timestamp: '2026-09-21 09:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c10
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+    - submission_timestamp: '2026-09-12 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c6
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+    - submission_timestamp: '2026-09-18 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c12
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: bing
+          search_engine_default_engine_id: bing
+    - submission_timestamp: '2026-09-19 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c13
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: ddg
+          search_engine_default_engine_id: ddg
+    - submission_timestamp: '2026-09-22 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c13
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+    - submission_timestamp: '2026-09-23 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c14
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+    - submission_timestamp: '2026-09-14 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c15
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+    - submission_timestamp: '2026-09-20 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c16
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: bing
+          search_engine_default_engine_id: bing
+    - submission_timestamp: '2026-09-22 12:00:00'
+      sample_id: 0
+      client_info:
+        client_id: c16
+        distribution:
+          name: null
+      metrics:
+        string:
+          search_engine_default_provider_id: google
+          search_engine_default_engine_id: google-b-d
+  moz-fx-data-shared-prod.search.search_clients_daily_glean:
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c1
+      normalized_engine: Google
+      sap_counts_total: 2
+      legacy_ad_clicks_tagged_sum: 1
+      serp_ad_clicks_tagged_sum: 0
+      default_search_engine_provider_id: bing
+      distribution_id: null
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c5
+      normalized_engine: DuckDuckGo
+      sap_counts_total: 1
+      legacy_ad_clicks_tagged_sum: 0
+      serp_ad_clicks_tagged_sum: 0
+      default_search_engine_provider_id: ddg
+      distribution_id: null
+    - submission_date: '2026-09-21'
+      sample_id: 0
+      client_id: c12
+      normalized_engine: Google
+      sap_counts_total: 10000
+      legacy_ad_clicks_tagged_sum: 1
+      serp_ad_clicks_tagged_sum: 0
+      default_search_engine_provider_id: bing
+      distribution_id: null
+      sap_exclusion_reason: sap_row_ge_10000
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: '2026-09-21'
+
+expect:
+  # Expected output of search_dau_aggregates_glean_v1 for 2026-09-21 (35 rows: 12 groups in the Google arm,
+  # 11 in the Bing arm, 12 in the DuckDuckGo arm). A NULL column is omitted rather than written as null.
+  # The default engine and distribution come from the nearest metrics ping from 7 days before to 1 day after,
+  # nearest day first and the latest ping within a day, then engine_id, then the client table.
+  # c1  two pings on the day (latest wins), a next-day ping (farther) and a client-table engine that disagrees
+  # c2  non-searcher with an engine; c3 engine_id only; c4 user-installed engine (other-Bing Search)
+  # c5  no ping in the window, engine from the client table; c6 only a ping 9 days back (outside the window)
+  # c9  Acer distribution (left out of the Bing arm only); c10 country not eligible for Google
+  # c12 ping 3 days back; c13 pings 2 days back and 1 day ahead (the nearer wins); c14 ping 2 days ahead
+  # (outside the window); c15 ping exactly 7 days back (the edge, used)
+  # c7 not DAU, c8 MozillaOnline, c11 another day: each has a distinct country, so a row would appear if included
+  # c12 has a runaway-SAP row (10,000 SAP, sap_exclusion_reason set): it still shows the engine and a tagged
+  # ad click, but sap_category and dau_engaged_w_sap are 0 because that row's SAP is left out
+  # c13 is on Mac; every other DAU client is on Windows
+  # c16 has no ping on the date, one a day before (bing) and one a day after (google): the earlier day wins, so Bing
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    normalized_default_search_engine: Google
+    normalized_engine: Google
+    sap_category: 1
+    ad_click_category: 1
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 1
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: DE
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: FR
+    normalized_default_search_engine: DuckDuckGo
+    normalized_engine: DuckDuckGo
+    sap_category: 1
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: GB
+    distribution_id: acer-001
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: RU
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: JP
+    normalized_default_search_engine: Bing
+    normalized_engine: Google
+    sap_category: 0
+    ad_click_category: 1
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Mac
+    country: IT
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: BR
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: AR
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    normalized_default_search_engine: Google
+    normalized_engine: Google
+    sap_category: 1
+    ad_click_category: 1
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: DE
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: FR
+    normalized_default_search_engine: DuckDuckGo
+    normalized_engine: DuckDuckGo
+    sap_category: 1
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: RU
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: JP
+    normalized_default_search_engine: Bing
+    normalized_engine: Google
+    sap_category: 0
+    ad_click_category: 1
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Mac
+    country: IT
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: BR
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: AR
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    normalized_default_search_engine: Google
+    normalized_engine: Google
+    sap_category: 1
+    ad_click_category: 1
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: DE
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: US
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: FR
+    normalized_default_search_engine: DuckDuckGo
+    normalized_engine: DuckDuckGo
+    sap_category: 1
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 1
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: GB
+    distribution_id: acer-001
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: RU
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: JP
+    normalized_default_search_engine: Bing
+    normalized_engine: Google
+    sap_category: 0
+    ad_click_category: 1
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Mac
+    country: IT
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: BR
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: AR
+    normalized_default_search_engine: Google
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Google
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: ES
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0
+  - partner: Bing
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: ES
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 1
+    dau_engaged_w_sap: 0
+  - partner: DuckDuckGo
+    submission_date: '2026-09-21'
+    device: desktop
+    normalized_channel: release
+    normalized_os: Windows
+    country: ES
+    normalized_default_search_engine: Bing
+    sap_category: 0
+    ad_click_category: 0
+    ad_click_category_serp: 0
+    dau_w_engine_as_default: 0
+    dau_engaged_w_sap: 0

@@ -18,8 +18,8 @@ python3.11 -m venv venv/
 # use -k to selectively run a set of tests that matches the expression `udf`
 ./venv/bin/pytest -k udf
 
-# narrow down testpaths for quicker turnaround when selecting a single test
-./venv/bin/pytest -o "testpaths=tests/sql" -k mobile_search_aggregates_v1
+# pass specific paths for quicker turnaround when running particular SQL tests
+./venv/bin/pytest sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/tests
 
 # run integration tests with 4 workers in parallel
 gcloud auth application-default login # or set GOOGLE_APPLICATION_CREDENTIALS
@@ -68,75 +68,57 @@ SELECT
 
 [sql dialect prefix]: https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql#sql-prefix
 
-## How to Configure a Generated Test
+## How to Configure an ETL/View SQL Test
 
-Queries are tested by running the `query.sql` with test-input tables and comparing the result to an expected table.
-1. Make a directory for test resources named `tests/sql/{project}/{dataset}/{table}/{test_name}/`,
-   e.g. `tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_raw_v1/test_single_day`
-   - `table` must match a directory named like `{dataset}/{table}`, e.g.
-     `telemetry_derived/clients_last_seen_v1`
-   - `test_name` should start with `test_`, e.g. `test_single_day`
-   - If `test_name` is `test_init` or `test_script`, then the query with `is_init()` set to `true`
-     or `script.sql` respectively; otherwise, the test will run `query.sql`
-1. Add `.yaml` files for input tables, e.g. `clients_daily_v6.yaml`
-   - Include the dataset prefix if it's set in the tested query,
-     e.g. `analysis.clients_last_seen_v1.yaml`
-   - Include the project prefix if it's set in the tested query,
-     e.g. `moz-fx-other-data.new_dataset.table_1.yaml`
-     - This will result in the dataset prefix being removed from the query,
-       e.g. `query = query.replace("analysis.clients_last_seen_v1", "clients_last_seen_v1")`
-1. Add `.sql` files for input view queries, e.g. `main_summary_v4.sql`
-   - **_Don't_** include a `CREATE ... AS` clause
-   - Fully qualify table names as `` `{project}.{dataset}.table` ``
-   - Include the dataset prefix if it's set in the tested query,
-     e.g. `telemetry.main_summary_v4.sql`
-     - This will result in the dataset prefix being removed from the query,
-       e.g. `query = query.replace("telemetry.main_summary_v4", "main_summary_v4")`
-1. Add `expect.yaml` to validate the result
-   - `DATE` and `DATETIME` type columns in the result are coerced to strings
-     using `.isoformat()`
-   - Columns named `generated_time` are removed from the result before
-     comparing to `expect` because they should not be static
-   - `NULL` values should be omitted in `expect.yaml`. If a column is expected to be `NULL` don't add it to `expect.yaml`.
-     (Be careful with spreading previous rows (`-<<: *base`) here)
-1. Optionally add `.schema.json` files for input table schemas to the table directory, e.g.
-   `tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_raw_v1/clients_daily_v6.schema.json`.
-   These tables will be available for every test in the suite.
-   The `schema.json` file need to match the table name in the `query.sql` file. If it has project and dataset listed there, the schema file also needs project and dataset.
-1. Optionally add `query_params.yaml` to define query parameters
-   - `query_params` must be a list
+ETLs/views are tested by running the associated SQL query against test versions of source tables/views and comparing the result with the expected data.
+Only ETLs with a `query.sql` file and views with a `view.sql` file are supported (not `script.sql` or `query.py` ETLs).
+Tests for ETLs/views created by SQL generators are skipped unless that SQL has been generated (e.g. via `./bqetl generate all`).
 
-## Init Tests
+1. Add a `tests` subdirectory inside the ETL/view directory if one doesn't already exist.
+2. Add a YAML file for the test inside the `tests` subdirectory.
+   - The test file name should start with `test_`, use underscores to separate words, and end with a `.yaml` extension.
+     - e.g. `sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/tests/test_single_day.yaml`
+3. Add a dictionary for source tables/views under `sources:` in the YAML file.
+   - Each key should be the fully qualified ID of the source table/view.
+   - Each value should be a list of dictionaries representing the rows in the source table/view.
+     - For tables/views with resolvable schemas, fields with null values can be omitted from the dictionaries for brevity.
+4. Add a list of query parameters under `parameters:` in the YAML file.
+   - Each parameter should be specified as a dictionary with `name`, `type`, and `value` keys.
+5. If the ETL query contains `is_init()` logic, then add an `is_init` key in the YAML file with a boolean value specifying what `is_init()` should return during the test.
+6. Add the expected result data as a list of dictionaries under `expect:` in the YAML file.
+   - `DATE`, `DATETIME`, and `TIMESTAMP` fields in the result are coerced to strings using `.isoformat()`.
+   - Columns named `created_at` or `generated_time` are removed from the result before comparing to `expect` because they aren't expected to be static.
+   - Fields with null values should be omitted from the expected result data (so be careful with spreading previous rows like `<<: *base` in that regard).
+7. Optionally add schema files for source table/view schemas in the `tests` directory.
+   - The schema file names should start with the fully qualified ID of the source table/view, and end with a `.schema.yaml` extension.
+     - e.g. `sql/moz-fx-data-shared-prod/customer_experience_derived/zendesk_retrieval_index_v1/tests/moz-fx-data-shared-prod.zendesk_syndicate.ticket.schema.yaml`
+   - Such table/view schemas apply to all tests for the ETL/view.
+   - Setting the description of a top-level field to `time_partitioning_field` will cause the table to use it for time partitioning.
+   - If a source table/view has no schema file in the `tests` directory then `bqetl` will automatically try to retrieve the schema from the generated stable table schemas or ETL/view `schema.yaml` files that exist (if any), and if no schema could be retrieved BigQuery falls back to inferring the schema from the source data.
+     - For stable tables and ETLs/views with `schema.yaml` files it's strongly recommended to rely on the automatic schema retrieval, since that helps keep the test accurate as schemas change over time.
 
-Tests of `is_init()` statements are supported, similarly to other generated tests.
-Simply name the test `test_init`. The other guidelines still apply.
+Example `test_*.yaml` file:
+```yaml
+sources:
+  moz-fx-data-shared-prod.firefox_desktop_derived.desktop_installs_v1:
+    - submission_date: 2020-01-02
+      client_id: abc
+    - submission_date: 2020-01-02
+      client_id: def
 
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2020-01-02
+
+is_init: false
+
+expect:
+  - submission_date: 2020-01-02
+    client_count: 2
+```
 
 ## Additional Guidelines and Options
 
 - If the destination table is also an input table then `generated_time` should
   be a required `DATETIME` field to ensure minimal validation
-- Input table files
-  - All of the formats supported by `bq load` are supported
-  - `yaml` and `json` format are supported and must contain an array of rows
-    which are converted in memory to `ndjson` before loading
-  - Preferred formats are `yaml` for readability or `ndjson` for compatiblity
-    with `bq load`
-- `expect.yaml`
-  - File extensions `yaml`, `json` and `ndjson` are supported
-  - Preferred formats are `yaml` for readability or `ndjson` for compatiblity
-    with `bq load`
-- Schema files
-  - Setting the description of a top level field to `time_partitioning_field`
-    will cause the table to use it for time partitioning
-  - File extensions `yaml`, `json` and `ndjson` are supported
-  - Preferred formats are `yaml` for readability or `json` for compatiblity
-    with `bq load`
-- Query parameters
-  - Scalar query params should be defined as a dict with keys `name`, `type` or
-    `type_`, and `value`
-  - `query_parameters.yaml` may be used instead of `query_params.yaml`, but
-    they are mutually exclusive
-  - File extensions `yaml`, `json` and `ndjson` are supported
-  - Preferred format is `yaml` for readability
-

@@ -1,18 +1,18 @@
-# Stage Deploys 
+# Stage Deploys
 
 ## Stage Deploys in Continuous Integration
 
-Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's CI (continuous integration), now implemented via [GitHub Actions](https://github.com/mozilla/bigquery-etl/blob/main/.github/workflows/build.yml) (previously CircleCI), deploys these changes to a stage environment and uses these stage artifacts to run its various checks. The step-by-step description below reflects the legacy CircleCI implementation and may not exactly match the current GitHub Actions workflow. The GitHub Actions workflow also supports a manual `workflow_dispatch` input, `skip-stage-deploys`, to skip stage deployments for a given run. 
+Before changes, such as adding new fields to existing datasets or adding new datasets, can be deployed to production, bigquery-etl's CI (continuous integration), now implemented via [GitHub Actions](https://github.com/mozilla/bigquery-etl/blob/main/.github/workflows/build.yml) (previously CircleCI), deploys these changes to a stage environment and uses these stage artifacts to run its various checks. The step-by-step description below reflects the legacy CircleCI implementation and may not exactly match the current GitHub Actions workflow. The GitHub Actions workflow also supports a manual `workflow_dispatch` input, `skip-stage-deploys`, to skip stage deployments for a given run.
 
 Currently, the `moz-fx-data-integration-tests` project serves as the stage environment. CI does have read and write access, but does at no point publish actual data to this project. Only UDFs, table schemas and views are published. The project itself does not have access to any production project, like `mozdata`, so stage artifacts cannot reference any other artifacts that live in production.
 
 Deploying artifacts to stage follows the following steps:
 1. Once a new pull-request gets created in bigquery-etl, CI will [pull in the `generated-sql` branch](https://github.com/mozilla/bigquery-etl/blob/06d7baa3678509abc42ab190c6f1beabc920001c/.circleci/config.yml#L367-L372) to [determine all files that show any changes compared to what is deployed in production](https://github.com/mozilla/bigquery-etl/blob/06d7baa3678509abc42ab190c6f1beabc920001c/.circleci/config.yml#L373-L384) (it is assumed that the `generated-sql` branch reflects the artifacts currently deployed in production). All of these changed artifacts (UDFs, tables and views) will be deployed to the stage environment.
-    * This CI step runs after the `generate-sql` CI step to ensure that checks will also be executed on generated queries and to ensure `schema.yaml` files have been automatically created for queries. 
+    * This CI step runs after the `generate-sql` CI step to ensure that checks will also be executed on generated queries and to ensure `schema.yaml` files have been automatically created for queries.
 2. The `bqetl` CLI has a command to run stage deploys, which is called in the CI: `./bqetl stage deploy --dataset-suffix=$CIRCLE_SHA1 $FILE_PATHS`
     * `--dataset-suffix` will result in the artifacts being deployed to datasets that are suffixed by the current commit hash. This is to prevent any conflicts when deploying changes for the same artifacts in parallel and helps with debugging deployed artifacts.
 3. For every artifacts that gets deployed to stage all dependencies need to be determined and deployed to the stage environment as well since the stage environment doesn't have access to production. Before these artifacts get actually deployed, they need to be determined first by traversing artifact definitions.
-    * Determining dependencies is only relevant for UDFs and views. For queries, available `schema.yaml` files will simply be deployed. 
+    * Determining dependencies is only relevant for UDFs and views. For queries, available `schema.yaml` files will simply be deployed.
     * For UDFs, if a UDF does call another UDF then this UDF needs to be deployed to stage as well.
     * For views, if a view references another view, table or UDF then each of these referenced artifacts needs to be available on stage as well, otherwise the view cannot even be deployed to stage.
     * If artifacts are referenced that are not defined as part of the bigquery-etl repo (like stable or live tables) then their schema will get determined and a placeholder `query.sql` file will be created
@@ -22,7 +22,7 @@ Deploying artifacts to stage follows the following steps:
 4. Once all artifacts that need to be deployed have been determined, all references to these artifacts in existing SQL files need to be updated. These references will need to point to the stage project and the temporary datasets that artifacts will be published to.
     * Artifacts that get deployed are determined from the files that got changed and any artifacts that are referenced in the SQL definitions of these files, as well as their references and so on.
 5. To run the deploy, all artifacts will be copied to `sql/moz-fx-data-integration-tests` into their corresponding temporary datasets.
-    * Also if any existing [SQL tests](https://github.com/mozilla/bigquery-etl/tree/main/tests/sql) the are related to changed artifacts will have their referenced artifacts updated and will get copied to a `moz-fx-data-integration-tests` folder
+    * Also any [SQL tests](../cookbooks/testing.md#how-to-configure-an-etlview-sql-test) in the `tests` subdirectories of changed artifacts will get copied along with them, with their references to deployed artifacts updated
     * The deploy is executed in the order of: UDFs, views, tables
     * UDFs and views get deployed in a way that ensures that the right order of deployments (e.g. dependencies need to be deployed before the views referencing them)
 6. Once the deploy has been completed, the CI will use these staged artifacts to run its tests

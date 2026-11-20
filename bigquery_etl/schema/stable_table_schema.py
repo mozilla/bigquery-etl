@@ -9,11 +9,14 @@ from dataclasses import dataclass
 from functools import cache
 from io import BytesIO
 from itertools import groupby
-from typing import List
+from typing import List, Optional
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.dryrun import DryRun
 from bigquery_etl.util.cache_dir import get_private_cache_dir
+
+# Bump when SchemaFile changes so pickles written by older code aren't loaded.
+SCHEMA_CACHE_VERSION = 2
 
 
 @dataclass
@@ -27,6 +30,11 @@ class SchemaFile:
     document_namespace: str
     document_type: str
     document_version: int
+    # include_client_id from mozPipelineMetadata. Schemas without it, like legacy
+    # telemetry, default to true, the same default the shredder uses for the label.
+    include_client_id: bool = True
+    # expiration_policy.delete_after_days from mozPipelineMetadata
+    expiration_days: Optional[int] = None
 
     @property
     def bq_table_unversioned(self):
@@ -82,7 +90,9 @@ def get_stable_table_schemas() -> List[SchemaFile]:
     commit_hash = schemas_uri.split("/")[-1].replace(".tar.gz", "")
     cache_dir = get_private_cache_dir("bigquery_etl_schemas")
     cache_file = (
-        os.path.join(cache_dir, f"schemas_{commit_hash}.pkl") if cache_dir else None
+        os.path.join(cache_dir, f"schemas_{commit_hash}_v{SCHEMA_CACHE_VERSION}.pkl")
+        if cache_dir
+        else None
     )
 
     # check if cached file exists and load it
@@ -157,6 +167,10 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                         document_namespace=document_namespace,
                         document_type=document_type,
                         document_version=version,
+                        include_client_id=pipeline_meta.get("include_client_id", True),
+                        expiration_days=(
+                            pipeline_meta.get("expiration_policy") or {}
+                        ).get("delete_after_days"),
                     )
                 )
 

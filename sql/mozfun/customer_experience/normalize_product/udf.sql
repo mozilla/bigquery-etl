@@ -43,9 +43,6 @@ RETURNS STRING AS (
         '/firefox/mobile/firefox-enterprise/',
         '/firefox-preview/firefox/mobile/firefox-enterprise/',
         '/firefox-enterprise/',
-        -- Firefox Professional Support articles carry a Thunderbird tag too, but
-        -- they are Firefox Enterprise content. Without this, the /thunderbird/
-        -- substring rule below claims them.
         '/firefox/thunderbird/firefox-enterprise/'
       )
       THEN 'Firefox Enterprise'

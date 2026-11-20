@@ -8,6 +8,7 @@ from bigquery_etl.shredder.config import (
     DeleteSource,
 )
 from bigquery_etl.shredder.deletion_sources import (
+    expand_sources,
     get_associated_deletions,
     get_deletion_request_tables,
 )
@@ -64,13 +65,17 @@ def test_glean_stable_table():
     assert result == {stable_table: {FENIX_SRC}, derived_table: {FENIX_SRC}}
 
 
-def test_glean_stable_table_without_deletion_request():
+def test_glean_stable_table_without_deletion_request(capsys):
     """Glean channels without a deletion_request_v1 table have no sources."""
     table = f"{PROJECT}.org_mozilla_tv_firefox_derived.clients_daily_v1"
     result = associated_deletions(
         {table: {f"{PROJECT}.org_mozilla_tv_firefox_stable.events_v1"}},
     )
     assert result == {table: set()}
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "No deletion requests for org_mozilla_tv_firefox_stable" in captured.err
 
 
 def test_non_glean_stable_table():
@@ -145,3 +150,53 @@ def test_get_deletion_request_tables(mock_schemas):
     ]
 
     assert get_deletion_request_tables() == DELETION_REQUEST_TABLES
+
+
+FENIX_APP_SRC = DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)
+EXPAND_CHANNELS = {
+    "org_mozilla_firefox": "fenix",
+    "org_mozilla_fenix": "fenix",
+    "firefox_desktop": "firefox_desktop",
+}
+FENIX_CHANNEL_SOURCES = {
+    DeleteSource(table=f"{channel}_stable.deletion_request_v1", field=GLEAN_CLIENT_ID)
+    for channel in ("org_mozilla_firefox", "org_mozilla_fenix")
+}
+
+
+def test_expand_sources_single_source():
+    """A single source not in a tuple is wrapped."""
+    assert expand_sources(DESKTOP_SRC, EXPAND_CHANNELS) == {DESKTOP_SRC}
+
+
+def test_expand_sources_app_view():
+    """Per-app deletion_request views expand to every channel of the app."""
+    assert expand_sources(FENIX_APP_SRC, EXPAND_CHANNELS) == FENIX_CHANNEL_SOURCES
+    assert expand_sources(
+        (FENIX_APP_SRC, DESKTOP_SRC), EXPAND_CHANNELS
+    ) == FENIX_CHANNEL_SOURCES | {DESKTOP_SRC}
+
+
+def test_expand_sources_keeps_field_and_conditions():
+    source = DeleteSource(
+        table="fenix.deletion_request",
+        field="client_info.client_id",
+        conditions=("sample_id = 0",),
+    )
+    expanded, *_ = expand_sources((source,), {"org_mozilla_firefox": "fenix"})
+    assert expanded == DeleteSource(
+        table="org_mozilla_firefox_stable.deletion_request_v1",
+        field="client_info.client_id",
+        conditions=("sample_id = 0",),
+    )
+
+
+def test_expand_sources_other_views_unchanged():
+    """Only views named deletion_request in an app dataset are expanded."""
+    sources = (
+        DeleteSource(table="fenix.other_view", field=GLEAN_CLIENT_ID),
+        DeleteSource(
+            table="firefox_desktop_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+        ),
+    )
+    assert expand_sources(sources, EXPAND_CHANNELS) == set(sources)

@@ -2,11 +2,13 @@ from multiprocessing.pool import ThreadPool
 from unittest import mock
 
 import pytest
+import yaml
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
 from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
+from bigquery_etl.schema.stable_table_schema import SchemaFile
 from bigquery_etl.shredder.config import (
     CLIENT_ID,
     DELETE_TARGETS,
@@ -14,9 +16,13 @@ from bigquery_etl.shredder.config import (
     NOT_SHREDDED,
     DeleteSource,
     DeleteTarget,
+    GleanTableInfo,
     _list_tables,
+    build_glean_targets,
+    field_paths,
     find_glean_targets,
 )
+from bigquery_etl.shredder.offline_targets import find_glean_targets_offline
 
 GLEAN_APP_LISTING = [
     {
@@ -369,6 +375,267 @@ def test_glean_targets(mock_requests):
                 "org_mozilla_focus_beta",
             ]
         },
+    }
+
+
+FAKE_CLIENT_CHANNELS = [
+    "org_mozilla_firefox",
+    "org_mozilla_firefox_beta",
+    "org_mozilla_focus",
+    "org_mozilla_focus_beta",
+]
+
+
+def fake_client_table_infos():
+    """Return the tables in FakeClient as offline metadata for build_glean_targets."""
+    usage_profile_id = frozenset(
+        {"metrics", "metrics.uuid", "metrics.uuid.usage_profile_id"}
+    )
+    stable_tables = [
+        GleanTableInfo(
+            dataset_id=f"{channel}_stable",
+            table_id=table_id,
+            labels={"schema_id": schema_id},
+            field_paths=paths,
+        )
+        for channel in FAKE_CLIENT_CHANNELS
+        for table_id, schema_id, paths in [
+            ("metrics_v1", "glean_ping_1", frozenset()),
+            ("deletion_request_v1", "glean_ping_1", frozenset()),
+            ("migration_v1", "glean_ping_1", frozenset()),
+            ("usage_reporting_v1", "glean-min_ping_1", frozenset()),
+            ("usage_deletion_request_v1", "glean-min_ping_1", usage_profile_id),
+        ]
+    ]
+    derived_tables = [
+        GleanTableInfo(
+            dataset_id=dataset_id,
+            table_id="clients_daily_v1",
+            field_paths=frozenset({"client_id"}),
+        )
+        for dataset_id in [
+            "org_mozilla_firefox_derived",
+            "org_mozilla_firefox_beta_derived",
+            "fenix_derived",
+            "focus_android_derived",
+        ]
+    ] + [
+        GleanTableInfo(
+            dataset_id=dataset_id,
+            table_id=table_id,
+            field_paths=frozenset({column}),
+        )
+        for dataset_id in [
+            "org_mozilla_focus_derived",
+            "org_mozilla_focus_beta_derived",
+        ]
+        for table_id, column in [
+            ("additional_deletion_requests_v1", "client_id"),
+            ("clients_daily_v1", "client_id"),
+            ("dau_v1", "document_id"),
+            ("usage_reporting_clients_daily_v1", "usage_profile_id"),
+        ]
+    ]
+    return stable_tables, derived_tables
+
+
+def as_sets(targets):
+    """Convert source tuples to sets because their order depends on listing order."""
+    return {
+        target: set(sources) if isinstance(sources, tuple) else sources
+        for target, sources in targets.items()
+    }
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
+def test_build_glean_targets_matches_find_glean_targets(mock_requests):
+    """Offline metadata gives the same targets as listing the same tables in BigQuery."""
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    with ThreadPool(1) as pool:
+        expected = find_glean_targets(pool, FakeClient())
+
+    stable_tables, derived_tables = fake_client_table_infos()
+    actual = build_glean_targets(
+        stable_tables,
+        derived_tables,
+        app_deletion_request_views={"fenix", "focus_android"},
+        channel_to_app_name=get_glean_app_id_to_app_name_mapping(),
+    )
+
+    assert as_sets(actual) == as_sets(expected)
+
+
+def write_fake_client_sql_dir(sql_dir):
+    """Write the tables in FakeClient as MPS schemas and a generated sql directory."""
+    schema_ids = {
+        "glean_ping_1": "moz://mozilla.org/schemas/glean/ping/1",
+        "glean-min_ping_1": "moz://mozilla.org/schemas/glean-min/ping/1",
+    }
+    stable_tables, derived_tables = fake_client_table_infos()
+
+    def to_fields(paths):
+        """Build JSON schema fields from dotted paths."""
+        fields: dict = {}
+        for path in sorted(paths):
+            *parents, name = path.split(".")
+            level = fields
+            for parent in parents:
+                level = level[parent].setdefault("children", {})
+            level.setdefault(name, {"name": name})
+
+        def convert(level):
+            return [
+                {
+                    "name": name,
+                    "type": "RECORD" if "children" in field else "STRING",
+                    "mode": "NULLABLE",
+                    **(
+                        {"fields": convert(field["children"])}
+                        if "children" in field
+                        else {}
+                    ),
+                }
+                for name, field in level.items()
+            ]
+
+        return convert(fields)
+
+    schemas = [
+        SchemaFile(
+            schema=to_fields(table.field_paths),
+            schema_id=schema_ids[table.labels["schema_id"]],
+            bq_dataset_family=table.dataset_id.removesuffix("_stable"),
+            bq_table=table.table_id,
+            document_namespace=table.dataset_id,
+            document_type=table.table_id,
+            document_version=1,
+        )
+        for table in stable_tables
+    ]
+    for table in derived_tables:
+        table_dir = (
+            sql_dir / "moz-fx-data-shared-prod" / table.dataset_id / table.table_id
+        )
+        table_dir.mkdir(parents=True)
+        (table_dir / "query.sql").write_text("SELECT 1")
+        (table_dir / "schema.yaml").write_text(
+            yaml.dump({"fields": to_fields(table.field_paths)})
+        )
+    for app_name in ["fenix", "focus_android"]:
+        view_dir = sql_dir / "moz-fx-data-shared-prod" / app_name / "deletion_request"
+        view_dir.mkdir(parents=True)
+        (view_dir / "view.sql").write_text("SELECT 1")
+    return schemas
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
+def test_find_glean_targets_offline_matches_find_glean_targets(mock_requests, tmp_path):
+    """MPS schemas and a sql directory give the same targets as BigQuery for the same tables."""
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    with ThreadPool(1) as pool:
+        expected = find_glean_targets(pool, FakeClient())
+
+    schemas = write_fake_client_sql_dir(tmp_path)
+    actual = find_glean_targets_offline(
+        tmp_path,
+        schemas=schemas,
+        channel_to_app_name=get_glean_app_id_to_app_name_mapping(),
+    )
+
+    assert as_sets(actual) == as_sets(expected)
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
+def test_build_glean_targets_without_app_view(mock_requests):
+    """Apps without a deletion_request view use the per-channel tables."""
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    stable_tables, derived_tables = fake_client_table_infos()
+    targets = build_glean_targets(
+        stable_tables,
+        derived_tables,
+        app_deletion_request_views={"focus_android"},
+        channel_to_app_name=get_glean_app_id_to_app_name_mapping(),
+    )
+
+    assert as_sets(targets)[
+        DeleteTarget(table="fenix_derived.clients_daily_v1", field=(CLIENT_ID,) * 2)
+    ] == {
+        DeleteSource(
+            table=f"{channel}_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+        )
+        for channel in ["org_mozilla_firefox", "org_mozilla_firefox_beta"]
+    }
+
+
+def test_build_glean_targets_ignores_datasets_without_deletion_requests():
+    """Derived tables are only targets in datasets with Glean deletion requests."""
+    stable_tables = [
+        GleanTableInfo(
+            dataset_id="org_mozilla_firefox_stable",
+            table_id=table_id,
+            labels={"schema_id": "glean_ping_1"},
+        )
+        for table_id in ["metrics_v1", "deletion_request_v1"]
+    ]
+    derived_tables = [
+        GleanTableInfo(
+            dataset_id=dataset_id,
+            table_id="clients_daily_v1",
+            field_paths=frozenset({"client_id"}),
+        )
+        for dataset_id in ["org_mozilla_firefox_derived", "telemetry_derived"]
+    ]
+
+    targets = build_glean_targets(
+        stable_tables,
+        derived_tables,
+        app_deletion_request_views=set(),
+        channel_to_app_name={"org_mozilla_firefox": "fenix"},
+    )
+
+    assert {target.table for target in targets} == {
+        "org_mozilla_firefox_stable.metrics_v1",
+        "org_mozilla_firefox_derived.clients_daily_v1",
+    }
+
+
+def test_field_paths():
+    schema = [
+        bigquery.SchemaField("client_id", "STRING"),
+        bigquery.SchemaField(
+            "client_info",
+            "RECORD",
+            fields=[bigquery.SchemaField("client_id", "STRING")],
+        ),
+        bigquery.SchemaField(
+            "metrics",
+            "RECORD",
+            fields=[
+                bigquery.SchemaField(
+                    "uuid",
+                    "RECORD",
+                    fields=[bigquery.SchemaField("usage_profile_id", "STRING")],
+                )
+            ],
+        ),
+    ]
+
+    assert field_paths(schema) == {
+        "client_id",
+        "client_info",
+        "client_info.client_id",
+        "metrics",
+        "metrics.uuid",
+        "metrics.uuid.usage_profile_id",
     }
 
 

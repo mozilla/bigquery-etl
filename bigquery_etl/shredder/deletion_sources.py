@@ -4,6 +4,8 @@ This only needs the shredder config, mozilla-pipeline-schemas, and the probeinfo
 listing, so it can run without BigQuery access.
 """
 
+import sys
+from collections import defaultdict
 from collections.abc import Iterable, Mapping
 from typing import Optional
 
@@ -20,6 +22,7 @@ from bigquery_etl.shredder.config import (
 )
 
 GLEAN_DELETION_REQUEST_TABLE = "deletion_request_v1"
+GLEAN_DELETION_REQUEST_VIEW = "deletion_request"
 ADDITIONAL_DELETION_REQUESTS_TABLE = "additional_deletion_requests_v1"
 
 
@@ -33,6 +36,45 @@ def get_deletion_request_tables() -> set[str]:
         for schema in get_stable_table_schemas()
         if schema.bq_table == GLEAN_DELETION_REQUEST_TABLE
     }
+
+
+def expand_sources(
+    sources: DeleteSource | Iterable[DeleteSource],
+    glean_channel_names: Mapping[str, str],
+) -> set[DeleteSource]:
+    """Return configured sources in the form get_associated_deletions produces.
+
+    A single source can be written as (DeleteSource(...)), which isn't a tuple, so
+    it's wrapped. Per-app deletion_request views, e.g. fenix.deletion_request, are
+    expanded into the deletion_request_v1 table of each channel of the app.
+    glean_channel_names maps channel dataset names to app names, as returned by
+    get_glean_app_id_to_app_name_mapping.
+    """
+    if isinstance(sources, DeleteSource):
+        sources = (sources,)
+
+    app_name_to_channels: dict[str, list[str]] = defaultdict(list)
+    for channel, app_name in glean_channel_names.items():
+        app_name_to_channels[app_name].append(channel)
+
+    expanded = set()
+    for source in sources:
+        if (
+            source.dataset_id in app_name_to_channels
+            and source.table_id == GLEAN_DELETION_REQUEST_VIEW
+        ):
+            for channel in app_name_to_channels[source.dataset_id]:
+                expanded.add(
+                    DeleteSource(
+                        table=f"{channel}_stable.{GLEAN_DELETION_REQUEST_TABLE}",
+                        field=source.field,
+                        project=source.project,
+                        conditions=source.conditions,
+                    )
+                )
+        else:
+            expanded.add(source)
+    return expanded
 
 
 def get_stable_table_sources() -> dict[str, set[DeleteSource]]:
@@ -102,7 +144,7 @@ def get_associated_deletions(
                 )
             )
         else:
-            print(f"No deletion requests for {dataset_id}")
+            print(f"No deletion requests for {dataset_id}", file=sys.stderr)
         if dataset_id in additional_deletion_requests:
             sources.add(
                 DeleteSource(

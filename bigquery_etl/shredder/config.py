@@ -5,7 +5,9 @@
 import logging
 import re
 from collections import defaultdict
+from collections.abc import Collection, Iterable, Mapping
 from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from functools import partial
 from itertools import chain
 from multiprocessing.pool import ThreadPool
@@ -865,56 +867,63 @@ SEARCH_IGNORE_FIELDS = {
 }
 
 
-def find_glean_targets(
-    pool: ThreadPool,
-    client: bigquery.Client,
-    project: str = SHARED_PROD,
-    column_removal_backfill_tables: Optional[List] = None,
-) -> DeleteIndex:
-    """Return a dict like DELETE_TARGETS for glean tables.
+GLEAN_DELETION_REQUEST_DOCTYPE = "deletion_request"
+ADDITIONAL_DELETION_REQUESTS_PREFIX = "additional_deletion_requests"
+USAGE_DELETION_REQUEST_TABLE = "usage_deletion_request_v1"
+USAGE_REPORTING_TABLE = "usage_reporting_v1"
 
-    Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
-    and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
+
+@dataclass
+class GleanTableInfo:
+    """Table metadata used by build_glean_targets.
+
+    field_paths has the dotted path of every column, e.g. client_info.client_id. It's
+    only read for derived tables and usage_deletion_request_v1 stable tables.
     """
-    if column_removal_backfill_tables is None:
-        column_removal_backfill_tables = []
 
-    datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
+    dataset_id: str
+    table_id: str
+    labels: dict[str, str] = dataclass_field(default_factory=dict)
+    field_paths: frozenset[str] = frozenset()
 
-    def stable_tables_by_schema(schema_id_prefix):
-        """Return _v1 stable tables whose schema id matches the given prefix.
 
-        Matches any schema version (glean_ping_1, glean_ping_2, ...) but only includes _v1 tables;
-        _v2+ tables are ignored. This is for https://mozilla-hub.atlassian.net/browse/DENG-8494
-        where the _v1 tables are still the user-facing data.
-        """
-        return [
-            table
-            for tables in pool.map(
-                client.list_tables,
-                [
-                    bigquery.DatasetReference(project, dataset_id)
-                    for dataset_id in datasets
-                    if dataset_id.endswith("_stable")
-                ],
-                chunksize=1,
-            )
-            for table in tables
-            if table.labels.get("schema_id", "").startswith(schema_id_prefix)
-            and table.table_id.endswith("_v1")
-        ]
+def field_paths(schema: Iterable[bigquery.SchemaField], prefix: str = "") -> frozenset:
+    """Return the dotted path of every field in a BigQuery schema."""
+    paths: set[str] = set()
+    for schema_field in schema:
+        path = f"{prefix}{schema_field.name}"
+        paths.add(path)
+        paths |= field_paths(schema_field.fields, prefix=f"{path}.")
+    return frozenset(paths)
 
-    glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID_PREFIX)
 
-    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
+def _is_glean_v1_table(table, schema_id_prefix: str) -> bool:
+    """Return whether a stable table has the given schema id prefix and a _v1 suffix.
 
-    # create mapping of dataset -> (tables containing associated deletion requests)
-    # construct values as tuples because that is what they must be in the return type
+    Matches any schema version (glean_ping_1, glean_ping_2, ...) but only includes _v1 tables;
+    _v2+ tables are ignored. This is for https://mozilla-hub.atlassian.net/browse/DENG-8494
+    where the _v1 tables are still the user-facing data.
+    """
+    return table.labels.get("schema_id", "").startswith(
+        schema_id_prefix
+    ) and table.table_id.endswith("_v1")
+
+
+def _glean_deletion_request_sources(
+    stable_tables: Iterable,
+    channel_to_app_name: Mapping[str, str],
+    project: str,
+) -> tuple[dict[str, tuple[DeleteSource, ...]], set[str]]:
+    """Return dataset -> deletion_request sources, and app names with multiple channels.
+
+    Values are tuples because that is what DeleteIndex values must be.
+    """
     sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
     app_names = set()
-    source_doctype = "deletion_request"
-    for table in glean_stable_tables:
-        if table.table_id.startswith(source_doctype):
+    for table in stable_tables:
+        if _is_glean_v1_table(
+            table, GLEAN_SCHEMA_ID_PREFIX
+        ) and table.table_id.startswith(GLEAN_DELETION_REQUEST_DOCTYPE):
             source = DeleteSource(qualified_table_id(table), GLEAN_CLIENT_ID, project)
 
             channel_name = re.sub("_stable$", "", table.dataset_id)
@@ -929,48 +938,74 @@ def find_glean_targets(
             if app_name is not None and app_name != channel_name:
                 app_names.add(app_name)
                 sources[app_name + "_derived"] += (source,)
+    return sources, app_names
+
+
+def _glean_derived_datasets(sources: Mapping[str, tuple]) -> list[str]:
+    """Return the derived datasets that have Glean deletion request sources."""
+    return [dataset_id for dataset_id in sources if dataset_id.endswith("_derived")]
+
+
+def build_glean_targets(
+    stable_tables: Iterable[GleanTableInfo],
+    derived_tables: Iterable[GleanTableInfo],
+    app_deletion_request_views: Collection[str],
+    channel_to_app_name: Mapping[str, str],
+    project: str = SHARED_PROD,
+    column_removal_backfill_tables: Optional[Collection[str]] = None,
+) -> DeleteIndex:
+    """Return a dict like DELETE_TARGETS for Glean tables from table metadata.
+
+    Only _v1 stable tables with a glean_ping_ or glean-min_ping_ schema_id label are used.
+    derived_tables in datasets without Glean deletion requests are ignored.
+    app_deletion_request_views are app names, e.g. fenix, that have a {app}.deletion_request view.
+    channel_to_app_name is the output of get_glean_app_id_to_app_name_mapping.
+
+    Note that dict values must be either DeleteSource or tuple[DeleteSource, ...],
+    and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
+    """
+    if column_removal_backfill_tables is None:
+        column_removal_backfill_tables = []
+
+    stable_tables = list(stable_tables)
+    glean_stable_tables = [
+        table
+        for table in stable_tables
+        if _is_glean_v1_table(table, GLEAN_SCHEMA_ID_PREFIX)
+    ]
+    glean_min_stable_tables = [
+        table
+        for table in stable_tables
+        if _is_glean_v1_table(table, GLEAN_MIN_SCHEMA_ID_PREFIX)
+    ]
+
+    # create mapping of dataset -> (tables containing associated deletion requests)
+    sources, app_names = _glean_deletion_request_sources(
+        glean_stable_tables, channel_to_app_name, project
+    )
 
     # Use deletion request view containing all channels if found, otherwise use per-channel
     # tables as delete sources.  Some apps don't have views generated by glean_usage
     # because they are skipped in bqetl_project.yaml
-    for app_name in app_names:
-        try:
-            source_view = client.get_table(f"{project}.{app_name}.{source_doctype}")
-        except NotFound:
-            pass
-        else:
-            source = DeleteSource(
-                qualified_table_id(source_view), GLEAN_CLIENT_ID, project
-            )
-            sources[app_name + "_derived"] = (source,)
-
-    glean_derived_tables = [
-        table
-        for table in pool.map(
-            client.get_table,
-            chain(
-                *pool.starmap(
-                    _list_tables,
-                    [
-                        (bigquery.DatasetReference(project, dataset_id), client)
-                        for dataset_id in sources
-                        if dataset_id.endswith("_derived")
-                    ],
-                    chunksize=1,
-                )
-            ),
-            chunksize=1,
+    for app_with_view in app_names & set(app_deletion_request_views):
+        source = DeleteSource(
+            f"{app_with_view}.{GLEAN_DELETION_REQUEST_DOCTYPE}",
+            GLEAN_CLIENT_ID,
+            project,
         )
-        if table.table_type == "TABLE"
+        sources[app_with_view + "_derived"] = (source,)
+
+    derived_datasets = set(_glean_derived_datasets(sources))
+    glean_derived_tables = [
+        table for table in derived_tables if table.dataset_id in derived_datasets
     ]
 
     # handle additional source for deletion requests for things like
     # https://bugzilla.mozilla.org/show_bug.cgi?id=1810236
     # table must contain client_id at the top level and be partitioned on
     # submission_timestamp
-    derived_source_prefix = "additional_deletion_requests"
     for table in glean_derived_tables:
-        if table.table_id.startswith(derived_source_prefix):
+        if table.table_id.startswith(ADDITIONAL_DELETION_REQUESTS_PREFIX):
             source = DeleteSource(qualified_table_id(table), CLIENT_ID, project)
             channel_name = re.sub("_derived$", "", table.dataset_id)
             app_name = channel_to_app_name.get(channel_name)
@@ -986,37 +1021,24 @@ def find_glean_targets(
     skipped_tables = manually_added_tables | not_shredded_tables(project)
 
     # Handle custom deletion requests for usage_reporting pings
-    glean_min_stable_tables = stable_tables_by_schema(GLEAN_MIN_SCHEMA_ID_PREFIX)
     usage_reporting_sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
     for table in glean_min_stable_tables:
-        if table.table_id == "usage_deletion_request_v1":
-            # usage_deletion_request ping is defined in application code,
-            # so we need to confirm that it has `usage_profile_id` metric
-            table = client.get_table(table)
-            if any(
-                field.name == "metrics"
-                and any(
-                    metric_type_field.name == "uuid"
-                    and any(
-                        [
-                            metric_field.name == USAGE_PROFILE_ID
-                            for metric_field in metric_type_field.fields
-                        ]
-                    )
-                    for metric_type_field in field.fields
-                )
-                for field in table.schema
-            ):
-                source = DeleteSource(
-                    qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
-                )
-                usage_reporting_sources[table.dataset_id] += (source,)
-                usage_reporting_sources[
-                    table.dataset_id.replace("stable", "derived")
-                ] += (source,)
-                usage_reporting_sources[
-                    channel_to_app_name[table.dataset_id.replace("_stable", "")]
-                ] += (source,)
+        # usage_deletion_request ping is defined in application code,
+        # so we need to confirm that it has `usage_profile_id` metric
+        if (
+            table.table_id == USAGE_DELETION_REQUEST_TABLE
+            and GLEAN_USAGE_PROFILE_ID in table.field_paths
+        ):
+            source = DeleteSource(
+                qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
+            )
+            usage_reporting_sources[table.dataset_id] += (source,)
+            usage_reporting_sources[table.dataset_id.replace("stable", "derived")] += (
+                source,
+            )
+            usage_reporting_sources[
+                channel_to_app_name[table.dataset_id.replace("_stable", "")]
+            ] += (source,)
 
     delete_targets = {
         **{
@@ -1028,7 +1050,7 @@ def find_glean_targets(
             ): sources[table.dataset_id]
             for table in glean_stable_tables
             if table.dataset_id in sources
-            and not table.table_id.startswith(source_doctype)
+            and not table.table_id.startswith(GLEAN_DELETION_REQUEST_DOCTYPE)
             # skip tables with explicitly excluded client ids
             and table.labels.get("include_client_id", "true").lower() != "false"
             and qualified_table_id(table) not in skipped_tables
@@ -1041,8 +1063,8 @@ def find_glean_targets(
                 field=(CLIENT_ID,) * len(sources[table.dataset_id]),
             ): sources[table.dataset_id]
             for table in glean_derived_tables
-            if any(field.name == CLIENT_ID for field in table.schema)
-            and not table.table_id.startswith(derived_source_prefix)
+            if CLIENT_ID in table.field_paths
+            and not table.table_id.startswith(ADDITIONAL_DELETION_REQUESTS_PREFIX)
             and qualified_table_id(table) not in skipped_tables
         },
         **{
@@ -1053,15 +1075,9 @@ def find_glean_targets(
                 field=(GLEAN_CLIENT_ID,) * len(sources[table.dataset_id]),
             ): sources[table.dataset_id]
             for table in glean_derived_tables
-            if any(
-                field.name == "client_info"
-                and any(
-                    [nested_field.name == "client_id" for nested_field in field.fields]
-                )
-                for field in table.schema
-            )
-            and all(field.name != CLIENT_ID for field in table.schema)
-            and not table.table_id.startswith(derived_source_prefix)
+            if GLEAN_CLIENT_ID in table.field_paths
+            and CLIENT_ID not in table.field_paths
+            and not table.table_id.startswith(ADDITIONAL_DELETION_REQUESTS_PREFIX)
             and qualified_table_id(table) not in skipped_tables
         },
         **{
@@ -1073,7 +1089,7 @@ def find_glean_targets(
                 * len(usage_reporting_sources[table.dataset_id]),
             ): usage_reporting_sources[table.dataset_id]
             for table in glean_min_stable_tables
-            if table.table_id == "usage_reporting_v1"
+            if table.table_id == USAGE_REPORTING_TABLE
             and table.dataset_id in usage_reporting_sources
             and qualified_table_id(table) not in skipped_tables
         },
@@ -1086,9 +1102,9 @@ def find_glean_targets(
                 * len(usage_reporting_sources[table.dataset_id]),
             ): usage_reporting_sources[table.dataset_id]
             for table in glean_derived_tables
-            if any(field.name == USAGE_PROFILE_ID for field in table.schema)
-            and all(field.name != CLIENT_ID for field in table.schema)
-            and not table.table_id.startswith(derived_source_prefix)
+            if USAGE_PROFILE_ID in table.field_paths
+            and CLIENT_ID not in table.field_paths
+            and not table.table_id.startswith(ADDITIONAL_DELETION_REQUESTS_PREFIX)
             and qualified_table_id(table) not in skipped_tables
         },
     }
@@ -1106,6 +1122,97 @@ def find_glean_targets(
             and qualified_table_id(table) not in {d.table for d in delete_targets}
         },
     }
+
+
+def find_glean_targets(
+    pool: ThreadPool,
+    client: bigquery.Client,
+    project: str = SHARED_PROD,
+    column_removal_backfill_tables: Optional[List] = None,
+) -> DeleteIndex:
+    """Return a dict like DELETE_TARGETS for glean tables.
+
+    Lists table metadata in BigQuery and passes it to build_glean_targets.
+
+    Note that dict values *must* be either DeleteSource or tuple[DeleteSource, ...],
+    and other iterable types, e.g. list[DeleteSource] are not allowed or supported.
+    """
+    datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
+
+    stable_tables = []
+    for tables in pool.map(
+        client.list_tables,
+        [
+            bigquery.DatasetReference(project, dataset_id)
+            for dataset_id in datasets
+            if dataset_id.endswith("_stable")
+        ],
+        chunksize=1,
+    ):
+        for table in tables:
+            is_glean_min = _is_glean_v1_table(table, GLEAN_MIN_SCHEMA_ID_PREFIX)
+            if not (is_glean_min or _is_glean_v1_table(table, GLEAN_SCHEMA_ID_PREFIX)):
+                continue
+            paths: frozenset[str] = frozenset()
+            if is_glean_min and table.table_id == USAGE_DELETION_REQUEST_TABLE:
+                # the schema is needed to check for the usage_profile_id metric
+                paths = field_paths(client.get_table(table).schema)
+            stable_tables.append(
+                GleanTableInfo(
+                    dataset_id=table.dataset_id,
+                    table_id=table.table_id,
+                    labels=dict(table.labels),
+                    field_paths=paths,
+                )
+            )
+
+    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
+
+    sources, app_names = _glean_deletion_request_sources(
+        stable_tables, channel_to_app_name, project
+    )
+
+    app_deletion_request_views = set()
+    for app_name in app_names:
+        try:
+            client.get_table(f"{project}.{app_name}.{GLEAN_DELETION_REQUEST_DOCTYPE}")
+        except NotFound:
+            pass
+        else:
+            app_deletion_request_views.add(app_name)
+
+    derived_tables = [
+        GleanTableInfo(
+            dataset_id=table.dataset_id,
+            table_id=table.table_id,
+            labels=dict(table.labels or {}),
+            field_paths=field_paths(table.schema),
+        )
+        for table in pool.map(
+            client.get_table,
+            chain(
+                *pool.starmap(
+                    _list_tables,
+                    [
+                        (bigquery.DatasetReference(project, dataset_id), client)
+                        for dataset_id in _glean_derived_datasets(sources)
+                    ],
+                    chunksize=1,
+                )
+            ),
+            chunksize=1,
+        )
+        if table.table_type == "TABLE"
+    ]
+
+    return build_glean_targets(
+        stable_tables,
+        derived_tables,
+        app_deletion_request_views,
+        channel_to_app_name,
+        project=project,
+        column_removal_backfill_tables=column_removal_backfill_tables,
+    )
 
 
 def _list_tables(

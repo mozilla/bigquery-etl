@@ -23,7 +23,10 @@ from bigquery_etl.shredder.config import (
     DeleteSource,
     find_glean_targets,
 )
-from bigquery_etl.shredder.deletion_sources import get_associated_deletions
+from bigquery_etl.shredder.deletion_sources import (
+    expand_sources,
+    get_associated_deletions,
+)
 
 FIND_TABLES_QUERY_TEMPLATE = """
 WITH no_client_id_tables AS (
@@ -282,37 +285,13 @@ def get_missing_deletions(
         glean_delete_targets = find_glean_targets(pool, client=bigquery_client)
 
     glean_channel_names = get_glean_app_id_to_app_name_mapping()
-    glean_app_name_to_channels = defaultdict(list)
-    for channel, app_name in glean_channel_names.items():
-        glean_app_name_to_channels[app_name].append(channel)
 
     table_deletions = []
 
     for target, sources in (*glean_delete_targets.items(), *DELETE_TARGETS.items()):
         target_table = f"{target.project}.{target.table}"
 
-        # a single source can be written as (DeleteSource(...)), which isn't a tuple
-        if isinstance(sources, DeleteSource):
-            sources = (sources,)
-
-        # expand per-app deletion request views into per-channel tables
-        unnested_sources = set()
-        for source in sources:
-            if (
-                source.dataset_id in glean_app_name_to_channels
-                and source.table_id == "deletion_request"
-            ):
-                for channel in glean_app_name_to_channels[source.dataset_id]:
-                    unnested_sources.add(
-                        DeleteSource(
-                            table=f"{channel}_stable.deletion_request_v1",
-                            field=source.field,
-                            project=source.project,
-                            conditions=source.conditions,
-                        )
-                    )
-            else:
-                unnested_sources.add(source)
+        unnested_sources = expand_sources(sources, glean_channel_names)
 
         # tables not in associated_deletions likely use another id column, e.g. user_id
         detected_deletions = associated_deletions.pop(target_table, set())

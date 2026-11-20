@@ -6,7 +6,7 @@ For any workflow, the bigquery-etl repositiory needs to be locally available, fo
 
 ## Adding a new scheduled query
 
-The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/) provides a more detailed guide on creating scheduled queries.
+The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/) provides a more detailed guide on creating scheduled queries. For testing changes against a personal or shared development environment before opening a PR, see the [Development workflows](https://mozilla.github.io/bigquery-etl/cookbooks/development_workflows/) cookbook.
 
 1. Run `./bqetl query create <dataset>.<table>_<version>`
    1. Specify the desired destination dataset and table name for `<dataset>.<table>_<version>`

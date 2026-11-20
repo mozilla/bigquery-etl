@@ -30,7 +30,7 @@ default_args = {
     "end_date": None,
     "email": ["test@example.org", "telemetry-alerts@mozilla.com"],
     "depends_on_past": False,
-    "retry_delay": datetime.timedelta(seconds=3600),
+    "retry_delay": datetime.timedelta(hours=1),
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 2,

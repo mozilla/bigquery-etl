@@ -1466,6 +1466,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Number of comments in the sidebar.
+    - name: component_summaries
+      type: INTEGER
+      mode: NULLABLE
+      description: The number of distinct memories, by summary text, merged into the
+        card's underlying memory, including memories from earlier merges.
     - name: concurrent_open
       type: INTEGER
       mode: NULLABLE
@@ -1980,6 +1985,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: hourse since the model was used
+    - name: last_visit_age
+      type: INTEGER
+      mode: NULLABLE
+      description: Milliseconds since the most recent visit to any of the card's preview
+        tabs.
     - name: latency
       type: INTEGER
       mode: NULLABLE
@@ -2142,6 +2152,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Memory usage after unloading tabs (in bytes)
+    - name: memory_age
+      type: INTEGER
+      mode: NULLABLE
+      description: Milliseconds since the oldest memory merged into the card's underlying
+        memory was created, or since the underlying memory was created if it was never
+        merged.
     - name: memory_before
       type: INTEGER
       mode: NULLABLE
@@ -2470,9 +2486,11 @@ fields:
 
         * The position of the tab in the recently closed tab list (starting at 1)
 
+        * The position (0-index) of the card acted on.
+
         * Position of the entry that was clicked
 
-        * The position (0-index) of the card acted on.
+        * The position (0-index) of the card when it became visible.
 
         * The position (0-index) of the Top Sites tile. For example: 2 means the third
         tile in the row.'
@@ -2527,6 +2545,11 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Number of prompts displayed
+    - name: rank
+      type: INTEGER
+      mode: NULLABLE
+      description: The card's position (0-index) when the section loaded. Unlike position,
+        it does not shift when other cards are removed.
     - name: raw_content_len
       type: INTEGER
       mode: NULLABLE
@@ -3269,12 +3292,12 @@ fields:
 
         * Which action was toggled, e.g., ai, search, copy, master.
 
+        * The action taken: resume, card_click (the surface area of the card), open_tabs,
+        snooze, or dismiss.
+
         * The action that was taken by the user, remove or cancel
 
-        * The `action` of the system (chrome privileged) alert that Firefox was launched
-        to complete.
-
-        * Whether the panel wa...'
+        * The `action`...'
     - name: action_id
       type: STRING
       mode: NULLABLE
@@ -4381,23 +4404,27 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
+        * Where the prompt came from, one of: browser_action (a chat request handled
+        by the manage_tabs tool) or resume (a resume card, or a "Pick up where you
+        left off" pill when resume cards are disabled)
+
         * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
         SessionRestore, SystemMenu or SlowScript
-
-        * Where the migration wizard was opened from. One of the values of MigrationUtils.MIGRATION_ENTRYPOINTS,
-        for example "aboutwelcome", "preferences" or "file_menu".
 
         * Where the user opened the page from: "panel" for the button in the VPN panel,
         "settings" for the button in about:settings#privacy.
 
+        * Where the migration wizard was opened from. One of the values of MigrationUtils.MIGRATION_ENTRYPOINTS,
+        for example "aboutwelcome", "preferences" or "file_menu".
+
+        * Where the promo was clicked: "panel" for the VPN panel, "settings" for about:settings.
+
+        * Where the promo was shown: "panel" for the VPN panel, "settings" for about:settings.
+
         * The UI surface used to open the referrals tab. One of: app_menu, accounts_menu,
         preferences, help_menu, about_dialog.
 
-        * Where the card came from: browser_action (a chat request handled by the
-        manage_tabs tool) or resume (a "Pick up where you left off" pill)
-
-        * How was the toolbox opened? CommandLine, ContextMenu, HamburgerMenu, KeyShortcut,
-        SessionRestore or SystemMenu'
+        * Where the card came from: browser_action (a chat request handled by the...'
     - name: error
       type: STRING
       mode: NULLABLE
@@ -5316,6 +5343,11 @@ fields:
       description: 'Final value from the last memories navigate, a comma-separated
         list of memory checkbox ids the user had selected, for example: ''memories-chats,memories-browsing''.
         Empty string if the user deselects all options'
+    - name: memory_strength
+      type: STRING
+      mode: NULLABLE
+      description: The strength of the card's underlying memory when suggested, recorded
+        as a decimal string to preserve fractional values.
     - name: mention_type
       type: STRING
       mode: NULLABLE
@@ -6116,6 +6148,16 @@ fields:
       description: 'A string set to determine whether the profile was a new or existing
         profile, and if the application version was changing, while the write error
         was hit. The expected values are: "new", "existing" "existingWithVersionChanged"'
+    - name: promo
+      type: STRING
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Which promo was clicked: "mozillavpn" for the Mozilla VPN promo, "defaultbrowser"
+        for the Set to Default promo.
+
+        * Which promo was shown: "mozillavpn" for the Mozilla VPN promo, "defaultbrowser"
+        for the Set to Default promo.'
     - name: prompt
       type: STRING
       mode: NULLABLE
@@ -6129,9 +6171,9 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Type of prompt shown - disambiguation, batch_preview, or safety_confirmation
-
         * Type of prompt shown: disambiguation, batch_preview, or safety_confirmation
+
+        * Type of prompt shown - disambiguation, batch_preview, or safety_confirmation
 
         * "new_card" for the save doorhanger of a new card, "existing_card" for the
         update doorhanger offering to add a security code to a saved card.'
@@ -6264,11 +6306,13 @@ fields:
 
         * A code describing the reason the unenroll failed.
 
+        * Reason the original prompt was shown
+
         * caught-exception, uncaught-exception, pausing, debugger-statement or breakpoint.
 
         * A string that identifies the reason for resetting the storage.local IndexedDB
         database. e.g. - "ObjectStoreNotFound": (The IndexedDB instance is missing
-        the expected ObjectStorage name). - "RejectedClear...'
+        the expecte...'
     - name: record_type
       type: STRING
       mode: NULLABLE

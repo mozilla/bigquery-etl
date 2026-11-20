@@ -2893,14 +2893,14 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Any extra information about the button that was tapped.
-
         * Sub-position on the bar. Populated only for `source = url_bar` on the home
         and browser surfaces, where it is one of: browser_start, page_start, page_end,
         browser_end. For the `search_engine_selected` item it instead holds the telemetry
         name of the chosen search engine: the engine name for regular engines (e.g.
         Google, Bing, DuckDuckGo), or one of the fixed values `custom`, `history`,
         `bookmarks`, `tabs`, or `application` for custom and application search engines.
+
+        * Any extra information about the button that was tapped.
 
         * Any extra information about the card clicked.
 

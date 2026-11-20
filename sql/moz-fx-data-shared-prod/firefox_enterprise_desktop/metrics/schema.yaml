@@ -498,8 +498,7 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: 'Boolean indicating whether the os compositor is being used by
-        WebRender. This metric was generated to correspond to the Legacy Telemetry
-        scalar gfx.os_compositor.
+        WebRender.
 
         '
     - name: gfx_status_headless
@@ -512,8 +511,7 @@ fields:
     - name: gfx_supports_hdr
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Does the hardware support accurate display of HDR content This
-        metric was generated to correspond to the Legacy Telemetry scalar gfx.supports_hdr.
+      description: 'Does the hardware support accurate display of HDR content
 
         '
     - name: network_apple_fast_datapath_used
@@ -1921,8 +1919,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Number of skipped composites, happening when rendering is too
-        slow to keep up with content. This metric was generated to correspond to the
-        Legacy Telemetry scalar gfx.skipped_composites.
+        slow to keep up with content.
 
         '
     - name: glam_experiment_cpu_time_bogus_values
@@ -2961,9 +2958,6 @@ fields:
       mode: NULLABLE
       description: 'Number of fonts loaded at page load
 
-        This metric was generated to correspond to the Legacy Telemetry count histogram
-        WEBFONT_PER_PAGE.
-
         '
     - name: webrtc_call_count_3
       type: INTEGER
@@ -3647,9 +3641,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Input device that triggered the zoom gesture (InputData::PinchGestureSource)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram APZ_ZOOM_PINCHSOURCE.
 
         '
     - name: bounce_tracking_protection_num_hosts_per_purge_run
@@ -4456,9 +4447,6 @@ fields:
           mode: NULLABLE
       description: 'gfxDWriteFontList::DelayedInitFontList Font Family Count
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DWRITEFONT_DELAYEDINITFONTLIST_COUNT.
-
         '
     - name: fontlist_dwritefont_init_problem
       type: RECORD
@@ -4479,9 +4467,6 @@ fields:
           mode: NULLABLE
       description: 'DirectWrite system fontlist initialization problem: 1=GDI interop
         (removed in bug 2011408), 2=system font collection, 3=no fonts
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram DWRITEFONT_INIT_PROBLEM.
 
         '
     - name: gecko_safe_mode_usage
@@ -4639,9 +4624,6 @@ fields:
           mode: NULLABLE
       description: 'Time to do swap/present/commit in 100 microseconds
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram COMPOSITE_SWAP_TIME.
-
         '
     - name: gfx_content_failed_to_acquire_device
       type: RECORD
@@ -4662,9 +4644,6 @@ fields:
           mode: NULLABLE
       description: 'Failed to create a gfx content device. 0=content d3d11, 1=image
         d3d11, 2=d2d1.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram GFX_CONTENT_FAILED_TO_ACQUIRE_DEVICE.
 
         '
     - name: gfx_content_frame_time_from_paint
@@ -4799,9 +4778,6 @@ fields:
           mode: NULLABLE
       description: 'Graphics Crash Reason (...)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram GFX_CRASH.
-
         '
     - name: gfx_device_reset_reason
       type: RECORD
@@ -4823,9 +4799,6 @@ fields:
       description: 'GPU Device Reset Reason (ok, hung, removed, reset, internal error,
         invalid call, out of memory)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram DEVICE_RESET_REASON.
-
         '
     - name: gfx_display_scaling
       type: RECORD
@@ -4845,9 +4818,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Scaling percentage for the display where the first window is opened
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        DISPLAY_SCALING.
 
         '
     - name: gfx_forced_device_reset_reason
@@ -4869,9 +4839,6 @@ fields:
           mode: NULLABLE
       description: 'GPU Forced Device Reset Reason (OpenSharedHandle)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram FORCED_DEVICE_RESET_REASON.
-
         '
     - name: gfx_graphics_driver_startup_test
       type: RECORD
@@ -4891,9 +4858,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Reports whether or not graphics drivers crashed during startup.
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram GRAPHICS_DRIVER_STARTUP_TEST.
 
         '
     - name: gfx_sanity_test
@@ -4916,9 +4880,6 @@ fields:
       description: 'Reports results from the graphics sanity test to track which drivers
         are having problems (0=TEST_PASSED, 1=TEST_FAILED_RENDER, 2=TEST_FAILED_VIDEO_DECODE,
         3=TEST_CRASHED, 4=TEST_TIMEOUT, 5=TEST_FAILED_TO_RUN, 6=TEST_FAILED_VIDEO_ENCODE)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram GRAPHICS_SANITY_TEST.
 
         '
     - name: hpack_bytes_evicted_ratio_compressor
@@ -10563,9 +10524,6 @@ fields:
           mode: NULLABLE
       description: 'Compression ratio of WOFF data (%)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram WEBFONT_COMPRESSION_WOFF.
-
         '
     - name: webfont_compression_woff2
       type: RECORD
@@ -10585,9 +10543,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Compression ratio of WOFF2 data (%)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram WEBFONT_COMPRESSION_WOFF2.
 
         '
     - name: webfont_fonttype
@@ -10609,9 +10564,6 @@ fields:
           mode: NULLABLE
       description: 'Font format type (woff/woff2/ttf/...)
 
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram WEBFONT_FONTTYPE.
-
         '
     - name: webfont_srctype
       type: RECORD
@@ -10631,9 +10583,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Font src type loaded (1 = local, 2 = url, 3 = data)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram WEBFONT_SRCTYPE.
 
         '
     - name: webrtc_audio_quality_inbound_bandwidth_kbits
@@ -13532,9 +13481,6 @@ fields:
         mode: NULLABLE
       description: 'Whether non-RDM page had user-triggered zooming activity
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        APZ_ZOOM_ACTIVITY.
-
         '
     - name: avif_a1lx
       type: RECORD
@@ -14919,9 +14865,6 @@ fields:
         mode: NULLABLE
       description: 'system fallback font can''t be used
 
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        BAD_FALLBACK_FONT.
-
         '
     - name: fontlist_font_cache_hit
       type: RECORD
@@ -14934,9 +14877,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'font cache hit
-
-        This metric was generated to correspond to the Legacy Telemetry boolean histogram
-        FONT_CACHE_HIT.
 
         '
     - name: formautofill_form_submission_heuristic
@@ -15094,9 +15034,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'MacOS video low power state achieved when enqueueing a video frame.
-
-        This metric was generated to correspond to the Legacy Telemetry categorical
-        histogram GFX_MACOS_VIDEO_LOW_POWER.
 
         '
     - name: glean_error_invalid_label
@@ -23014,9 +22951,6 @@ fields:
         list, "wrdl" = WebRender display list, "sb" = Scene building, "fb" = Frame
         building)
 
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        CONTENT_LARGE_PAINT_PHASE_WEIGHT_FULL.
-
         '
     - name: gfx_content_large_paint_phase_weight_partial
       type: RECORD
@@ -23047,9 +22981,6 @@ fields:
         list, "wrdl" = WebRender display list, "sb" = Scene building, "fb" = Frame
         building)
 
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        CONTENT_LARGE_PAINT_PHASE_WEIGHT_PARTIAL.
-
         '
     - name: gfx_content_small_paint_phase_weight_full
       type: RECORD
@@ -23079,9 +23010,6 @@ fields:
         to the time spent in the entire normal paint. ("dl" = Display list, "wrdl"
         = WebRender display list, "sb" = Scene building, "fb" = Frame building)
 
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        CONTENT_SMALL_PAINT_PHASE_WEIGHT_FULL.
-
         '
     - name: gfx_content_small_paint_phase_weight_partial
       type: RECORD
@@ -23110,9 +23038,6 @@ fields:
       description: 'Percentages of times for phases in a normal content paint relative
         to the time spent in the entire normal paint. ("dl" = Display list, "wrdl"
         = WebRender display list, "sb" = Scene building, "fb" = Frame building)
-
-        This metric was generated to correspond to the Legacy Telemetry linear histogram
-        CONTENT_SMALL_PAINT_PHASE_WEIGHT_PARTIAL.
 
         '
     - name: http3_connection_close_code
@@ -29845,9 +29770,6 @@ fields:
           mode: NULLABLE
       description: 'Size of font loaded (kb)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram WEBFONT_SIZE.
-
         '
     - name: webfont_size_per_page
       type: RECORD
@@ -29867,9 +29789,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Size of all fonts loaded at page load (kb)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram WEBFONT_SIZE_PER_PAGE.
 
         '
     - name: browser_backup_compressed_archive_size
@@ -30771,8 +30690,7 @@ fields:
         the connected displays on Windows. See (https://docs.microsoft.com/en- us/windows/desktop/api/dxgicommon/ne-dxgicommon-
         dxgi_color_space_type) for definitions of color spaces. Each N''th bit of
         this scalar indicates whether the DXGI color space with index ''N'' is available
-        on at least one connected monitor. This metric was generated to correspond
-        to the Legacy Telemetry scalar gfx.hdr.windows_display_colorspace_bitfield.
+        on at least one connected monitor.
 
         '
     - name: gfx_target_frame_rate
@@ -32200,8 +32118,7 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Windowing protocol on Linux. Can be Wayland, WaylandDRM, XWayland,
-        or X11 This metric was generated to correspond to the Legacy Telemetry scalar
-        gfx.linux_window_protocol.
+        or X11
 
         '
     - name: gfx_status_compositor
@@ -34941,9 +34858,6 @@ fields:
           mode: NULLABLE
       description: 'Time(ms) spent activating additional fonts bundled with the product
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FONTLIST_BUNDLEDFONTS_ACTIVATE.
-
         '
     - name: fontlist_dwritefont_delayedinit_collect
       type: RECORD
@@ -34965,9 +34879,6 @@ fields:
       description: 'gfxDWriteFontList::DelayedInitFontList GetSystemFontCollection
         (ms)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DWRITEFONT_DELAYEDINITFONTLIST_COLLECT.
-
         '
     - name: fontlist_dwritefont_delayedinit_total
       type: RECORD
@@ -34987,9 +34898,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'gfxDWriteFontList::DelayedInitFontList Total (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram DWRITEFONT_DELAYEDINITFONTLIST_TOTAL.
 
         '
     - name: fontlist_initfacenamelists
@@ -35011,9 +34919,6 @@ fields:
           mode: NULLABLE
       description: 'Time(ms) spent on reading family names from all fonts
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FONTLIST_INITFACENAMELISTS.
-
         '
     - name: fontlist_initotherfamilynames
       type: RECORD
@@ -35033,9 +34938,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time(ms) spent on reading other family names from all fonts
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FONTLIST_INITOTHERFAMILYNAMES.
 
         '
     - name: fontlist_initotherfamilynames_no_deferring
@@ -35058,9 +34960,6 @@ fields:
       description: 'Time(ms) spent on reading other family names from all fonts for
         no timeout case
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram FONTLIST_INITOTHERFAMILYNAMES_NO_DEFERRING.
-
         '
     - name: fontlist_mac_init_total
       type: RECORD
@@ -35080,9 +34979,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'gfxMacPlatformFontList::InitFontList Total (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram MAC_INITFONTLIST_TOTAL.
 
         '
     - name: fontlist_system_font_fallback
@@ -35104,9 +35000,6 @@ fields:
           mode: NULLABLE
       description: 'System font fallback (us)
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SYSTEM_FONT_FALLBACK.
-
         '
     - name: fontlist_system_font_fallback_first
       type: RECORD
@@ -35126,9 +35019,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'System font fallback, first call (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram SYSTEM_FONT_FALLBACK_FIRST.
 
         '
     - name: geckoview_page_load_progress_time
@@ -35267,9 +35157,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time from vsync to finishing a composite in milliseconds.
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram COMPOSITE_FRAME_ROUNDTRIP_TIME.
 
         '
     - name: gfx_composite_time
@@ -35606,9 +35493,6 @@ fields:
       description: 'GPU process initialization (excluding XPCOM and fork time) time
         in milliseconds
 
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram GPU_PROCESS_INITIALIZATION_TIME_MS.
-
         '
     - name: gpu_process_launch_time
       type: RECORD
@@ -35628,9 +35512,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'GPU process launch time in milliseconds
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram GPU_PROCESS_LAUNCH_TIME_MS_2.
 
         '
     - name: http3_timer_delayed
@@ -40349,9 +40230,6 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Time to download a webfont (ms)
-
-        This metric was generated to correspond to the Legacy Telemetry exponential
-        histogram WEBFONT_DOWNLOAD_TIME.
 
         '
     - name: webrtc_audio_quality_inbound_jitter

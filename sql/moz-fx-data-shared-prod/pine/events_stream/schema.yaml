@@ -4230,7 +4230,7 @@ fields:
 
         * How the prompt was triggered (user click vs automatic)
 
-        * What triggered ...'
+        * What caused the...'
     - name: trr
       type: STRING
       mode: NULLABLE

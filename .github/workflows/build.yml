@@ -139,7 +139,8 @@ jobs:
           persist-credentials: false
           filter: blob:none
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      # Not the shared *setup-bqetl anchor: the other jobs pass needs.build.outputs.python-version
+      # Not the shared *setup-bqetl anchor: this job resolves python-version (the others
+      # pass needs.build.outputs.python-version) and is the only one that saves the cache
       - name: Set up bqetl
         id: setup-bqetl
         uses: ./.github/actions/setup-bqetl

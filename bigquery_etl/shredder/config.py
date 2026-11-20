@@ -1040,7 +1040,7 @@ def find_glean_targets(
                     usage_reporting_sources,
                     source,
                     channel_name,
-                    channel_to_app_name[channel_name],
+                    channel_to_app_name.get(channel_name),
                 )
                 if app_name is not None:
                     usage_app_names.add(app_name)

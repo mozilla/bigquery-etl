@@ -35,9 +35,9 @@ jobs:
         Refer to docs/reference/recommended_practices.md for SQL conventions and best practices.
         Also consult .github/reviewer_checklist.md and address items applicable to this PR.
       CLONED_REPO_CONVENTIONS: |-
-        This repo shares all bqetl tooling and SQL conventions with the public bigquery-etl
-        repo, which is checked out as a sibling at `../bigquery-etl`. Read these for conventions
-        and best practices before reviewing:
+        This is a private repo that builds on the public bigquery-etl repo. It shares all
+        bqetl tooling and SQL conventions with bigquery-etl, which is checked out as a sibling
+        at `../bigquery-etl`. Read these for conventions and best practices before reviewing:
         - ../bigquery-etl/AGENTS.md (repo conventions; its doc links are relative to ../bigquery-etl/)
         - ../bigquery-etl/docs/reference/recommended_practices.md (SQL conventions)
         - ../bigquery-etl/.github/reviewer_checklist.md (address applicable items)

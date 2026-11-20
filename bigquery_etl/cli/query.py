@@ -2950,6 +2950,13 @@ def _update_query_schema(
         + "Must be fully qualified (project.dataset.table)."
     ),
 )
+@click.option(
+    "--add-managed-label",
+    "--add_managed_label",
+    is_flag=True,
+    default=False,
+    help='Add a label "managed" to tables for lifecycle management',
+)
 @parallelism_option()
 @click.pass_context
 def deploy(
@@ -2963,6 +2970,7 @@ def deploy(
     skip_existing,
     skip_external_data,
     destination_table,
+    add_managed_label,
     parallelism,
 ):
     """CLI command for deploying destination table schemas."""
@@ -3086,6 +3094,7 @@ def deploy(
         sql_dir=sql_dir,
         credentials=credentials,
         id_token=id_token,
+        add_managed_label=add_managed_label,
     )
 
     failed_deploys, skipped_deploys, external_deploys = [], [], []

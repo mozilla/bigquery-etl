@@ -43,11 +43,53 @@ def negate_timedelta_string(s: str) -> str:
     return s[1:] if s.startswith("-") else ("-" + s)
 
 
+class ReadableTimedelta(timedelta):
+    """A timedelta with more human-readable str/repr output."""
+
+    def __str__(self) -> str:
+        """Format the timedelta as a more human-readable string.
+
+        For example, a -1 hour value will be formatted as "-1:00:00" instead of "-1 day, 23:00:00".
+        """
+        if self < timedelta(0):
+            # For negative values we also show a non-zero time as negated to avoid confusion with standard `timedelta` output,
+            # where negative days and positive time actually means that many hours/minutes/seconds closer to zero.
+            return re.sub(r", (?!0:00:00$)", ", -", f"-{abs(self)}")
+        return super().__str__()
+
+    def __repr__(self) -> str:
+        """Format the timedelta as a more human-readable representation string.
+
+        For example, a -1 hour value will be formatted as "datetime.timedelta(hours=-1)" instead of "datetime.timedelta(days=-1, seconds=82800)".
+        """
+        if not self:
+            return "datetime.timedelta(0)"
+        sign = -1 if self < timedelta(0) else 1
+        magnitude = abs(self)
+        # Internally `timedelta` arbitrarily normalizes values to days/seconds/microseconds,
+        # so it requires some calculations to get the hours and minutes back.
+        hours, seconds = divmod(magnitude.seconds, 3600)
+        minutes, seconds = divmod(seconds, 60)
+        units = {
+            "days": magnitude.days,
+            "hours": hours,
+            "minutes": minutes,
+            "seconds": seconds,
+            "microseconds": magnitude.microseconds,
+        }
+        arguments = [f"{unit}={sign * value}" for unit, value in units.items() if value]
+        return f"datetime.timedelta({', '.join(arguments)})"
+
+
 # https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
-def parse_timedelta(td: Optional[str | timedelta]) -> Optional[timedelta]:
-    """Parse a timedelta string into a timedelta object, passing through timedelta objects and `None`."""
-    if isinstance(td, timedelta):
+def parse_timedelta(td: Optional[str | timedelta]) -> Optional[ReadableTimedelta]:
+    """Parse a timedelta string into a ReadableTimedelta object, passing through timedelta values and `None`."""
+    if isinstance(td, ReadableTimedelta):
         return td
+    if isinstance(td, timedelta):
+        return ReadableTimedelta(
+            days=td.days, seconds=td.seconds, microseconds=td.microseconds
+        )
     if td is None or td == "":
         return None
     if not isinstance(td, str):
@@ -64,7 +106,7 @@ def parse_timedelta(td: Optional[str | timedelta]) -> Optional[timedelta]:
         if param:
             time_params[name] = int(param) * (-1 if is_negative else 1)
 
-    return timedelta(**time_params)
+    return ReadableTimedelta(**time_params)
 
 
 def is_date_string(s):

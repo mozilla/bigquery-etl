@@ -1,0 +1,19 @@
+friendly_name: App-specific view for Glean ping "network-health"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox Focus for Android"
+  (org_mozilla_focus.network_health, org_mozilla_focus_beta.network_health, org_mozilla_focus_nightly.network_health).
+
+  It is used by Looker.
+owners: []
+labels:
+  sql_generator: glean_usage
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_focus.network_health
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta.network_health
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.network_health

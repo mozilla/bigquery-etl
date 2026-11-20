@@ -3,7 +3,7 @@ SELECT
   TO_HEX(userId) AS userId,
   scope,
   createdAt,
-  SAFE.TIMESTAMP_MILLIS(SAFE_CAST(authAt AS INT)) AS authAt,
+  SAFE.TIMESTAMP_SECONDS(SAFE_CAST(authAt AS INT)) AS authAt,
   amr,
   aal,
   SAFE_CAST(offline AS BOOL) AS offline,

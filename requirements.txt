@@ -286,9 +286,9 @@ botocore==1.39.2 \
     #   bigeye-sdk
     #   boto3
     #   s3transfer
-bracex==2.3.post1 \
-    --hash=sha256:351b7f20d56fb9ea91f9b9e9e7664db466eb234188c175fd943f8f755c807e73 \
-    --hash=sha256:e7b23fc8b2cd06d3dec0692baabecb249dda94e06a617901ff03a6c56fd71693
+bracex==3.2.4 \
+    --hash=sha256:82e9e738b63fca213c33211d30b0b1ca330896a1091736e78da2c1bcda93ab30 \
+    --hash=sha256:c1e67eb59f81445dee15b2c588b7c81352b697cfbd6c4931a2943ea6b71eb5ea
     # via wcmatch
 build==1.0.3 \
     --hash=sha256:538aab1b64f9828977f84bc63ae570b060a8ed1be419e7870b8b4fc5e6ea553b \
@@ -2940,9 +2940,9 @@ watchdog==2.2.1 \
     --hash=sha256:e618a4863726bc7a3c64f95c218437f3349fb9d909eb9ea3a1ed3b567417c661 \
     --hash=sha256:f8ac23ff2c2df4471a61af6490f847633024e5aa120567e08d07af5718c9d092
     # via mkdocs
-wcmatch==8.4.1 \
-    --hash=sha256:3476cd107aba7b25ba1d59406938a47dc7eec6cfd0ad09ff77193f21a964dee7 \
-    --hash=sha256:b1f042a899ea4c458b7321da1b5e3331e3e0ec781583434de1301946ceadb943
+wcmatch==11.2 \
+    --hash=sha256:1605bde546fbde4c063628c7d89eda486909fd4337e51d73a873987fbcb2554c \
+    --hash=sha256:952bab83c75c233836007a69550a3a8753cf06964c1eb3b84ff11ad5bff1c272
     # via mkdocs-awesome-pages-plugin
 wcwidth==0.9.4 \
     --hash=sha256:093469e01d881bff3db93ff3f56c364dc87c441ea01f9f41c22de0c0bdf5c6ef \

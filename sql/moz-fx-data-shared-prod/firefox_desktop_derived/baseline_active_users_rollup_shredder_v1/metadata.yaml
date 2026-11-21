@@ -1,0 +1,33 @@
+friendly_name: Baseline Active Users Rollup Shredder
+description: |-
+  Records the number of clients in firefox_desktop.baseline_active_users
+  (Glean baseline ping) over time to better understand the impact of
+  shredder over time. Glean desktop counterpart of
+  telemetry_derived.active_users_rollup_shredder_v1, which covers legacy
+  desktop (main ping) and mobile.
+  Note: the source table has a 775-day partition expiration, so the oldest
+  submission_dates drop out of later snapshots; that is retention, not
+  shredder.
+owners:
+- dberry@mozilla.com
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: dberry
+  owner2: kwindau
+scheduling:
+  dag_name: bqetl_shredder_impact_measurement
+  arguments: [
+    "--billing-project=moz-fx-data-backfill-4"
+  ]
+bigquery:
+  time_partitioning:
+    type: day
+    field: logical_dag_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - app_name
+require_column_descriptions: true

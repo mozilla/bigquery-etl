@@ -1,0 +1,12 @@
+friendly_name: Baseline Active Users Rollup Shredder
+description: |-
+  Weekly snapshots of Glean desktop client counts from
+  firefox_desktop.baseline_active_users, used to measure the impact of
+  shredder over time. See
+  firefox_desktop_derived.baseline_active_users_rollup_shredder_v1.
+owners:
+- dberry@mozilla.com
+- kwindau@mozilla.com
+labels:
+  owner1: dberry
+  owner2: kwindau

@@ -177,11 +177,11 @@ class SqlTest(pytest.Item, pytest.File):
                     row, sort_keys=True, default=default_encoding
                 )
             )
-            # make sure we encode dates correctly
+            # make sure we encode dates correctly and omit the same things as the result
             expect = json.loads(
                 json.dumps(
                     sorted(
-                        expect,
+                        coerce_result(*expect),
                         key=lambda row: json.dumps(
                             row, sort_keys=True, default=default_encoding
                         ),

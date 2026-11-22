@@ -88,7 +88,7 @@ Tests for ETLs/views created by SQL generators are skipped unless that SQL has b
 6. Add the expected result data as a list of dictionaries under `expect:` in the YAML file.
    - `DATE`, `DATETIME`, and `TIMESTAMP` fields in the result are coerced to strings using `.isoformat()`.
    - Columns named `created_at` or `generated_time` are removed from the result before comparing to `expect` because they aren't expected to be static.
-   - Fields with null values should be omitted from the expected result data (so be careful with spreading previous rows like `<<: *base` in that regard).
+   - Fields with null values or empty arrays are ignored in both the result and the expected data, so they can be omitted.
 7. Optionally add schema files for source table/view schemas in the `tests` directory.
    - The schema file names should start with the fully qualified ID of the source table/view, and end with a `.schema.yaml` extension.
      - e.g. `sql/moz-fx-data-shared-prod/customer_experience_derived/zendesk_retrieval_index_v1/tests/moz-fx-data-shared-prod.zendesk_syndicate.ticket.schema.yaml`

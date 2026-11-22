@@ -161,7 +161,7 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
     Coerce bigquery.Row to dict using comprehensions.
     Coerce bytes to base64 encoded strings.
     Omit dict keys named "created_at" or "generated_time".
-    Omit columns with null results to simplify `expect` files.
+    Omit columns with null or empty array results to simplify `expect` files.
     """
     for element in elements:
         if isinstance(element, (dict, bigquery.Row)):
@@ -173,7 +173,9 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
                 )
                 for key, value in element.items()
                 # drop generated_time column
-                if key not in ("created_at", "generated_time") and value is not None
+                if key not in ("created_at", "generated_time")
+                and value is not None
+                and value != []
             }
         elif isinstance(element, (date, datetime)):
             yield element.isoformat()

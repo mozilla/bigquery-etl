@@ -1149,12 +1149,14 @@ class TestMetadata:
             shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/"
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/"
             ]
-            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            runner.invoke(
+                update, name, "--sql_dir=" + str(tmpdirname) + "/data/test_sql"
+            )
             with open(
                 tmpdirname
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
@@ -1170,19 +1172,21 @@ class TestMetadata:
             shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
             ]
-            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            runner.invoke(
+                update, name, "--sql_dir=" + str(tmpdirname) + "/data/test_sql"
+            )
             with open(
                 tmpdirname
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
 
             with open(
                 tmpdirname
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/dataset_metadata.yaml",
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/dataset_metadata.yaml",
                 "r",
             ) as stream:
                 dataset_metadata = yaml.safe_load(stream)
@@ -1224,12 +1228,16 @@ class TestMetadata:
             shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = (
                 str(tmpdirname)
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
             )
 
             runner.invoke(
                 publish,
-                [name, "--parallelism=0", "--sql_dir=" + str(tmpdirname) + "/sql"],
+                [
+                    name,
+                    "--parallelism=0",
+                    "--sql_dir=" + str(tmpdirname) + "/data/test_sql",
+                ],
                 catch_exceptions=False,
             )
 
@@ -1276,16 +1284,20 @@ class TestMetadata:
             shutil.copytree(str(TEST_DIR), str(tmpdirname), dirs_exist_ok=True)
             name = [
                 str(tmpdirname)
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v2/"
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v2/"
             ]
-            runner.invoke(publish, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            runner.invoke(
+                publish, name, "--sql_dir=" + str(tmpdirname) + "/data/test_sql"
+            )
 
         assert mock_bigquery_client().update_table.call_count == 0
 
     @patch("bigquery_etl.cli.metadata._publish_metadata")
     def test_metadata_publish_skip_ingestion_true(self, mock_publish, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            shutil.copytree(str(TEST_DIR / "sql"), f"{tmpdirname}", dirs_exist_ok=True)
+            shutil.copytree(
+                str(TEST_DIR / "data" / "test_sql"), f"{tmpdirname}", dirs_exist_ok=True
+            )
 
             def invoke_command(project_id, table_id):
                 runner.invoke(
@@ -1329,7 +1341,9 @@ class TestMetadata:
     @patch("bigquery_etl.cli.metadata._publish_metadata")
     def test_metadata_publish_skip_ingestion_false(self, mock_publish, runner):
         with tempfile.TemporaryDirectory() as tmpdirname:
-            shutil.copytree(str(TEST_DIR / "sql"), f"{tmpdirname}", dirs_exist_ok=True)
+            shutil.copytree(
+                str(TEST_DIR / "data" / "test_sql"), f"{tmpdirname}", dirs_exist_ok=True
+            )
 
             def invoke_command(project_id, table_id):
                 runner.invoke(
@@ -1372,7 +1386,9 @@ class TestMetadata:
         )
 
         with tempfile.TemporaryDirectory() as tmpdirname:
-            shutil.copytree(str(TEST_DIR / "sql"), tmpdirname, dirs_exist_ok=True)
+            shutil.copytree(
+                str(TEST_DIR / "data" / "test_sql"), tmpdirname, dirs_exist_ok=True
+            )
             runner.invoke(
                 publish,
                 [
@@ -1406,11 +1422,14 @@ class TestMetadata:
             )
             result = runner.invoke(
                 deprecate,
-                [qualified_table_name, "--sql_dir=" + str(tmpdirname) + "/sql"],
+                [
+                    qualified_table_name,
+                    "--sql_dir=" + str(tmpdirname) + "/data/test_sql",
+                ],
             )
             with open(
                 tmpdirname
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
@@ -1433,12 +1452,12 @@ class TestMetadata:
                 [
                     qualified_table_name,
                     "--deletion_date=2024-03-02",
-                    "--sql_dir=" + str(tmpdirname) + "/sql",
+                    "--sql_dir=" + str(tmpdirname) + "/data/test_sql",
                 ],
             )
             with open(
                 tmpdirname
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
@@ -1459,12 +1478,12 @@ class TestMetadata:
                 [
                     qualified_table_name,
                     "--deletion_date=2024-02",
-                    "--sql_dir=" + str(tmpdirname) + "/sql",
+                    "--sql_dir=" + str(tmpdirname) + "/data/test_sql",
                 ],
             )
             with open(
                 tmpdirname
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
+                + "/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/metadata.yaml",
                 "r",
             ) as stream:
                 metadata = yaml.safe_load(stream)
@@ -1484,7 +1503,7 @@ class TestMetadata:
                 [
                     qualified_table_name,
                     "--deletion_date=2024-03-02",
-                    "--sql_dir=" + str(tmpdirname) + "/sql",
+                    "--sql_dir=" + str(tmpdirname) + "/data/test_sql",
                 ],
             )
 

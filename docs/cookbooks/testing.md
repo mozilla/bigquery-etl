@@ -94,8 +94,8 @@ Tests for ETLs/views created by SQL generators are skipped unless that SQL has b
      - e.g. `sql/moz-fx-data-shared-prod/customer_experience_derived/zendesk_retrieval_index_v1/tests/moz-fx-data-shared-prod.zendesk_syndicate.ticket.schema.yaml`
    - Such table/view schemas apply to all tests for the ETL/view.
    - Setting the description of a top-level field to `time_partitioning_field` will cause the table to use it for time partitioning.
-   - If a source table/view has no schema file in the `tests` directory then `bqetl` will automatically try to retrieve the schema from the generated stable table schemas or ETL/view `schema.yaml` files that exist (if any), and if no schema could be retrieved BigQuery falls back to inferring the schema from the source data.
-     - For stable tables and ETLs/views with `schema.yaml` files it's strongly recommended to rely on the automatic schema retrieval, since that helps keep the test accurate as schemas change over time.
+   - If a source table/view has no schema file in the `tests` directory then `bqetl` will automatically try to retrieve the schema from the generated live/stable table schemas or ETL/view `schema.yaml` files that exist (if any), and if no schema could be retrieved BigQuery falls back to inferring the schema from the source data.
+     - For live/stable tables and ETLs/views with `schema.yaml` files it's strongly recommended to rely on the automatic schema retrieval, since that helps keep the test accurate as schemas change over time.
 
 Example `test_*.yaml` file:
 ```yaml

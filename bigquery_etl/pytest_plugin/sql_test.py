@@ -6,6 +6,7 @@
 import codecs
 import json
 import pprint
+import re
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime
@@ -41,18 +42,28 @@ def get_source_schema(
     full_name: str, tests_dir: Path, sql_dir: Path
 ) -> Optional[List[bigquery.SchemaField]]:
     """Get the schema for a test source table/view, if one can be found."""
+    if "." not in full_name:
+        return None
+    name_parts = full_name.split(".")
+
     for schema_file in (
         tests_dir / f"{full_name}.schema.yaml",
-        sql_dir.joinpath(*full_name.split(".")) / SCHEMA_FILE,
+        sql_dir.joinpath(*name_parts) / SCHEMA_FILE,
     ):
         if schema_file.exists():
             return Schema.from_schema_file(schema_file).to_bigquery_schema()
-    if "_stable." in full_name:
+
+    dataset_name, table_name = name_parts[-2:]
+    if match := re.fullmatch(r"(?P<dataset_family>.+)_(?:live|stable)", dataset_name):
         for stable_table_schema in get_stable_table_schemas():
-            if full_name.endswith("." + stable_table_schema.stable_table):
+            if (
+                stable_table_schema.bq_dataset_family == match["dataset_family"]
+                and stable_table_schema.bq_table == table_name
+            ):
                 return Schema(
                     {"fields": stable_table_schema.schema}
                 ).to_bigquery_schema()
+
     return None
 
 

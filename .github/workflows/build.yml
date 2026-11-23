@@ -171,6 +171,12 @@ jobs:
           PATH=".venv/bin:$PATH" pip-compile --allow-unsafe --generate-hashes --quiet
           git diff --exit-code -G '^ *[^# ]' -- requirements.txt
 
+  validate-tests:
+    name: Validate Tests
+    permissions:
+      contents: read
+    uses: ./.github/workflows/validate-tests.yml
+
   verify-format-yaml:
     name: Verify YAML Format
     needs: [build]

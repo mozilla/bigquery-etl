@@ -21,6 +21,7 @@ SELECT
       JSON_VALUE(event_extra.branch) AS `branch`,
       JSON_VALUE(event_extra.browser_family) AS `browser_family`,
       JSON_VALUE(event_extra.browser_major) AS `browser_major`,
+      JSON_VALUE(event_extra.cause) AS `cause`,
       JSON_VALUE(event_extra.cg) AS `cg`,
       JSON_VALUE(event_extra.choice) AS `choice`,
       JSON_VALUE(event_extra.error_reason) AS `error_reason`,

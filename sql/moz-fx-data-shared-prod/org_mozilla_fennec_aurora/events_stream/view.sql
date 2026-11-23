@@ -162,6 +162,7 @@ SELECT
         event_extra.duration_since_last_visible_seconds
       ) AS `duration_since_last_visible_seconds`,
       LAX_INT64(event_extra.edited) AS `edited`,
+      LAX_INT64(event_extra.enabled_count) AS `enabled_count`,
       LAX_INT64(event_extra.error_code) AS `error_code`,
       LAX_INT64(event_extra.event_number) AS `event_number`,
       LAX_INT64(event_extra.extracted_code_units) AS `extracted_code_units`,
@@ -366,7 +367,6 @@ SELECT
       JSON_VALUE(event_extra.cross_origin) AS `cross_origin`,
       JSON_VALUE(event_extra.data_migrated) AS `data_migrated`,
       JSON_VALUE(event_extra.date) AS `date`,
-      JSON_VALUE(event_extra.deal_id) AS `deal_id`,
       JSON_VALUE(event_extra.death_description) AS `death_description`,
       JSON_VALUE(event_extra.decoder_name) AS `decoder_name`,
       JSON_VALUE(event_extra.deferral_reason) AS `deferral_reason`,

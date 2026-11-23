@@ -742,6 +742,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Browser major version (e.g., '130', '127', '17', or 'other')
+    - name: cause
+      type: STRING
+      mode: NULLABLE
+      description: 'Which side the pairing was lost on: ''peer_closed'' when the other
+        device or the channel server ended the channel, ''connection_lost'' when this
+        device''s connection dropped and could not be resumed, or ''error'' for anything
+        else. Empty when the pairing did not fail.'
     - name: cg
       type: STRING
       mode: NULLABLE

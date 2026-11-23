@@ -891,7 +891,12 @@ fields:
     - name: is_final_write
       type: BOOLEAN
       mode: NULLABLE
-      description: Whether this was the final write at shutdown
+      description: 'Depending on the type of event:
+
+        * Whether this was the final write at shutdown, to sessionstore.jsonlz4, rather
+        than a write to recovery.jsonlz4
+
+        * Whether this was the final write at shutdown'
     - name: is_first_run
       type: BOOLEAN
       mode: NULLABLE
@@ -1605,6 +1610,16 @@ fields:
       mode: NULLABLE
       description: Weekday the monitor checks on, 0 for Sunday through 6 for Saturday.
         Only present for weekly schedules.
+    - name: closed_windows
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Number of closed windows in the written session, which can be reopened from
+        Recently Closed Windows
+
+        * Number of closed windows in the session that was loaded, as read from the
+        file. Unset if no session could be loaded.'
     - name: columnnumber
       type: INTEGER
       mode: NULLABLE
@@ -1802,10 +1817,10 @@ fields:
 
         * Duration of the restore in milliseconds, measured with a monotonic clock.
 
+        * How long the mini window was open, in milliseconds.
+
         * Duration of the call as seen by the caller, measured in LoginManager around
         the delegation to the active backend.
-
-        * How long the mini window was open, in milliseconds.
 
         * How long the panel was open, in milliseconds, measured from the moment it
         was shown.'
@@ -2707,6 +2722,22 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: Number of tabs preselected
+    - name: prev_size_bytes
+      type: INTEGER
+      mode: NULLABLE
+      description: Size in bytes of the session file written by the previous successful
+        write in this session. Unset if this is the first write since the session
+        file was read.
+    - name: prev_tabs
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of tabs in the previous successful write in this session.
+        Unset if this is the first write since the session file was read.
+    - name: prev_windows
+      type: INTEGER
+      mode: NULLABLE
+      description: Number of open windows in the previous successful write in this
+        session. Unset if this is the first write since the session file was read.
     - name: previous
       type: INTEGER
       mode: NULLABLE
@@ -2917,6 +2948,10 @@ fields:
         to reduce fingerprintability.
 
         * The size of the model in mb'
+    - name: size_bytes
+      type: INTEGER
+      mode: NULLABLE
+      description: Size of the written session file, in bytes
     - name: snippet_chars_returned
       type: INTEGER
       mode: NULLABLE
@@ -3026,7 +3061,10 @@ fields:
 
         * Number of open tabs included as context.
 
-        * The number of tabs added to the tab group'
+        * The number of tabs added to the tab group
+
+        * Number of tabs in the open windows of the session that was loaded, as read
+        from the file. Unset if no session could be loaded.'
     - name: tabs_added
       type: INTEGER
       mode: NULLABLE
@@ -3480,6 +3518,16 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The outer width of the browser window, in CSS pixels.
+    - name: windows
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Depending on the type of event:
+
+        * Number of open windows in the written session. A window can be written with
+        no tabs.
+
+        * Number of open windows in the session that was loaded, as read from the
+        file. A window can be saved with no tabs. Unset if no session could be loaded.'
     - name: windows_offered
       type: INTEGER
       mode: NULLABLE
@@ -3695,9 +3743,9 @@ fields:
 
         * For addon_study, the ID of the addon that ended.
 
-        * For addon_study recipes, the ID of the addon that was installed.
-
         * The ID of the addon for the rollout when reason=conflict.
+
+        * For addon_study recipes, the ID of the addon that was installed.
 
         * The id of the addon
 
@@ -3890,9 +3938,9 @@ fields:
 
         * The branch of the experiment that this client was on.
 
-        * The slug of the branch that was chosen for this client.
-
         * The branch that failed to enroll.
+
+        * The slug of the branch that was chosen for this client.
 
         * The branch slug/identifier that was randomly chosen (if the client is enrolled)
 
@@ -4257,14 +4305,33 @@ fields:
     - name: component_type
       type: STRING
       mode: NULLABLE
-      description: The component name recorded for creation, for example "Header"
-        or "List_column". "unknown" when the click is outside those blocks.
+      description: 'Depending on the type of event:
+
+        * The component name recorded for creation, for example "Header" or "List_column".
+        "unknown" when the click is outside those blocks.
+
+        * The component name that recorded the click.'
+    - name: components_converted
+      type: STRING
+      mode: NULLABLE
+      description: JSON-encoded array of the body blocks that render as a different
+        component from the one the model sent, in render order, each formatted as
+        sent>rendered with the names used in components_used, for example "Highlights>TextBlock".
+        A block that is dropped is sent>none. An empty array when no block is converted,
+        and on failure.
     - name: components_used
       type: STRING
       mode: NULLABLE
-      description: JSON-encoded array of the component types in the generated page,
-        in the order they are used, each formatted as component_layout (or just component
+      description: 'Depending on the type of event:
+
+        * JSON-encoded array of the component types in the generated page, in the
+        order they are used, each formatted as component_layout (or just component
         when it has no layout). An empty array on failure.
+
+        * JSON-encoded array of the component types in the generated page, in the
+        order they are used, each formatted as component_layout (or just component
+        when it has no layout). These are the types that the model sent. An empty
+        array on failure.'
     - name: computed
       type: STRING
       mode: NULLABLE
@@ -4546,7 +4613,10 @@ fields:
         store is turned off again. A profile can do both, so this is what keeps the
         two apart.
 
-        * Direction of the m-section. recvonly, sendonly, sendrecv or inactive.'
+        * Direction of the m-section. recvonly, sendonly, sendrecv or inactive.
+
+        * "decrypt" or "encrypt", the step of the operation that failed; "unknown"
+        for a cancelled prompt recorded against an error that names neither.'
     - name: directive
       type: STRING
       mode: NULLABLE
@@ -4730,12 +4800,13 @@ fields:
         * Where the user started from, one of: "tab_context_menu", "content_context_menu"
         or "toolbar_button".
 
+        * Where the user started from, one of: "tab_context_menu", "content_context_menu",
+        "toolbar_button" or "link_context_menu".
+
         * Which code path triggered the restore attempt: - "set_window_state": SessionRestore.setWindowState()
         - "set_browser_state": SessionRestore.setBrowserState() - "automatic_startup":
         automatic session restore on startup - "automatic_with_taskbar_tab": automatic
-        session restore after the user opened the first normal window after having
-        only taskbar tabs open - "deferred_initial_state": deferred restore when opening
-        the first normal window after ...'
+        session restore after the user opened the first normal window ...'
     - name: entrypoint
       type: STRING
       mode: NULLABLE
@@ -4771,6 +4842,11 @@ fields:
 
         * error class
 
+        * Canonical error code, or absent on success: no_content, canceled, page_load_failed,
+        page_not_found, page_not_editable, conversation_unavailable, pages_unreadable,
+        nothing_to_change, history_limit, empty_response, invalid_json, content_related,
+        invalid_format, or generation_failed
+
         * Error code if Undo was not successful
 
         * Error code if it''s not a successful response
@@ -4785,15 +4861,7 @@ fields:
 
         * Canonical error code, or absent on success: no_content, canceled, page_load_failed,
         page_not_found, conversation_unavailable, pages_unreadable, nothing_to_change,
-        history_limit, empty_response, invalid_json, content_related, invalid_format,
-        or generation_failed
-
-        * Error code if the action was unsuccessful.
-
-        * Error code if the action was unsuccessful. auto_cancel when a pending confirmation
-        was followed by a new user prompt.
-
-        * If the event value is "decryptionError" or "encryptionError", this con...'
+        history_limit, empty_response, invalid_json, content_...'
     - name: error_code
       type: STRING
       mode: NULLABLE
@@ -4824,8 +4892,18 @@ fields:
     - name: error_kind
       type: STRING
       mode: NULLABLE
-      description: Name of the error that aborted initialization, or empty when it
-        completed.
+      description: 'Depending on the type of event:
+
+        * Name of the error that aborted initialization, or empty when it completed.
+
+        * "canceled" when the primary password prompt was cancelled or declined; "nss_auth"
+        when NSS was not initialized or failed to authenticate; "missing_key" when
+        NSS could not hand out the key, or the primary password prompt failed for
+        a reason other than a cancel (a key that is simply absent is not reported:
+        a new one is created, and the logins of the old one then show up as "undecryptable");
+        "invalid_key" when the key is not a usable key; "undecryptable" when the key
+        was available but a login did not decrypt with it; "encryption_failed" when
+        the key was available but a login did not encrypt with it.'
     - name: error_message
       type: STRING
       mode: NULLABLE
@@ -6198,7 +6276,10 @@ fields:
         all stored cards were being read.
 
         * The operation being performed when the incompatible format was found (e.g.
-        addLogin, modifyLogin, removeLogin).'
+        addLogin, modifyLogin, removeLogin).
+
+        * The store operation that failed: "list", "search", "add", "modify", "record_password_use",
+        "breach_dismissals" or "vulnerable_passwords".'
     - name: option
       type: STRING
       mode: NULLABLE
@@ -6229,10 +6310,10 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * The original domain (eTLD+1) of the request that matched a search endpoint.
-
         * Which file the session was loaded from, one of "clean", "recovery", "recoveryBackup",
-        "cleanBackup" or "upgradeBackup", or "empty" if no session could be loaded'
+        "cleanBackup" or "upgradeBackup", or "empty" if no session could be loaded
+
+        * The original domain (eTLD+1) of the request that matched a search endpoint.'
     - name: origin_error
       type: STRING
       mode: NULLABLE
@@ -6739,6 +6820,8 @@ fields:
 
         * The reason for the unenrollment
 
+        * A code describing the reason the unenroll failed.
+
         * Why the run happened: manual (the user asked, which includes the automatic
         first check the chat card triggers right after creation), trigger_time (the
         schedule fired less than five minutes after the scheduled time) or delayed
@@ -6750,8 +6833,6 @@ fields:
         * The reason the client is in the noted status
 
         * Reason the original prompt was shown
-
-        * A code describing the reason the unenroll failed.
 
         * The reason for the enrollment failure
 
@@ -6877,8 +6958,10 @@ fields:
 
         * Optionally, the name of the error that occurred.
 
-        * The outcome of the attempt to pin, values include: - `success_pinned`: The
-        pin request was affirmed by the user. - `success_r...'
+        * "switch" when an existing tab was focused, "new" when a tab was opened,
+        "error" when that attempt failed.
+
+        * The outcome of th...'
     - name: results
       type: STRING
       mode: NULLABLE
@@ -6933,6 +7016,13 @@ fields:
         * Unique identifier for the migration run
 
         * Unique identifier for the restore run'
+    - name: run_state
+      type: STRING
+      mode: NULLABLE
+      description: Where the browser was in its lifecycle at the time of the write,
+        one of "stopped" (before the first window finished loading), "running", "quitting"
+        (shutdown has been granted but Session Restore has not yet shut down) or "closing"
+        (the final write)
     - name: runtime_id
       type: STRING
       mode: NULLABLE
@@ -7753,6 +7843,9 @@ fields:
         * "full_tab" for a whole popped-out tab, or "fragment" for one framing a region
         of the page.
 
+        * "full_tab" for a whole popped-out tab, "fragment" for one framing a region
+        of the page, or "url" for one opened from a link.
+
         * chat or browsing
 
         * the type for the proxy configuration source. e.g. api or string version
@@ -7843,10 +7936,10 @@ fields:
         * identifier of pane shown.
 
         * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
-        parameter. The `value` is `leave` if the user chose to leave the page, and
-        `cancel` if the user chose to stay on the page.
+        parameter (i.e., the experiment slug).
 
-        * The `value` of th...'
+        * The `value` of the event. Mirrors to the Legacy Telemetry event''s `value`
+        parameter. The `value` is `...'
     - name: variant_shown
       type: STRING
       mode: NULLABLE

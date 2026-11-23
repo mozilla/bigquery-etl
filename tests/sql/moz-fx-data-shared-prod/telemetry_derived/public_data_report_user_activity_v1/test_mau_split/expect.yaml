@@ -1,0 +1,52 @@
+---
+# mau is the five apps' sum; mau_mobile is mau minus mau_desktop.
+- submission_date: 2026-11-02
+  country_name: Country A
+  mau: 90
+  avg_hours_usage_daily: 2.0
+  intensity: 1.0
+  new_profile_rate: 0.0
+  latest_version_ratio: 1.0
+  top_addons:
+  - addon_name: Addon A
+    ratio: 1.0
+  has_addon_ratio: 1.0
+  top_locales:
+  - locale: en-US
+    ratio: 1.0
+  mau_desktop: 70
+  mau_mobile: 20
+# No Desktop row, so mau_desktop is 0 and mau_mobile is all of mau.
+- submission_date: 2026-11-02
+  country_name: Country B
+  mau: 6
+  avg_hours_usage_daily: 2.0
+  intensity: 1.0
+  new_profile_rate: 0.0
+  latest_version_ratio: 1.0
+  top_addons:
+  - addon_name: Addon A
+    ratio: 1.0
+  has_addon_ratio: 1.0
+  top_locales:
+  - locale: en-US
+    ratio: 1.0
+  mau_desktop: 0
+  mau_mobile: 6
+# Both countries added together.
+- submission_date: 2026-11-02
+  country_name: Worldwide
+  mau: 96
+  avg_hours_usage_daily: 2.0
+  intensity: 1.0
+  new_profile_rate: 0.0
+  latest_version_ratio: 1.0
+  top_addons:
+  - addon_name: Addon A
+    ratio: 1.0
+  has_addon_ratio: 1.0
+  top_locales:
+  - locale: en-US
+    ratio: 1.0
+  mau_desktop: 70
+  mau_mobile: 26

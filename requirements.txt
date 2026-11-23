@@ -2765,9 +2765,9 @@ typer==0.19.2 \
     --hash=sha256:755e7e19670ffad8283db353267cb81ef252f595aa6834a0d1ca9312d9326cb9 \
     --hash=sha256:9ad824308ded0ad06cc716434705f691d4ee0bfd0fb081839d2e426860e7fdca
     # via bigeye-sdk
-types-python-dateutil==2.9.0.20251008 \
-    --hash=sha256:b9a5232c8921cf7661b29c163ccc56055c418ab2c6eabe8f917cbcc73a4c4157 \
-    --hash=sha256:c3826289c170c93ebd8360c3485311187df740166dbab9dd3b792e69f2bc1f9c
+types-python-dateutil==2.9.0.20261116 \
+    --hash=sha256:4213748a3f699431a83edf71969de9caa79d0846a5e8785c8a49072ff1968613 \
+    --hash=sha256:62e7c65849170a4847539573153d34f4007777dd62651ec8849ec8f08e8922a2
     # via -r requirements.in
 types-pytz==2025.2.0.20251108 \
     --hash=sha256:0f1c9792cab4eb0e46c52f8845c8f77cf1e313cb3d68bf826aa867fe4717d91c \
@@ -2779,9 +2779,9 @@ types-pyyaml==6.0.12.20250915 \
     # via
     #   -r requirements.in
     #   bigeye-sdk
-types-requests==2.32.4.20260107 \
-    --hash=sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f \
-    --hash=sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d
+types-requests==2.33.0.20261030 \
+    --hash=sha256:06cfc2e92399bf46eda78a65cd0e2203d29ebbeede78b4ab0a5922f749ce1492 \
+    --hash=sha256:42d75eb02ed0f8220904c8fc08d3129742e7fce42fd5cf706395c8bb4c0ad990
     # via -r requirements.in
 types-ujson==5.10.0.20250822 \
     --hash=sha256:0a795558e1f78532373cf3f03f35b1f08bc60d52d924187b97995ee3597ba006 \

@@ -1,0 +1,22 @@
+fields:
+- name: build
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: build
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: TIMESTAMP
+      mode: NULLABLE
+  - name: target
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: channel
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE

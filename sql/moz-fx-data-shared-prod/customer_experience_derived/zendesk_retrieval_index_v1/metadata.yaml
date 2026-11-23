@@ -21,6 +21,8 @@ description: |-
   Metadata
   - Additional data to support technical processes, such as backfills or investigations.
   - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+
+  Gold-level table: change-controlled, monitored in Bigeye, unit-tested and fully documented.
 owners:
 - lvargas@mozilla.com
 - mozilla/customer_experience
@@ -36,7 +38,7 @@ bigquery:
   time_partitioning:
     type: day
     field: 'creation_date'
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
   clustering:
     fields:

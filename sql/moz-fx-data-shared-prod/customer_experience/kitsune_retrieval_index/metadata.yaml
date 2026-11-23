@@ -25,9 +25,9 @@ description: |-
   - The prompt version is a self-managed version for changes in the prompt given to the LLM.
 
   Usage
-  - The underlying table requires a partition filter. Always include
-    `WHERE creation_date >= ...` (or an equivalent range) when querying
-    this view, otherwise BigQuery will reject the query.
+  - Filter on `creation_date` to limit the scan. The underlying table does not require a partition filter; without one, queries scan the full table.
+  - Rows with failed embeddings are included. Filter `WHERE metadata.embedding_succeeded` for vector search,
+    or `WHERE NOT IFNULL(metadata.embedding_succeeded, FALSE)` to list the failures.
 
   Monitoring
   - A Bigeye metric `has_no_unclassified_value` alerts when the `product` contains

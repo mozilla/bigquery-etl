@@ -65,6 +65,7 @@ active_users_aggregates AS (
   SELECT
     DATE_TRUNC(submission_date, WEEK(MONDAY)) AS week_start,
     COALESCE(cn.name, country_group) AS country_name,
+    app_name,
     mau,
     wau,
   FROM
@@ -138,6 +139,7 @@ aggregate_mau AS (
     week_start,
     country_name,
     SUM(mau) AS mau,
+    SUM(IF(app_name = 'Firefox Desktop', mau, 0)) AS mau_desktop,
   FROM
     active_users_aggregates
   GROUP BY
@@ -413,7 +415,9 @@ SELECT
   latest_version_ratio.latest_version_ratio,
   top_addons.top_addons,
   has_addon.has_addon_ratio,
-  top_locales.top_locales
+  top_locales.top_locales,
+  aggregate_mau.mau_desktop,
+  aggregate_mau.mau - aggregate_mau.mau_desktop AS mau_mobile
 FROM
   aggregate_mau
 JOIN

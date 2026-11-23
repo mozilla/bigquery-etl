@@ -1519,9 +1519,27 @@ def main():
                 sql_dir="sql/",
                 credentials=None,
                 id_token=None,
+                add_managed_label=False,
             )
             mock_get_id_token.assert_called_once()
             mock_get_credentials.assert_called_once()
+
+    @patch("bigquery_etl.cli.query.get_credentials", return_value=None)
+    @patch("bigquery_etl.cli.query.get_id_token", return_value=None)
+    @patch("bigquery_etl.cli.query.deploy_table", return_value=None)
+    def test_deploy_add_managed_label(self, mock_deploy_table, _token, _creds, runner):
+        with runner.isolated_filesystem():
+            path = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1"
+            os.makedirs(path)
+            with open(f"{path}/query.sql", "w") as f:
+                f.write("SELECT 1")
+
+            result = runner.invoke(
+                deploy, ["telemetry_derived.query_v1", "--add-managed-label"]
+            )
+
+            assert result.exit_code == 0, result.output
+            assert mock_deploy_table.call_args.kwargs["add_managed_label"] is True
 
     @patch("bigquery_etl.cli.query.get_credentials")
     @patch("bigquery_etl.cli.query.get_id_token")
@@ -1575,6 +1593,7 @@ def main():
                 sql_dir="sql/",
                 credentials=None,
                 id_token=None,
+                add_managed_label=False,
             )
             mock_get_id_token.assert_called_once()
             mock_get_credentials.assert_called_once()
@@ -1637,6 +1656,7 @@ def main():
                 sql_dir="sql/",
                 credentials=None,
                 id_token=None,
+                add_managed_label=False,
             )
             mock_get_id_token.assert_called_once()
             mock_get_credentials.assert_called_once()

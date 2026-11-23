@@ -1,0 +1,34 @@
+---
+# One client per country on the week's Sunday, seen that day, so each country has a row in
+# every CTE the final SELECT joins. Firefox 140 is below 156, so the add-ons come from
+# active_addons.
+- submission_date: 2026-11-08
+  sample_id: 1
+  client_id: client-a
+  country: AA
+  days_since_seen: 0
+  subsession_hours_sum: 2.0
+  days_seen_bits: 1
+  days_created_profile_bits: 0
+  app_version: '140.0'
+  locale: en-US
+  active_addons:
+  - addon_id: addon-a
+    name: Addon A
+    is_system: false
+    foreign_install: false
+- submission_date: 2026-11-08
+  sample_id: 1
+  client_id: client-b
+  country: BB
+  days_since_seen: 0
+  subsession_hours_sum: 2.0
+  days_seen_bits: 1
+  days_created_profile_bits: 0
+  app_version: '140.0'
+  locale: en-US
+  active_addons:
+  - addon_id: addon-a
+    name: Addon A
+    is_system: false
+    foreign_install: false

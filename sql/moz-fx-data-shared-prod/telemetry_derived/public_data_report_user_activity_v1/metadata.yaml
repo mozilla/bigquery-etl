@@ -1,6 +1,9 @@
 friendly_name: |-
   Firefox Public Data Report User Activity
 description: |-
+  DO NOT BACKFILL. Past weeks hold the figures data.firefox.com published; a backfill
+  replaces them with figures recomputed from today's sources, which shredder has since changed.
+
   Data used to populate https://data.firefox.com/dashboard/user-activity.
   A row for every country in static.country_names_v1 is created, including duplicates if
   a country code has multiple associated names.
@@ -14,10 +17,15 @@ description: |-
   Code to parse and format this data as well as the country allowlist is in the
   [firefox-public-data-report-etl repository](https://github.com/mozilla/firefox-public-data-report-etl/tree/main/public_data_report/user_activity).
 owners:
-- bewu@mozilla.com
+- kbammarito@mozilla.com
+- akommasani@mozilla.com
+labels:
+  table_type: aggregate
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
+    # the user activity export reads every week, with no date filter
     require_partition_filter: false
     expiration_days: null
+require_column_descriptions: true

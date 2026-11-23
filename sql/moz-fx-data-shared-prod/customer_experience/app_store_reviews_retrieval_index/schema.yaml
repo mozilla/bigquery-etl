@@ -31,3 +31,4 @@ fields: !flatten-lists
   - id
   - title
   - body
+  - metadata

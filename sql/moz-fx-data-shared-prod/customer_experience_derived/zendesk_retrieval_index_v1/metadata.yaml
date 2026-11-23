@@ -10,7 +10,8 @@ description: "AI-enriched retrieval table derived from Zendesk customer support 
   \ 30-day exponential decay,\n  1.0 today, ~0.37 after 30 days. Always reflects freshness\
   \ at query time.\n\nMetadata\n- Additional data to support technical processes,\
   \ such as backfills or investigations.\n- The prompt version is a self-managed version\
-  \ for changes in the prompt given to the LLM."
+  \ for changes in the prompt given to the LLM.\n\nGold-level table: change-controlled,\
+  \ monitored in Bigeye, unit-tested and fully documented."
 owners:
 - lvargas@mozilla.com
 - mozilla/customer_experience
@@ -26,7 +27,7 @@ bigquery:
   time_partitioning:
     type: day
     field: creation_date
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
   clustering:
     fields:

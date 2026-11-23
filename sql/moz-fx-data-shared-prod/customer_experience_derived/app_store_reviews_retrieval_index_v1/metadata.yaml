@@ -21,10 +21,13 @@ description: |-
   Metadata
   - Additional data to support technical processes, such as backfills or investigations.
   - The prompt version is a self-managed version for changes in the prompt given to the LLM.
+
+  Gold-level table: change-controlled, monitored in Bigeye, unit-tested and fully documented.
 owners:
 - lvargas@mozilla.com
 - mozilla/customer_experience
 labels:
+  level: gold
   incremental: true
   change_controlled: true
   dag: bqetl_customer_experience
@@ -47,4 +50,6 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review
+monitoring:
+  enabled: true
 require_column_descriptions: true

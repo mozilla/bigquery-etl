@@ -1,16 +1,24 @@
 {% set llm_model = 'gemini-3.8-flash' %}
 {% set embedding_model = 'gemini-embedding-001' %}
 {% set sentiment_bound = 1 %}
-{%- set question_prompt =
-  'You are analyzing a Mozilla Support forum question. ' ~
-  'Extract the following fields and return them as structured data. ' ~
-  'question_summary_llm: maximum 8 words, clear, factual, in English. ' ~
-  'question_category_llm: exactly 1 reusable classification label, preferably 1 word, maximum 2 words. ' ~
-  'question_language_llm: BCP 47 language tag of the question text, including region, e.g. en-US. ' ~
-  'question_entities_llm: array of up to 3 important normalized entities (e.g. product names, features, error codes), short, deduplicated. ' ~
-  'question_topics_llm: array of up to 3 normalized topics, preferably 1 word, maximum 2 words each, reusable across similar texts, suitable as classification labels. ' ~
-  'question_sentiment_score: float from -' ~ sentiment_bound ~ ' to ' ~ sentiment_bound ~ ' where -' ~ sentiment_bound ~ ' is very negative, 0 is neutral, ' ~ sentiment_bound ~ ' is very positive. '
--%}
+{#- Block assignment: one instruction per line. Rendered into a triple-quoted SQL string,
+    which allows embedded newlines. Instructions go after the question text, following
+    https://aistudio.google.com/docs/prompting-strategies: "supply all the context first.
+    Place your specific instructions or questions at the very end of the prompt."
+    format:off avoids reformatting this text as SQL.
+    Avoid using backslashes and triple quotes in this prompt so it renders correctly. -#}
+-- format:off
+{% set question_prompt -%}
+You are analyzing a Mozilla Support forum question.
+Extract the following fields and return them as structured data.
+question_summary_llm: maximum 8 words, clear, factual, in English.
+question_category_llm: exactly 1 reusable classification label, preferably 1 word, maximum 2 words.
+question_language_llm: BCP 47 language tag of the question text, including region, e.g. en-US.
+question_entities_llm: array of up to 3 important normalized entities (e.g. product names, features, error codes), short, deduplicated.
+question_topics_llm: array of up to 3 normalized topics, preferably 1 word, maximum 2 words each, reusable across similar texts, suitable as classification labels.
+question_sentiment_score: float from -{{ sentiment_bound }} to {{ sentiment_bound }} where -{{ sentiment_bound }} is very negative, 0 is neutral, {{ sentiment_bound }} is very positive.
+{%- endset %}
+-- format:on
 WITH kitsune_questions AS (
   SELECT
     q.question_id,
@@ -70,7 +78,15 @@ kitsune_llm AS (
   SELECT
     question_id,
     AI.GENERATE(
-      prompt => CONCAT('{{ question_prompt }}', 'Title: ', title, '\n', 'Content: ', content),
+      prompt => CONCAT(
+        'Title: ',
+        title,
+        '\n',
+        'Content: ',
+        content,
+        '\n\n',
+        '''{{ question_prompt }}'''
+      ),
       endpoint => '{{ llm_model }}',
       output_schema => 'question_summary_llm STRING, question_category_llm STRING, question_language_llm STRING, question_entities_llm ARRAY<STRING>, question_topics_llm ARRAY<STRING>, question_sentiment_score FLOAT64'
     ) AS llm_result
@@ -110,8 +126,32 @@ SELECT
   kitsune_llm.llm_result.question_summary_llm,
   kitsune_llm.llm_result.question_category_llm,
   kitsune_llm.llm_result.question_language_llm,
-  kitsune_llm.llm_result.question_entities_llm,
-  kitsune_llm.llm_result.question_topics_llm,
+  ARRAY(
+    SELECT
+      LOWER(TRIM(e))
+    FROM
+      UNNEST(kitsune_llm.llm_result.question_entities_llm) AS e
+      WITH OFFSET AS pos
+    WHERE
+      NULLIF(TRIM(e), '') IS NOT NULL
+    ORDER BY
+      pos
+    LIMIT
+      3
+  ) AS question_entities_llm,
+  ARRAY(
+    SELECT
+      LOWER(TRIM(t))
+    FROM
+      UNNEST(kitsune_llm.llm_result.question_topics_llm) AS t
+      WITH OFFSET AS pos
+    WHERE
+      NULLIF(TRIM(t), '') IS NOT NULL
+    ORDER BY
+      pos
+    LIMIT
+      3
+  ) AS question_topics_llm,
   IF(
     kitsune_llm.llm_result.question_sentiment_score
     BETWEEN - {{ sentiment_bound }}
@@ -166,6 +206,11 @@ SELECT
         []
       ),
       IF(
+        ARRAY_LENGTH(kitsune_llm.llm_result.question_entities_llm) > 3,
+        ['question_entities_llm_over_limit'],
+        []
+      ),
+      IF(
         EXISTS (
           SELECT
             1
@@ -182,6 +227,11 @@ SELECT
         kitsune_llm.llm_result.question_topics_llm IS NULL
         OR ARRAY_LENGTH(kitsune_llm.llm_result.question_topics_llm) = 0,
         ['question_topics_llm_missing'],
+        []
+      ),
+      IF(
+        ARRAY_LENGTH(kitsune_llm.llm_result.question_topics_llm) > 3,
+        ['question_topics_llm_over_limit'],
         []
       ),
       IF(

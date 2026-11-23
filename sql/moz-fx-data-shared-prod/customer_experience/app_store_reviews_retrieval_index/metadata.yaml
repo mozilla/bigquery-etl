@@ -6,9 +6,9 @@ description: |-
   Grain: one row per review id.
 
   Review fields (id, app_id, territory, rating, title, body, creation_date) come from
-  `app_store_v2_syndicate.app_store_review`. LLM fields, embedding and metadata come from
+  `app_store_v2_syndicate.app_store_review`. LLM fields and embedding come from
   `customer_experience_derived.app_store_reviews_retrieval_index_v1`, LEFT JOINed on id:
-  reviews not yet processed by the index have NULL LLM fields, embedding and metadata.
+  reviews not yet processed by the index have NULL LLM fields and embedding.
 
   LLM generated fields:
   - review_summary_llm

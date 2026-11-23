@@ -2,14 +2,22 @@
 {% set embedding_model = 'gemini-embedding-001' %}
 {% set prompt_version = 'v1' %}
 {% set category_threshold = 30 %}
-{%- set article_prompt =
-  'You are analyzing a Mozilla Knowledge Base support article. ' ~
-  'Extract the following fields and return them as structured data. ' ~
-  'article_summary_llm: maximum 8 words, clear, factual, in English. ' ~
-  'article_category_llm: exactly 1 reusable classification label, preferably 1 word, maximum 2 words. ' ~
-  'article_entities_llm: array of up to 3 important normalized entities (e.g. product names, features, error codes), short, deduplicated. ' ~
-  'article_topics_llm: array of up to 3 normalized topics, preferably 1 word, maximum 2 words each, reusable across similar texts, suitable as classification labels. '
--%}
+{#- Block assignment: one instruction per line. Rendered into a triple-quoted SQL string,
+    which allows embedded newlines. Instructions go after the article text, following
+    https://aistudio.google.com/docs/prompting-strategies: "supply all the context first.
+    Place your specific instructions or questions at the very end of the prompt."
+    format:off avoids reformatting this text as SQL.
+    Avoid using backslashes and triple quotes in this prompt so it renders correctly. -#}
+-- format:off
+{% set article_prompt -%}
+You are analyzing a Mozilla Knowledge Base support article.
+Extract the following fields and return them as structured data.
+article_summary_llm: maximum 8 words, clear, factual, in English.
+article_category_llm: exactly 1 reusable classification label, preferably 1 word, maximum 2 words.
+article_entities_llm: array of up to 3 important normalized entities (e.g. product names, features, error codes), short, deduplicated.
+article_topics_llm: array of up to 3 normalized topics, preferably 1 word, maximum 2 words each, reusable across similar texts, suitable as classification labels.
+{%- endset %}
+-- format:on
 WITH
 -- Latest approved-revision date per document. Mirrors the freshness signal in
 -- `sumo_metrics_derived.freshness_metrics_base_v1` so the view's `is_stale`
@@ -110,7 +118,15 @@ articles_llm AS (
   SELECT
     id,
     AI.GENERATE(
-      prompt => CONCAT('{{ article_prompt }}', '\n', 'Title: ', title, '\n', 'Content: ', content),
+      prompt => CONCAT(
+        'Title: ',
+        title,
+        '\n',
+        'Content: ',
+        content,
+        '\n\n',
+        '''{{ article_prompt }}'''
+      ),
       endpoint => '{{ llm_model }}',
       output_schema => 'article_summary_llm STRING, article_category_llm STRING, article_entities_llm ARRAY<STRING>, article_topics_llm ARRAY<STRING>'
     ) AS llm_result
@@ -153,8 +169,32 @@ newly_processed AS (
     'article' AS type,
     articles_llm.llm_result.article_summary_llm,
     articles_llm.llm_result.article_category_llm,
-    articles_llm.llm_result.article_entities_llm,
-    articles_llm.llm_result.article_topics_llm,
+    ARRAY(
+      SELECT
+        LOWER(TRIM(e))
+      FROM
+        UNNEST(articles_llm.llm_result.article_entities_llm) AS e
+        WITH OFFSET AS pos
+      WHERE
+        NULLIF(TRIM(e), '') IS NOT NULL
+      ORDER BY
+        pos
+      LIMIT
+        3
+    ) AS article_entities_llm,
+    ARRAY(
+      SELECT
+        LOWER(TRIM(t))
+      FROM
+        UNNEST(articles_llm.llm_result.article_topics_llm) AS t
+        WITH OFFSET AS pos
+      WHERE
+        NULLIF(TRIM(t), '') IS NOT NULL
+      ORDER BY
+        pos
+      LIMIT
+        3
+    ) AS article_topics_llm,
     embedding,
     STRUCT(
       ['title', 'content'] AS input_fields,
@@ -185,6 +225,11 @@ newly_processed AS (
           []
         ),
         IF(
+          ARRAY_LENGTH(articles_llm.llm_result.article_entities_llm) > 3,
+          ['article_entities_llm_over_limit'],
+          []
+        ),
+        IF(
           EXISTS (
             SELECT
               1
@@ -201,6 +246,11 @@ newly_processed AS (
           articles_llm.llm_result.article_topics_llm IS NULL
           OR ARRAY_LENGTH(articles_llm.llm_result.article_topics_llm) = 0,
           ['article_topics_llm_missing'],
+          []
+        ),
+        IF(
+          ARRAY_LENGTH(articles_llm.llm_result.article_topics_llm) > 3,
+          ['article_topics_llm_over_limit'],
           []
         ),
         IF(

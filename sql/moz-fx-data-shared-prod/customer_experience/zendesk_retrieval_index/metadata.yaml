@@ -6,26 +6,28 @@ description: |-
   Grain: one row per Zendesk ticket.
 
   LLM generated fields:
-  - summary_llm
-  - category_llm
-  - language_llm
-  - entities_llm
-  - topics_llm
-  - embedding based on [title, description]
-  - sentiment_score based on [title, description]
+  - ticket_summary_llm
+  - ticket_category_llm
+  - ticket_language_llm
+  - ticket_entities_llm
+  - ticket_topics_llm
+  - embedding based on [title, content]
+  - ticket_sentiment_score based on [title, content]
 
   Metadata
   - Additional data to support technical processes, such as backfills or investigations.
   - The prompt version is a self-managed version for changes in the prompt given to the LLM.
 
   Usage
-  - The underlying table requires a partition filter. Always include
-    `WHERE creation_date >= ...` (or an equivalent range) when querying
-    this view, otherwise BigQuery will reject the query.
+  - Filter on `creation_date` to limit the scan. The underlying table does not require a partition filter; without one, queries scan the full table.
+  - Rows with failed embeddings are included. Filter `WHERE metadata.embedding_succeeded` for vector search,
+    or `WHERE NOT IFNULL(metadata.embedding_succeeded, FALSE)` to list the failures.
 
   Read-time fields (computed by this view, not stored in the underlying table):
   - product = `mozfun.customer_experience.cx_normalize_product(product, 'Zendesk')` — canonical
     product name; returns 'unclassified' for raw slugs the UDF cannot map (monitored, see below).
+  - recency_score = `EXP(-DATE_DIFF(CURRENT_DATE(), creation_date, DAY) / 30)` — 30-day exponential decay,
+    1.0 today, ~0.37 after 30 days. Always reflects freshness at query time.
 
   Monitoring
   - A Bigeye metric `has_no_unclassified_value` alerts when the `product` contains

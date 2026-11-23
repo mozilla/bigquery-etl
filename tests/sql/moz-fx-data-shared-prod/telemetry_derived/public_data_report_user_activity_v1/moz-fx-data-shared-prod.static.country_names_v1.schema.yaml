@@ -1,0 +1,7 @@
+fields:
+- name: code
+  type: STRING
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE

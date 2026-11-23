@@ -41,6 +41,24 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Table deploys (including schema changes) happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
    * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to apply changes earlier
 
+## Deprecating and deleting a table
+
+1. Run `./bqetl metadata deprecate <dataset>.<table>_<version>` to set `deprecated: true` and a `deletion_date` (3 months from today by default) in `metadata.yaml`
+   * The command offers to show downstream lineage from DataHub and to deprecate downstream tables and views
+1. Open a PR with the changes, and get it reviewed and merged
+   * Permissions on the table are removed so it can no longer be queried. ETL still runs so data is populated and downstream artifacts are not affected.
+1. The table stops being deployed on its `deletion_date`. From the next day, it's reported in the `#dataops-alerts` Slack channel until it's removed
+1. Run `./bqetl metadata delete <dataset>.<table>_<version>` to delete the table's directory and its `tests/sql` directory
+   * The table itself is not deleted from BigQuery
+   * Use `--force` if the `deletion_date` hasn't passed yet
+   * The command lists other files that still reference the table. Update them in the same PR
+   * (coming soon) The PR will be created automatically, so this step will be to just (modify as necessary and) approve and merge the PR.
+1. Open a PR with the deletion, and get it reviewed and merged
+1. Delete the table in BigQuery.
+   * (coming soon) Airflow will automatically detect when managed artifacts are deleted in [private-]bigquery-etl and set a 30-day expiration policy so data automatically expires.
+
+To keep a deprecated table for longer, move its `deletion_date` forward instead.
+
 ## Formatting SQL
 
 We enforce consistent SQL formatting as part of CI. After adding or changing a

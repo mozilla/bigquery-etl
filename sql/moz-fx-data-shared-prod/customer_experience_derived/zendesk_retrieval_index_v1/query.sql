@@ -213,10 +213,11 @@ SELECT
       UNNEST(zendesk_llm.llm_result.ticket_entities_llm) AS e
       WITH OFFSET AS pos
     WHERE
-      e IS NOT NULL
-      AND pos < 3
+      NULLIF(TRIM(e), '') IS NOT NULL
     ORDER BY
       pos
+    LIMIT
+      3
   ) AS ticket_entities_llm,
   ARRAY(
     SELECT
@@ -225,10 +226,11 @@ SELECT
       UNNEST(zendesk_llm.llm_result.ticket_topics_llm) AS t
       WITH OFFSET AS pos
     WHERE
-      t IS NOT NULL
-      AND pos < 3
+      NULLIF(TRIM(t), '') IS NOT NULL
     ORDER BY
       pos
+    LIMIT
+      3
   ) AS ticket_topics_llm,
   IF(
     zendesk_llm.llm_result.ticket_sentiment_score

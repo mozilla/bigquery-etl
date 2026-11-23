@@ -45,19 +45,29 @@ def get_source_schema(
     if "." not in full_name:
         return None
     name_parts = full_name.split(".")
+    dataset_name, table_name = name_parts[-2:]
+    stable_match = re.fullmatch(r"(?P<dataset_family>.+)_(?:stable|live)", dataset_name)
 
-    for schema_file in (
+    schema_files = [
         tests_dir / f"{full_name}.schema.yaml",
         sql_dir.joinpath(*name_parts) / SCHEMA_FILE,
-    ):
+    ]
+    if stable_match and dataset_name.endswith("_live"):
+        # Live tables have the same schemas as their stable tables, which may have `schema.yaml` files.
+        stable_name_parts = [
+            *name_parts[:-2],
+            f"{stable_match['dataset_family']}_stable",
+            table_name,
+        ]
+        schema_files.append(sql_dir.joinpath(*stable_name_parts) / SCHEMA_FILE)
+    for schema_file in schema_files:
         if schema_file.exists():
             return Schema.from_schema_file(schema_file).to_bigquery_schema()
 
-    dataset_name, table_name = name_parts[-2:]
-    if match := re.fullmatch(r"(?P<dataset_family>.+)_(?:live|stable)", dataset_name):
+    if stable_match:
         for stable_table_schema in get_stable_table_schemas():
             if (
-                stable_table_schema.bq_dataset_family == match["dataset_family"]
+                stable_table_schema.bq_dataset_family == stable_match["dataset_family"]
                 and stable_table_schema.bq_table == table_name
             ):
                 return Schema(

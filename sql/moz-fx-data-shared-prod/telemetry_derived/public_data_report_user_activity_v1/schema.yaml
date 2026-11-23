@@ -78,3 +78,14 @@ fields:
     mode: NULLABLE
     description: Within each top_locales entry, the fraction of weekly active users
       using this application locale.
+- name: mau_desktop
+  type: INT64
+  mode: NULLABLE
+  description: Desktop monthly active users for the week, counting Firefox Desktop
+    clients active in the 28 days ending the week's Monday. 0 if a country has no
+    Desktop clients.
+- name: mau_mobile
+  type: INT64
+  mode: NULLABLE
+  description: Mobile monthly active users for the week, equal to mau minus mau_desktop.
+    Covers Fenix, Firefox iOS, Focus Android and Focus iOS.

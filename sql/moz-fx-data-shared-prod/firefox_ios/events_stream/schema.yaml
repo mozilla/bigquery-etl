@@ -525,8 +525,17 @@ fields:
     - name: is_using_fallback
       type: BOOLEAN
       mode: NULLABLE
-      description: Set only when the connection succeeded. True when the selected
-        location had no usable server, so a different location is used.
+      description: 'Depending on the type of event:
+
+        * Set only when the VPN was connected and reconnected successfully. True when
+        the selected location had no usable server, so a different location is used.
+
+        * Set only when the connection succeeded. True when the selected location
+        had no usable server, so a different location is used.'
+    - name: is_vpn_connected
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the VPN was connected when the user changed location.
     - name: outcome
       type: BOOLEAN
       mode: NULLABLE
@@ -917,7 +926,10 @@ fields:
 
         * A key describing the type of error.
 
-        * The reason for the failure, represented as a key (not a raw message).'
+        * The reason for the failure, represented as a key (not a raw message).
+
+        * Why the alert was shown. One of `monthly_limit` or `session_error` (see
+        `VPNAlertType`).'
     - name: errorName
       type: STRING
       mode: NULLABLE

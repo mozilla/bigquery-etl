@@ -1,0 +1,15 @@
+---
+# Firefox 140 is below 156, so glean_addons leaves this ping out.
+- submission_timestamp: "2026-11-08 12:00:00"
+  sample_id: 1
+  normalized_country_code: AA
+  client_info:
+    client_id: glean-client-a
+    app_display_version: '140.0'
+  metrics:
+    object:
+      addons_active_addons:
+        - id: addon-b
+          name: Addon B
+          isSystem: false
+          foreignInstall: false

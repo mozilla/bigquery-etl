@@ -1,0 +1,47 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: days_since_seen
+  type: INTEGER
+  mode: NULLABLE
+- name: subsession_hours_sum
+  type: FLOAT
+  mode: NULLABLE
+- name: days_seen_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_created_profile_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: active_addons
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: addon_id
+    type: STRING
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: is_system
+    type: BOOLEAN
+    mode: NULLABLE
+  - name: foreign_install
+    type: BOOLEAN
+    mode: NULLABLE

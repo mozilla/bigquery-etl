@@ -16,6 +16,7 @@ AI-enriched retrieval table derived from Apple App Store reviews of Mozilla apps
 | **Retention** | No automatic expiration |
 | **Owner** | lvargas@mozilla.com |
 | **Version** | v1 (initial version) |
+| **Level** | Gold |
 
 **Use cases:** app review analysis · semantic search via embeddings · sentiment trend monitoring
 
@@ -26,7 +27,7 @@ AI-enriched retrieval table derived from Apple App Store reviews of Mozilla apps
 - **Query the view, not this table.** `customer_experience.app_store_reviews_retrieval_index` joins this table to the source reviews on `id` and adds `app_id`, `territory` and `rating`. This table stores only the fields the LLM needs (`id`, `creation_date`, `title`, `body`) plus the AI fields.
 - **`title` and `body` here are the text the LLM saw.** The view reads the current text from the source table, which Fivetran can update after the partition was written.
 - **Each partition is written once.** Later edits to a review are not re-analysed unless the partition is re-run.
-- **The view includes reviews not yet indexed.** It LEFT JOINs this table onto the source, so LLM fields, `embedding` and `metadata` are NULL for reviews this table has not processed.
+- **The view includes reviews not yet indexed.** It LEFT JOINs this table onto the source, so LLM fields and `embedding` are NULL for reviews this table has not processed. The view does not expose `metadata`.
 - **Filter on individual LLM columns when you need clean values.** Each LLM column can be NULL or empty independently; filter `WHERE <col> IS NOT NULL` (and `ARRAY_LENGTH(<col>) > 0` for arrays).
 - **`review_category_llm` is constrained to five values** (`complaint`, `bug`, `request`, `praise`, `question`). Any other value the model returns is kept and tagged `review_category_llm_not_allowed` in `metadata.failure_reasons`.
 - **`review_sentiment_score` is NULLed at write time when out of range.** `metadata.failure_reasons` distinguishes `review_sentiment_score_missing` from `review_sentiment_score_out_of_range`.

@@ -767,8 +767,10 @@ jobs:
   test-sql:
     name: Test SQL
     needs: [build, deploy-changes-to-stage, decide-runs]
-    if: |
-      (needs.decide-runs.outputs.validate-sql == 'true' || needs.decide-runs.outputs.validate-routines == 'true' || needs.decide-runs.outputs.deploy == 'true')
+    # Call even when a needed job was skipped and let `run` skip the inner job: a
+    # skipped calling job reports as "Test SQL", not the required "Test SQL / ..." check.
+    # !failure() keeps an upstream failure blocking the PR.
+    if: ${{ !failure() && !cancelled() }}
     permissions:
       id-token: write
       contents: read
@@ -777,6 +779,8 @@ jobs:
       GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_DRYRUN_SERVICE_ACCOUNT_EMAIL }}
       GCP_STAGE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_STAGE_SERVICE_ACCOUNT_EMAIL }}
     with:
+      # Same condition the stage deploy uses, and the tests need its output
+      run: ${{ needs.deploy-changes-to-stage.result == 'success' }}
       python-version: ${{ needs.build.outputs.python-version }}
 
   test-routines:
@@ -835,20 +839,32 @@ jobs:
   validate-metadata:
     name: Validate Metadata
     needs: [build, generate-sql]
+    # Call even when a needed job was skipped and let `run` skip the inner job: a
+    # skipped calling job reports as "Validate Metadata", not the required "Validate Metadata / ..." check.
+    # !failure() keeps an upstream failure blocking the PR.
+    if: ${{ !failure() && !cancelled() }}
     permissions:
       contents: read
     uses: ./.github/workflows/validate-metadata.yml
     with:
+      # Needs the generated SQL artifact
+      run: ${{ needs.generate-sql.result == 'success' }}
       python-version: ${{ needs.build.outputs.python-version }}
       generated-unittests-artifact: generated-unittests
 
   validate-monitoring:
     name: Validate Monitoring
     needs: [build, generate-sql]
+    # Call even when a needed job was skipped and let `run` skip the inner job: a
+    # skipped calling job reports as "Validate Monitoring", not the required "Validate Monitoring / ..." check.
+    # !failure() keeps an upstream failure blocking the PR.
+    if: ${{ !failure() && !cancelled() }}
     permissions:
       contents: read
     uses: ./.github/workflows/validate-monitoring.yml
     with:
+      # Needs the generated SQL artifact
+      run: ${{ needs.generate-sql.result == 'success' }}
       python-version: ${{ needs.build.outputs.python-version }}
 
   validate-backfills:

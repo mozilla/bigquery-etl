@@ -10,12 +10,13 @@ AI-enriched retrieval table derived from the Mozilla Support (SUMO) Knowledge Ba
 |---|---|
 | **Grain** | One row per Knowledge Base article (keyed by `id`) |
 | **Source** | `moz-fx-data-shared-prod.sumo_syndicate.kitsune_wiki_document_plus` |
-| **DAG** | `bqetl_analytics_tables` · daily · **rebuild-on-each-run (incremental reprocess)** |
+| **DAG** | `bqetl_customer_experience` · daily · **rebuild-on-each-run (incremental reprocess)** |
 | **Partitioning** | None (table is rebuilt each run by merging existing rows with newly processed rows) |
 | **Clustering** | `locale`, `category` |
 | **Retention** | No automatic expiration |
 | **Owner** | lvargas@mozilla.com |
 | **Version** | v1 (initial version) |
+| **Level** | Gold |
 
 **Use cases:** support article analysis · semantic search via embeddings · grounded QA retrieval
 

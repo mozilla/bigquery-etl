@@ -1,0 +1,10 @@
+---
+# BB has two names, so it gives two output rows with the same figures.
+- code: AA
+  name: Country A
+- code: BB
+  name: Country B
+- code: BB
+  name: Country Bee
+- code: CC
+  name: Country C

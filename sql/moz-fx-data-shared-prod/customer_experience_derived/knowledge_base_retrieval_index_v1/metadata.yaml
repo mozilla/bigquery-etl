@@ -35,6 +35,8 @@ description: |-
     only what's new/changed/failed. A failed run leaves the destination untouched
     (atomic BQ write), so the next successful run picks up everything.
   - Failed DAG runs do not need re-run.
+
+  Gold-level table: change-controlled, monitored in Bigeye, unit-tested and fully documented.
 owners:
 - lvargas@mozilla.com
 - mozilla/customer_experience

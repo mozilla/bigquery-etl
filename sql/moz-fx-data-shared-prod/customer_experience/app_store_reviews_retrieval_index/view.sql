@@ -9,7 +9,7 @@ SELECT
   review.rating,
   review.title,
   review.body,
-  idx.* EXCEPT (creation_date, id, title, body)
+  idx.* EXCEPT (creation_date, id, title, body, metadata)
 FROM
   `moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review` AS review
 LEFT JOIN

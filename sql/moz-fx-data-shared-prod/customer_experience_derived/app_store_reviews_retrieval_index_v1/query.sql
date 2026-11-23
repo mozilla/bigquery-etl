@@ -83,10 +83,11 @@ SELECT
       UNNEST(reviews_llm.llm_result.review_entities_llm) AS e
       WITH OFFSET AS pos
     WHERE
-      e IS NOT NULL
-      AND pos < 3
+      NULLIF(TRIM(e), '') IS NOT NULL
     ORDER BY
       pos
+    LIMIT
+      3
   ) AS review_entities_llm,
   ARRAY(
     SELECT
@@ -95,10 +96,11 @@ SELECT
       UNNEST(reviews_llm.llm_result.review_topics_llm) AS t
       WITH OFFSET AS pos
     WHERE
-      t IS NOT NULL
-      AND pos < 3
+      NULLIF(TRIM(t), '') IS NOT NULL
     ORDER BY
       pos
+    LIMIT
+      3
   ) AS review_topics_llm,
   IF(
     reviews_llm.llm_result.review_sentiment_score

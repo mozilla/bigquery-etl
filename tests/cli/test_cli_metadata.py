@@ -1497,8 +1497,8 @@ class TestMetadata:
 
             assert result.exit_code == 1
             assert (
-                str(result.exception)
-                == f"No metadata file(s) were found for: {qualified_table_name}"
+                f"No metadata file(s) were found for: {qualified_table_name}"
+                in result.output
             )
 
     @patch("google.cloud.bigquery.Client")
@@ -2380,6 +2380,20 @@ class TestDeprecateDownstream:
         lineage.assert_not_called()
         assert self.deprecated(sql_dir) == {"target_v1"}
 
+    def test_name_must_match_whole_dataset_and_table(self, runner, sql_dir):
+        # a suffix match on d.target_v1 would also deprecate xd.target_v1
+        other = sql_dir / self.project / "xd" / "target_v1"
+        shutil.copytree(sql_dir / self.project / "d" / "target_v1", other)
+
+        with self.interactive(False):
+            result = self.invoke(runner, sql_dir)
+
+        assert result.exit_code == 0, result.output
+        assert self.deprecated(sql_dir) == {"target_v1"}
+        assert not yaml.safe_load((other / "metadata.yaml").read_text()).get(
+            "deprecated"
+        )
+
     def test_prompt_defaults_to_yes(self, runner, sql_dir, lineage, pick):
         pick.return_value = [sql_dir / self.project / "d" / "used_v1"]
         with self.interactive(True):
@@ -2671,6 +2685,7 @@ class TestMetadataDelete:
         if name == "past_v1":  # a bare table name matches nothing
             assert result.exit_code != 0
             assert "No metadata file(s) were found" in result.output
+            assert "Try including the dataset, e.g. <dataset>.past_v1" in result.output
             assert self.table(repo, "past_v1").exists()
         else:
             assert result.exit_code == 0, result.output

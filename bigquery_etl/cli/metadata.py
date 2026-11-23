@@ -392,15 +392,9 @@ def deprecate(
     since_days: int | None,
 ) -> None:
     """Deprecate Bigquery table by updating metadata yaml file(s)."""
-    table_metadata_files = sorted(
-        set(
-            paths_matching_name_pattern(
-                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
-            )
-        )
-    )
+    table_metadata_files = _matching_metadata_files(name, sql_dir, project_id)
     if not table_metadata_files:
-        raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
+        raise click.ClickException(_no_match_message(name))
 
     interactive = _is_interactive()
     prompted = False
@@ -510,25 +504,9 @@ def deprecate(
 )
 def delete(name: str, sql_dir: str, project_id: str, force: bool) -> None:
     """Delete the files of deprecated tables or views."""
-    if os.path.isfile(name):  # e.g. a query.sql path means its table directory
-        name = str(Path(name).parent)
-    metadata_files = sorted(
-        set(
-            paths_matching_name_pattern(
-                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
-            )
-        )
-    )
-    if not os.path.exists(name):
-        # paths_matching_name_pattern matches suffixes, so d.t_v1 would match xd.t_v1
-        metadata_files = [
-            f
-            for f in metadata_files
-            if fnmatchcase(".".join(extract_from_query_path(f)), name)
-            or fnmatchcase(".".join(extract_from_query_path(f)), f"{project_id}.{name}")
-        ]
+    metadata_files = _matching_metadata_files(name, sql_dir, project_id)
     if not metadata_files:
-        raise click.ClickException(f"No metadata file(s) were found for: {name}")
+        raise click.ClickException(_no_match_message(name))
 
     today = date.today()
     artifacts, problems = [], []
@@ -601,6 +579,35 @@ def delete(name: str, sql_dir: str, project_id: str, force: bool) -> None:
             )
             for f in files:
                 click.echo(f"  {f}", err=True)
+
+
+def _matching_metadata_files(name: str, sql_dir: str, project_id: str) -> list[Path]:
+    """Return the metadata.yaml files of tables whose whole name matches name.
+
+    name can also be a table directory, or a file in one such as query.sql.
+    """
+    if os.path.isfile(name):
+        name = str(Path(name).parent)
+    files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+    if not os.path.exists(name):
+        # paths_matching_name_pattern matches suffixes, so d.t_v1 would match xd.t_v1
+        files = [
+            f
+            for f in files
+            if fnmatchcase(".".join(extract_from_query_path(f)), name)
+            or fnmatchcase(".".join(extract_from_query_path(f)), f"{project_id}.{name}")
+        ]
+    return sorted(set(files))
+
+
+def _no_match_message(name: str) -> str:
+    """Return the error for a name that matched no tables."""
+    message = f"No metadata file(s) were found for: {name}"
+    if "." not in name and not os.path.exists(name):
+        message += f". Try including the dataset, e.g. <dataset>.{name}"
+    return message
 
 
 def _is_interactive() -> bool:

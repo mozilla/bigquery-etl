@@ -31,12 +31,20 @@ on:
           Empty skips it.
         type: string
         default: ''
+      run:
+        description: >-
+          Whether to run the check. When false the job is skipped but still reports as
+          "<Caller> / <Job>", so a required status check with that name is satisfied.
+          (Skipping the calling job instead reports it under the caller's name only.)
+        type: boolean
+        default: true
 
 permissions: {}
 
 jobs:
   validate-metadata:
     name: Validate Metadata
+    if: inputs.run
     runs-on: ubuntu-latest
     permissions:
       contents: read

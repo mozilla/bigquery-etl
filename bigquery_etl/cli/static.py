@@ -104,6 +104,7 @@ def _load_table(
         source_format=bigquery.SourceFormat.CSV,
         skip_leading_rows=1,
         allow_quoted_newlines=True,
+        # replaces the data but keeps table labels
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
     with open(data_file_path, "rb") as data_file:

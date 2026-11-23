@@ -221,7 +221,6 @@ def deploy(
             new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
         new_id = f"{project_id}.{new_artifact_dataset}.{artifact_name}"
         id_map[f"{artifact_project}.{artifact_dataset}.{artifact_name}"] = new_id
-        id_map[f"{artifact_dataset}.{artifact_name}"] = new_id
     for tests_dir in Path(sql_dir).glob("*/*/*/tests"):
         rewrite_sql_tests(tests_dir, tests_dir, id_map)
 

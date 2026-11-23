@@ -530,15 +530,12 @@ def _rewrite_tests_for_target(source_to_target_paths: Dict[Path, Path]) -> None:
             source_path
         ) or extract_from_query_path(source_path)
 
-    # Build a lookup keyed by every form of source identity that tests can use:
-    # full `<proj>.<ds>.<tbl>` and short `<ds>.<tbl>`.
-    # Maps to the equivalent target identity in full form.
+    # Map each fully qualified source identity to its target identity.
     src_to_tgt_id: Dict[str, str] = {}
     for source_path, target_path in source_to_target_paths.items():
         src = _source_identity(source_path)
         tgt = extract_from_query_path(target_path)
         src_to_tgt_id[".".join(src)] = ".".join(tgt)
-        src_to_tgt_id[f"{src[1]}.{src[2]}"] = ".".join(tgt)
 
     for source_path, target_path in source_to_target_paths.items():
         source_tests_dir = source_path.parent / "tests"

@@ -22691,6 +22691,20 @@ fields:
         was running, which correlates with the paint being too slow.
 
         '
+    - name: javascript_gc_gray_bits_valid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the gray marking state was valid at the start of a major
+        GC
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

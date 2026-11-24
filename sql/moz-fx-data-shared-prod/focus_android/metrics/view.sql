@@ -783,7 +783,8 @@ SELECT
       metrics.labeled_counter.network_apple_fast_datapath_probe,
       metrics.labeled_counter.geolocation_persisted_cache,
       metrics.labeled_counter.geckoview_scroll_capture_outcome,
-      metrics.labeled_counter.geckoview_scroll_capture_tile_result
+      metrics.labeled_counter.geckoview_scroll_capture_tile_result,
+      metrics.labeled_counter.javascript_gc_gray_bits_valid
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2854,7 +2855,8 @@ SELECT
       metrics.labeled_counter.network_apple_fast_datapath_probe,
       metrics.labeled_counter.geolocation_persisted_cache,
       metrics.labeled_counter.geckoview_scroll_capture_outcome,
-      metrics.labeled_counter.geckoview_scroll_capture_tile_result
+      metrics.labeled_counter.geckoview_scroll_capture_tile_result,
+      metrics.labeled_counter.javascript_gc_gray_bits_valid
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4925,7 +4927,8 @@ SELECT
       metrics.labeled_counter.network_apple_fast_datapath_probe,
       metrics.labeled_counter.geolocation_persisted_cache,
       metrics.labeled_counter.geckoview_scroll_capture_outcome,
-      metrics.labeled_counter.geckoview_scroll_capture_tile_result
+      metrics.labeled_counter.geckoview_scroll_capture_tile_result,
+      metrics.labeled_counter.javascript_gc_gray_bits_valid
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

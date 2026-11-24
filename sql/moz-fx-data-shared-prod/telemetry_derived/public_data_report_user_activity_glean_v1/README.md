@@ -17,6 +17,7 @@ One row per week and country name, plus a `Worldwide` row per week. `submission_
 
 - Figures are exact. The user activity export in `firefox-public-data-report-etl` may apply small-count suppression.
 - MAU is read on the week's Monday and top languages on its Sunday, as in `public_data_report_user_activity_v1`.
+- The query fails for a `submission_date` that isn't a Monday.
 - A country with no locale clients that week has an empty `top_locales`.
 - A client with no country counts under `'??'`, which counts in `Worldwide` and isn't on the site's country list.
 - The six other legacy figures, such as `avg_hours_usage_daily` and `top_addons`, have no column here; `telemetry.public_data_report_user_activity` adds them as `NULL`, or empty for `top_addons`, on Glean weeks.

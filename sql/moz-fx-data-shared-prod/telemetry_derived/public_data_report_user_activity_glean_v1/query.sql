@@ -134,9 +134,14 @@ countries_staging AS (
   FROM
     `moz-fx-data-shared-prod.static.country_names_v1`
 )
--- one row per country name, plus Worldwide; a country with no locale clients gets an empty list
+-- one row per country name, plus Worldwide; a country with no locale clients gets an empty list;
+-- a submission_date other than a Monday fails the run, since MAU and top languages assume one
 SELECT
-  @submission_date AS submission_date,
+  IF(
+    EXTRACT(DAYOFWEEK FROM @submission_date) != 2,
+    ERROR('submission_date must be a Monday'),
+    @submission_date
+  ) AS submission_date,
   COALESCE(countries_staging.name, mau_with_worldwide_intermediate.country_group) AS country_name,
   mau_with_worldwide_intermediate.mau_desktop + mau_with_worldwide_intermediate.mau_mobile AS mau,
   IFNULL(

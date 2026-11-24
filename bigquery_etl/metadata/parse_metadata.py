@@ -421,6 +421,14 @@ class Metadata:
 
                 if "scheduling" in metadata:
                     scheduling = metadata["scheduling"]
+                    if "date_partition_parameter" in scheduling:
+                        raise ValueError(
+                            "`date_partition_parameter` is no longer supported, use `partition_parameter` instead."
+                        )
+                    if "date_partition_offset" in scheduling:
+                        raise ValueError(
+                            "`date_partition_offset` is no longer supported, use `partition_offset` instead."
+                        )
                     if "dag_name" in scheduling and cls.is_valid_label(
                         scheduling["dag_name"]
                     ):

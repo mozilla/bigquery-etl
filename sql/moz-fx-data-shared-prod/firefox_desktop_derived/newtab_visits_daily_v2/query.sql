@@ -371,7 +371,7 @@ core_visit_metrics AS (
         0
       ),
       NULL
-    ) AS sponsored_topsites_inventory_count,
+    ) AS sponsored_topsite_inventory_count,
     LOGICAL_OR(
       event_category = 'newtab'
       AND event_name IN (
@@ -760,7 +760,8 @@ topsites_components AS (
     SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     -- FX only sends is_ad_eligible_position on impressions, when true and only from version 157
     IF(
-      MAX(app_version) >= 157,
+      MAX(app_version) >= 157
+      AND COUNTIF(event_name = 'impression') > 0,
       COALESCE(
         LOGICAL_OR(
           SAFE_CAST(mozfun.map.get_key(event_details, 'is_ad_eligible_position') AS BOOLEAN)
@@ -821,7 +822,8 @@ content_components AS (
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS position,
     SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     IF(
-      MAX(app_version) >= 157,
+      MAX(app_version) >= 157
+      AND COUNTIF(event_name = 'impression') > 0,
       COALESCE(
         LOGICAL_OR(
           SAFE_CAST(mozfun.map.get_key(event_details, 'is_ad_eligible_position') AS BOOLEAN)

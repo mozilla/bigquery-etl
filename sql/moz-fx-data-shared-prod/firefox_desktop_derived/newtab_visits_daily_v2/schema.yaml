@@ -419,8 +419,9 @@ fields:
     description: >-
       Whether the tile was in a position that can hold a sponsored tile: TRUE if any of the
       tile's impressions in the visit reported it. FALSE otherwise on Firefox 157 and later,
-      where Firefox only sends it on impressions and only when true. NULL for clients on Firefox
-      versions before 157, which don't report ad-eligible positions.
+      where Firefox only sends it on impressions and only when true. NULL when the entry has no
+      impression in this row (e.g. a click whose impression arrived on another day), and for
+      clients on Firefox versions before 157, which don't report ad-eligible positions.
   - name: is_pinned
     type: BOOLEAN
     mode: NULLABLE
@@ -468,8 +469,9 @@ fields:
     description: >-
       Whether the card was in a position that can hold a sponsored story: TRUE if any of the
       card's impressions in the visit reported it. FALSE otherwise on Firefox 157 and later,
-      where Firefox only sends it on impressions and only when true. NULL for clients on Firefox
-      versions before 157, which don't report ad-eligible positions.
+      where Firefox only sends it on impressions and only when true. NULL when the entry has no
+      impression in this row (e.g. a click whose impression arrived on another day), and for
+      clients on Firefox versions before 157, which don't report ad-eligible positions.
   - name: section_position
     type: INTEGER
     mode: NULLABLE

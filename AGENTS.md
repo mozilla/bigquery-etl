@@ -9,10 +9,11 @@ sql/<project>/<dataset>/<table_v1>/    # SQL queries (versioned tables)
   metadata.yaml                        # Required: owners, description
   schema.yaml                          # Output schema
   checks.sql                           # Data quality checks (optional)
+  tests/test_*.yaml                    # SQL tests (optional)
 
 sql/mozfun/                            # Shared UDFs (public library)
 sql_generators/                        # Auto-generated SQL templates
-tests/sql/                             # Tests mirror sql/ structure
+tests/                                 # Python tests
 bigquery_etl/                          # Python CLI and utilities
 dags.yaml                              # Airflow DAG definitions
 ```

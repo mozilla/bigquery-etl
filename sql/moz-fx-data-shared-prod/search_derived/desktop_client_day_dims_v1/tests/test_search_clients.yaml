@@ -1,0 +1,125 @@
+sources:
+  moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily:
+    # Only is_default_browser is taken from baseline for a client with search rows, as in
+    # search_aggregates_glean_v1; its country, version and profile group are ignored.
+    - submission_date: "2026-10-20"
+      client_id: s
+      sample_id: 1
+      profile_group_id: group-baseline
+      country: FR
+      locale: fr
+      app_display_version: "159.0"
+      normalized_os: Mac
+      app_channel: beta
+      normalized_channel: beta
+      is_default_browser: true
+      policies_is_enterprise: false
+  moz-fx-data-shared-prod.firefox_desktop.metrics:
+    # Ignored: the metrics ping only fills clients with no search row.
+    - submission_timestamp: "2026-10-20T15:00:00Z"
+      sample_id: 1
+      client_info:
+        client_id: s
+      metrics:
+        string:
+          search_engine_default_provider_id: ddg
+          region_home_region: NL
+  moz-fx-data-shared-prod.search_derived.search_clients_daily_glean_v1:
+    # Client s has three search rows. Country: US is on the most rows. Every other column comes
+    # from the latest event-backed row, the DE one at 11:00, not the later non-event-backed row.
+    - submission_date: "2026-10-20"
+      client_id: s
+      sample_id: 1
+      country: US
+      ping_end_time: "2026-10-20T10:00:00.000+00:00"
+      profile_group_id: group-s-early
+      sap_counts_total: 1
+      serp_counts_total: 0
+      is_default_browser: false
+      app_version: "157.0"
+      default_search_engine_provider_id: google
+      default_search_engine_display_name: Google
+      default_private_search_engine_display_name: Google
+      home_region: US
+      policies_is_enterprise: false
+      os: Windows
+      os_version: "10.0"
+      locale: en-US
+      channel: release
+      normalized_channel: release
+    - submission_date: "2026-10-20"
+      client_id: s
+      sample_id: 1
+      country: US
+      ping_end_time: "2026-10-20T12:00:00.000+00:00"
+      profile_group_id: group-s-late
+      sap_counts_total: 0
+      serp_counts_total: 0
+      app_version: "158.0.1"
+      default_search_engine_provider_id: ddg
+      home_region: NL
+      os: Windows
+      os_version: "10.0"
+      locale: en-US
+      channel: release
+      normalized_channel: release
+    - submission_date: "2026-10-20"
+      client_id: s
+      sample_id: 1
+      country: DE
+      ping_end_time: "2026-10-20T11:00:00.000+00:00"
+      profile_group_id: group-s
+      sap_counts_total: 1
+      serp_counts_total: 0
+      is_default_browser: false
+      app_version: "158.0"
+      default_search_engine_provider_id: bing
+      default_search_engine_display_name: Bing
+      default_private_search_engine_display_name: Bing
+      home_region: DE
+      policies_is_enterprise: true
+      os: Windows
+      os_version: "10.0"
+      locale: de
+      distribution_id: acer-001
+      channel: release
+      normalized_channel: release
+    # Another day: ignored.
+    - submission_date: "2026-10-19"
+      client_id: s
+      sample_id: 1
+      country: JP
+      ping_end_time: "2026-10-19T23:00:00.000+00:00"
+      sap_counts_total: 5
+      serp_counts_total: 0
+      app_version: "150.0"
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: "2026-10-20"
+
+expect:
+  # NULL columns are omitted: the harness drops null keys from the result row.
+  - submission_date: "2026-10-20"
+    client_id: s
+    sample_id: 1
+    profile_group_id: group-s
+    dims_source: search_clients_daily
+    country: US
+    locale: de
+    app_version: "158.0"
+    app_version_major: "158"
+    os: Windows
+    os_version: "10.0"
+    channel: release
+    normalized_channel: release
+    distribution_id: acer-001
+    is_acer_distribution: true
+    is_default_browser: true
+    policies_is_enterprise: true
+    default_search_engine_provider_id: bing
+    default_search_engine_display_name: Bing
+    default_private_search_engine_display_name: Bing
+    home_region: DE
+    normalized_default_search_engine: Bing

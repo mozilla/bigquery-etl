@@ -1,0 +1,347 @@
+sources:
+  moz-fx-data-shared-prod.org_mozilla_firefox_derived.events_first_seen_v1:
+    # Historical record for client3-existing (already seen with same criteria)
+    - client_id: client3-existing
+      event: "terms_of_use#accepted"
+      criteria: "tou_accept"
+      first_submission_timestamp: 2025-10-15T08:00:00+00:00
+
+    # Historical record for different event (same client, different event key)
+    - client_id: client5-both-types
+      event: "privacy#accepted"
+      criteria: "tou_accept"
+      first_submission_timestamp: 2025-10-18T10:00:00+00:00
+
+    # Historical record for one event from client6-partial-history
+    - client_id: client16-partial-history
+      event: "terms_of_use#accepted"
+      criteria: "tou_accept"
+      first_submission_timestamp: 2025-10-18T10:00:00+00:00
+
+    # Historical record with NULL criteria (should NOT match)
+    - client_id: client17-null-criteria
+      event: "terms_of_use#accepted"
+      criteria: null
+
+    # Historical record NOT in current day (should not appear in output)
+    - client_id: client18-history-only
+      event: "onboarding#terms_of_service_accepted"
+      criteria: "tou_accept"
+      first_submission_timestamp: 2025-10-20T09:00:00+00:00
+
+    # Historical record before date filter cutoff (< 2023-01-01) - excluded from _previous
+    - client_id: client19-before-cutoff
+      event: "terms_of_use#accepted"
+      criteria: "tou_accept"
+      first_submission_timestamp: 2022-12-31T10:00:00+00:00
+
+    # Historical record on @submission_date (should be excluded - DATE >= @submission_date)
+    - client_id: client20-same-date
+      event: "terms_of_use#accepted"
+      criteria: "tou_accept"
+      first_submission_timestamp: 2025-10-29T05:00:00+00:00
+
+    # Historical record with different criteria (should NOT match in JOIN)
+    - client_id: client21-diff-criteria
+      event: "terms_of_use#accepted"
+      criteria: "different_criteria"
+  moz-fx-data-shared-prod.org_mozilla_firefox_derived.events_stream_v1:
+    # Test 1: New TOU accepted event (not in history) - INCLUDED
+    - client_id: client1-tou-new
+      profile_group_id: "client1-tou-profile"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+
+    # Test 2: New onboarding TOU event (not in history) - INCLUDED
+    - client_id: client2-onboarding-new
+      profile_group_id: "client2-onboarding-profile"
+      event_category: "onboarding"
+      event_name: "terms_of_service_accepted"
+      event: "onboarding#terms_of_service_accepted"
+      submission_timestamp: 2025-10-29T11:00:00
+      event_timestamp: 2025-10-29T11:00:00
+
+    # Test 3: Event already in history - EXCLUDED
+    - client_id: client3-existing
+      profile_group_id: "client3-existing-profile"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T12:00:00
+      event_timestamp: 2025-10-29T12:00:00
+
+    # Test 4: Multiple TOU events same day (aggregates to earliest) - INCLUDED
+    - client_id: client4-multiple
+      profile_group_id: "client4-profile-1"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T08:00:00  # Earliest
+      event_timestamp: 2025-10-29T08:00:00
+      event_extra: {attempt: 1}
+    - client_id: client4-multiple
+      profile_group_id: "client4-profile-2"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T14:00:00  # Later
+      event_timestamp: 2025-10-29T14:00:00
+      event_extra: {attempt: 2}
+
+    # Test 5: Same client, both TOU event types (both new) - INCLUDED (2 separate rows)
+    - client_id: client5-both-types
+      profile_group_id: "client5-profile"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+      event_extra: {type: "tou"}
+    - client_id: client5-both-types
+      profile_group_id: "client5-profile"
+      event_category: "onboarding"
+      event_name: "terms_of_service_accepted"
+      event: "onboarding#terms_of_service_accepted"
+      submission_timestamp: 2025-10-29T11:00:00
+      event_timestamp: 2025-10-29T11:00:00
+      event_extra: {type: "onboarding"}
+
+    # Test 6: TOU declined - EXCLUDED (wrong event_name)
+    - client_id: client6-tou-declined
+      profile_group_id: "client6-profile"
+      event_category: "terms_of_use"
+      event_name: "declined"
+      event: "terms_of_use#declined"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+
+    # Test 7: Onboarding started - EXCLUDED (wrong event_name)
+    - client_id: client7-onboarding-started
+      profile_group_id: "client7-profile"
+      event_category: "onboarding"
+      event_name: "started"
+      event: "onboarding#started"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+
+    # Test 8: Wrong category - EXCLUDED
+    - client_id: client8-wrong-category
+      profile_group_id: "client8-profile"
+      event_category: "privacy"
+      event_name: "accepted"
+      event: "privacy#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+
+    # Test 9: Excluded event category (uptake.remotecontent.result)
+    - client_id: client9-excluded-uptake
+      profile_group_id: "client9-profile"
+      event_category: "uptake.remotecontent.result"
+      event_name: "accepted"
+      event: "uptake.remotecontent.result#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+
+    # Test 10: Excluded event category (media.playback)
+    - client_id: client10-excluded-media
+      profile_group_id: "client10-profile"
+      event_category: "media.playback"
+      event_name: "accepted"
+      event: "media.playback#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+
+    # Test 11: Excluded event category (nimbus_events)
+    - client_id: client11-excluded-nimbus
+      profile_group_id: "client11-profile"
+      event_category: "nimbus_events"
+      event_name: "accepted"
+      event: "nimbus_events#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+
+    # Test 12: Wrong date - EXCLUDED (DATE != @submission_date)
+    - client_id: client12-wrong-date
+      profile_group_id: "client12-profile"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-28T10:00:00
+      event_timestamp: 2025-10-28T10:00:00
+
+    # Test 13: NULL optional fields
+    - client_id: client13-nulls
+      profile_group_id: "client13-profile"
+      event_category: "onboarding"
+      event_name: "terms_of_service_accepted"
+      event: "onboarding#terms_of_service_accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: null
+      event_extra: null
+
+    # Test 14: ARRAY_AGG event ordering (same submission, different event_timestamp) - INCLUDED (picks earliest event_timestamp)
+    - client_id: client14-event-ordering
+      profile_group_id: "client14-profile-1"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T09:00:00  # Earlier (should be picked)
+      event_extra: {order: 1}
+    - client_id: client14-event-ordering
+      profile_group_id: "client14-profile-2"
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00  # Later
+      event_extra: {order: 2}
+
+    # Test 15: NULL event_timestamp with COALESCE ordering
+    - client_id: client15-null-timestamp
+      profile_group_id: "client15-profile-1"
+      event_category: "onboarding"
+      event_name: "terms_of_service_accepted"
+      event: "onboarding#terms_of_service_accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T09:00:00  # Has timestamp (should be picked)
+      event_extra: {has_timestamp: true}
+    - client_id: client15-null-timestamp
+      profile_group_id: "client15-profile-2"
+      event_category: "onboarding"
+      event_name: "terms_of_service_accepted"
+      event: "onboarding#terms_of_service_accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: null  # NULL sorted last
+      event_extra: {has_timestamp: false}
+
+    # Test 16: Same client, one event in history, one new
+    - client_id: client16-partial-history
+      profile_group_id: "client16-profile"
+      sample_id: 0
+      event_category: "terms_of_use"
+      event_name: "accepted"
+      event: "terms_of_use#accepted"
+      submission_timestamp: 2025-10-29T10:00:00
+      event_timestamp: 2025-10-29T10:00:00
+      event_extra: {type: "old"}
+    - client_id: client16-partial-history
+      profile_group_id: "client16-profile"
+      sample_id: 0
+      event_category: "onboarding"
+      event_name: "terms_of_service_accepted"
+      event: "onboarding#terms_of_service_accepted"
+      submission_timestamp: 2025-10-29T11:00:00
+      event_timestamp: 2025-10-29T11:00:00
+      event_extra: {type: "new"}
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2025-10-29
+
+is_init: false
+
+expect:
+  # Test 1: New TOU accepted event (not in history) - INCLUDED
+  - first_submission_timestamp: 2025-10-29T10:00:00+00:00
+    client_id: client1-tou-new
+    event: "terms_of_use#accepted"
+    event_category: "terms_of_use"
+    event_name: "accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client1-tou-profile"
+    first_event_timestamp: 2025-10-29T10:00:00+00:00
+
+  # Test 2: New onboarding TOU event (not in history) - INCLUDED
+  - first_submission_timestamp: 2025-10-29T11:00:00+00:00
+    client_id: client2-onboarding-new
+    event: "onboarding#terms_of_service_accepted"
+    event_category: "onboarding"
+    event_name: "terms_of_service_accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client2-onboarding-profile"
+    first_event_timestamp: 2025-10-29T11:00:00+00:00
+
+  # Test 3: Event already in history - EXCLUDED
+
+  # Test 4: Multiple TOU events same day (aggregates to earliest) - INCLUDED
+  - first_submission_timestamp: 2025-10-29T08:00:00+00:00
+    client_id: client4-multiple
+    event: "terms_of_use#accepted"
+    event_category: "terms_of_use"
+    event_name: "accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client4-profile-1"
+    first_event_timestamp: 2025-10-29T08:00:00+00:00
+    event_extra: {attempt: 1}
+
+  # Test 5: Same client, both TOU event types (both new) - INCLUDED (2 separate rows)
+  - first_submission_timestamp: 2025-10-29T10:00:00+00:00
+    client_id: client5-both-types
+    event: "terms_of_use#accepted"
+    event_category: "terms_of_use"
+    event_name: "accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client5-profile"
+    first_event_timestamp: 2025-10-29T10:00:00+00:00
+    event_extra: {type: "tou"}
+  - first_submission_timestamp: 2025-10-29T11:00:00+00:00
+    client_id: client5-both-types
+    event: "onboarding#terms_of_service_accepted"
+    event_category: "onboarding"
+    event_name: "terms_of_service_accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client5-profile"
+    first_event_timestamp: 2025-10-29T11:00:00+00:00
+    event_extra: {type: "onboarding"}
+
+  # Test 6-12: Various exclusions - NOT IN OUTPUT
+
+  # Test 13: NULL fields - INCLUDED
+  - first_submission_timestamp: 2025-10-29T10:00:00+00:00
+    client_id: client13-nulls
+    event: "onboarding#terms_of_service_accepted"
+    event_category: "onboarding"
+    event_name: "terms_of_service_accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client13-profile"
+
+  # Test 14: ARRAY_AGG event ordering (same submission, different event_timestamp) - INCLUDED (picks earliest event_timestamp)
+  - first_submission_timestamp: 2025-10-29T10:00:00+00:00
+    client_id: client14-event-ordering
+    event: "terms_of_use#accepted"
+    event_category: "terms_of_use"
+    event_name: "accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client14-profile-1"
+    first_event_timestamp: 2025-10-29T09:00:00+00:00
+    event_extra: {order: 1}
+
+  # Test 15: NULL timestamp - INCLUDED (picks the one with timestamp)
+  - first_submission_timestamp: 2025-10-29T10:00:00+00:00
+    client_id: client15-null-timestamp
+    event: "onboarding#terms_of_service_accepted"
+    event_category: "onboarding"
+    event_name: "terms_of_service_accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client15-profile-1"
+    first_event_timestamp: 2025-10-29T09:00:00+00:00
+    event_extra: {has_timestamp: true}
+
+  # Test 16: Partial history - only new event INCLUDED
+  - first_submission_timestamp: 2025-10-29T11:00:00+00:00
+    client_id: client16-partial-history
+    event: "onboarding#terms_of_service_accepted"
+    event_category: "onboarding"
+    event_name: "terms_of_service_accepted"
+    criteria: "tou_accept"
+    profile_group_id: "client16-profile"
+    sample_id: 0
+    first_event_timestamp: 2025-10-29T11:00:00+00:00
+    event_extra: {type: "new"}
+
+  # Test 17-21: various exclusions

@@ -6,29 +6,26 @@ import os.path
 import re
 from functools import partial
 from multiprocessing.pool import ThreadPool
+from pathlib import Path
 
 import pytest
+import yaml
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from ..routine import parse_routine
 from ..util.common import render
 from .sql_test import (
-    TABLE_EXTENSIONS,
     Table,
     bq_client,
     coerce_result,
     dataset,
     default_encoding,
     get_query_params,
-    load,
+    get_source_schema,
     load_table,
-    load_view,
     print_and_test,
-    read,
 )
-
-expect_names = {f"expect.{ext}" for ext in ("yaml", "json", "ndjson")}
 
 
 def pytest_configure(config):
@@ -37,9 +34,13 @@ def pytest_configure(config):
 
 
 def pytest_collect_file(parent, path):
-    """Collect non-python query tests."""
-    if path.basename in expect_names:
-        return SqlTest.from_parent(parent, fspath=path.parts()[-2])
+    """Collect `tests/test_*.yaml` files in ETL/view directories."""
+    if (
+        path.dirpath().basename == "tests"
+        and path.basename.startswith("test_")
+        and path.ext == ".yaml"
+    ):
+        return SqlTest.from_parent(parent, fspath=path)
 
 
 class SqlTest(pytest.Item, pytest.File):
@@ -56,9 +57,11 @@ class SqlTest(pytest.Item, pytest.File):
         return super().collect()
 
     def reportinfo(self):
-        """Set report title to `{dataset}.{table}:{test}`."""
-        project, dataset, table, test = self.fspath.strpath.split(os.path.sep)[-4:]
-        return super().reportinfo()[:2] + (f"{project}.{dataset}.{table}:{test}",)
+        """Set report title to `{project}.{dataset}.{table}:{test}`."""
+        project, dataset, table = self.fspath.strpath.split(os.path.sep)[-5:-2]
+        return super().reportinfo()[:2] + (
+            f"{project}.{dataset}.{table}:{self.fspath.purebasename}",
+        )
 
     def repr_failure(self, excinfo):
         """Skip traceback for api error."""
@@ -74,120 +77,63 @@ class SqlTest(pytest.Item, pytest.File):
 
     def runtest(self):
         """Run."""
-        test_name = self.fspath.basename
-        query_name = self.fspath.dirpath().basename
-        project_dir = (
-            self.fspath.dirpath()
-            .dirpath()
-            .dirpath()
-            .dirname.replace(
-                "moz-fx-data-integration-tests", "___INTEGRATION_TESTS_PLACEHOLDER___"
-            )
-            .replace("tests", "")
-            .replace(
-                "___INTEGRATION_TESTS_PLACEHOLDER___", "moz-fx-data-integration-tests"
-            )
-        )
+        test_file = Path(self.fspath)
+        tests_dir, query_dir, dataset_dir, project_dir, sql_dir = test_file.parents[:5]
+        test_name = test_file.stem
+        query_name = query_dir.name
 
-        script_test = False
+        test = yaml.safe_load(test_file.read_text())
+        is_init = bool(test.get("is_init", False))
+        render_kwargs = {"template_folder": query_dir, "is_init": lambda: is_init}
 
-        # init tests write to dataset_query_test, instead of their default name
-        if self.fspath.dirname.endswith("moz-fx-data-integration-tests"):
-            path = self.fspath.dirname
-        else:
-            path = (
-                self.fspath.dirname.replace(
-                    "moz-fx-data-integration-tests",
-                    "___INTEGRATION_TESTS_PLACEHOLDER___",
-                )
-                .replace("tests", "")
-                .replace(
-                    "___INTEGRATION_TESTS_PLACEHOLDER___",
-                    "moz-fx-data-integration-tests",
-                )
-            )
-
-        if test_name == "test_init":
-            query = render(
-                "query.sql",
-                template_folder=path,
-                **{"is_init": lambda: True},
-            )
-        elif test_name == "test_script":
-            script_test = True
-            query = render("script.sql", template_folder=path)
-        elif os.path.exists(os.path.join(path, "view.sql")):
+        if (query_dir / "query.sql").exists():
+            query = render("query.sql", **render_kwargs)
+        elif (query_dir / "view.sql").exists():
             query = re.sub(
                 "CREATE OR REPLACE VIEW.*?AS",
                 "",
-                render("view.sql", template_folder=path),
+                render("view.sql", **render_kwargs),
                 flags=re.DOTALL,
             )
         else:
-            query = render("query.sql", template_folder=path)
+            pytest.skip(
+                f"No query.sql or view.sql in {query_dir} (if it's generated, run `./bqetl generate`)"
+            )
 
-        expect = load(self.fspath.strpath, "expect")
+        expect = test["expect"]
 
         tables = {}
-        views = {}
+        for table_name, rows in test["sources"].items():
+            original = table_name
+            if "." in table_name:
+                # combine project and dataset name with table name
+                table_name = table_name.replace(".", "_").replace("-", "_")
+                original_pattern = (
+                    r"`?(?<![._])\b"
+                    + r"`?\.`?".join(original.split("."))
+                    + r"\b(?![._])`?"
+                )
+                query = re.sub(original_pattern, table_name, query)
 
-        # generate tables for files with a supported table extension
-        for resource in next(os.walk(self.fspath))[2]:
-            if "." not in resource:
-                continue  # tables require an extension
-            table_name, extension = resource.rsplit(".", 1)
-            if table_name.endswith(".schema") or table_name in (
-                "expect",
-                "query_params",
-            ):
-                continue  # not a table
-            if extension in TABLE_EXTENSIONS or extension in ("yaml", "json"):
-                if extension in TABLE_EXTENSIONS:
-                    source_format = TABLE_EXTENSIONS[extension]
-                    source_path = os.path.join(self.fspath.strpath, resource)
-                else:
-                    source_format = TABLE_EXTENSIONS["ndjson"]
-                    source_path = (self.fspath.strpath, table_name)
-                if "." in table_name:
-                    # combine project and dataset name with table name
-                    original, table_name = (
-                        table_name,
-                        table_name.replace(".", "_").replace("-", "_"),
-                    )
-                    original_pattern = (
-                        r"`?(?<![._])\b"
-                        + r"`?\.`?".join(original.split("."))
-                        + r"\b(?![._])`?"
-                    )
-                    query = re.sub(original_pattern, table_name, query)
-                else:
-                    original = table_name
+            # second check for tablename tweaks.
+            # if the tablename ends with a date then need to replace that date with '*' for the
+            # query text substitution to work.
+            # e.g. see moz-fx-data-marketing-prod.65789850.ga_sessions_20230214
+            # A query using that table uses moz-fx-data-marketing-prod.65789850.ga_sessions_*
+            # with the date appended to allow for daily processing.
+            try:
+                datetime.datetime.strptime(table_name[-8:], "%Y%m%d")
+            except ValueError:
+                pass
+            else:
+                generic_table_name = table_name[:-8] + "*"
+                generic_original = original[:-8] + "*"
+                query = query.replace(generic_original, generic_table_name)
 
-                # second check for tablename tweaks.
-                # if the tablename ends with a date then need to replace that date with '*' for the
-                # query text substitution to work.
-                # e.g. see moz-fx-data-marketing-prod.65789850.ga_sessions_20230214
-                # A query using that table uses moz-fx-data-marketing-prod.65789850.ga_sessions_*
-                # with the date appended to allow for daily processing.
-                try:
-                    datetime.datetime.strptime(table_name[-8:], "%Y%m%d")
-                except ValueError:
-                    pass
-                else:
-                    generic_table_name = table_name[:-8] + "*"
-                    generic_original = original[:-8] + "*"
-                    query = query.replace(generic_original, generic_table_name)
-                tables[table_name] = Table(table_name, source_format, source_path)
-                print(f"Initialized {table_name}")
-            elif extension == "sql":
-                if "." in table_name:
-                    # combine project and dataset name with table name
-                    original, table_name = (
-                        table_name,
-                        table_name.replace(".", "_").replace("-", "_"),
-                    )
-                    query = query.replace(original, table_name)
-                views[table_name] = read(self.fspath.strpath, resource)
+            tables[table_name] = Table(
+                table_name, rows, get_source_schema(original, tests_dir, sql_dir)
+            )
+            print(f"Initialized {table_name}")
 
         # rewrite all udfs as temporary
         query = parse_routine.sub_local_routines(query, project_dir)
@@ -198,7 +144,7 @@ class SqlTest(pytest.Item, pytest.File):
             "require_partition_filter = TRUE", "require_partition_filter = FALSE"
         )
 
-        dataset_id = "_".join(self.fspath.strpath.split(os.path.sep)[-3:])
+        dataset_id = f"{dataset_dir.name}_{query_name}_{test_name}"
         if "CI_RUN_ID" in os.environ:
             dataset_id += f"_{os.environ['CI_RUN_ID']}"
 
@@ -210,37 +156,20 @@ class SqlTest(pytest.Item, pytest.File):
                     tables.values(),
                     chunksize=1,
                 )
-                pool.starmap(
-                    partial(load_view, bq, default_dataset), views.items(), chunksize=1
-                )
 
             # configure job
             res_table = bigquery.TableReference(default_dataset, query_name)
 
-            if script_test:
-                job_config = bigquery.QueryJobConfig(
-                    default_dataset=default_dataset,
-                    query_parameters=get_query_params(self.fspath.strpath),
-                    use_legacy_sql=False,
-                )
+            job_config = bigquery.QueryJobConfig(
+                default_dataset=default_dataset,
+                destination=res_table,
+                query_parameters=get_query_params(test.get("parameters") or []),
+                use_legacy_sql=False,
+                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            )
 
-                bq.query(query, job_config=job_config).result()
-                # Retrieve final state of table on init or script tests
-                job = bq.query(
-                    f"SELECT * FROM {dataset_id}.{query_name}", job_config=job_config
-                )
-
-            else:
-                job_config = bigquery.QueryJobConfig(
-                    default_dataset=default_dataset,
-                    destination=res_table,
-                    query_parameters=get_query_params(self.fspath.strpath),
-                    use_legacy_sql=False,
-                    write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-                )
-
-                # run query
-                job = bq.query(query, job_config=job_config)
+            # run query
+            job = bq.query(query, job_config=job_config)
 
             result = list(coerce_result(*job.result()))
             result.sort(
@@ -248,11 +177,11 @@ class SqlTest(pytest.Item, pytest.File):
                     row, sort_keys=True, default=default_encoding
                 )
             )
-            # make sure we encode dates correctly
+            # make sure we encode dates correctly and omit the same things as the result
             expect = json.loads(
                 json.dumps(
                     sorted(
-                        expect,
+                        coerce_result(*expect),
                         key=lambda row: json.dumps(
                             row, sort_keys=True, default=default_encoding
                         ),

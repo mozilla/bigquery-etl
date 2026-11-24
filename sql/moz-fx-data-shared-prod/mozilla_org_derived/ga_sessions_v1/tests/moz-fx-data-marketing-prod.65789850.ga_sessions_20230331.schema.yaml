@@ -1,0 +1,133 @@
+fields:
+- name: visitId
+  type: INTEGER
+  mode: NULLABLE
+- name: visitNumber
+  type: INTEGER
+  mode: NULLABLE
+- name: visitStartTime
+  type: INTEGER
+  mode: NULLABLE
+- name: date
+  type: STRING
+  mode: NULLABLE
+- name: totals
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: timeOnSite
+    type: INTEGER
+    mode: NULLABLE
+  - name: pageviews
+    type: INTEGER
+    mode: NULLABLE
+- name: trafficSource
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+  - name: adContent
+    type: STRING
+    mode: NULLABLE
+  - name: keyword
+    type: STRING
+    mode: NULLABLE
+  - name: adwordsClickInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: gclId
+      type: STRING
+      mode: NULLABLE
+    - name: campaignId
+      type: INTEGER
+      mode: NULLABLE
+- name: device
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: browser
+    type: STRING
+    mode: NULLABLE
+  - name: browserVersion
+    type: STRING
+    mode: NULLABLE
+  - name: operatingSystem
+    type: STRING
+    mode: NULLABLE
+  - name: operatingSystemVersion
+    type: STRING
+    mode: NULLABLE
+  - name: language
+    type: STRING
+    mode: NULLABLE
+  - name: deviceCategory
+    type: STRING
+    mode: NULLABLE
+  - name: mobileDeviceModel
+    type: STRING
+    mode: NULLABLE
+  - name: mobileDeviceInfo
+    type: STRING
+    mode: NULLABLE
+- name: geoNetwork
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: country
+    type: STRING
+    mode: NULLABLE
+  - name: region
+    type: STRING
+    mode: NULLABLE
+  - name: city
+    type: STRING
+    mode: NULLABLE
+- name: hits
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: page
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pagePath
+      type: STRING
+      mode: NULLABLE
+  - name: appInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: landingScreenName
+      type: STRING
+      mode: NULLABLE
+  - name: eventInfo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: eventCategory
+      type: STRING
+      mode: NULLABLE
+    - name: eventAction
+      type: STRING
+      mode: NULLABLE
+    - name: eventLabel
+      type: STRING
+      mode: NULLABLE
+  - name: type
+    type: STRING
+    mode: NULLABLE
+  - name: hitNumber
+    type: INTEGER
+    mode: NULLABLE
+- name: clientId
+  type: STRING
+  mode: NULLABLE

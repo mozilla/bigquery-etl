@@ -1,0 +1,596 @@
+sources:
+  moz-fx-data-shared-prod.fenix.deletion_request:
+    # Requests from any date count, including ones after the day being built.
+    - submission_timestamp: "2026-11-05 10:00:00"
+      client_info: {client_id: android-deleted}
+    - submission_timestamp: "2023-03-01 10:00:00"
+      client_info: {client_id: someone-else}
+  moz-fx-data-shared-prod.fenix.events_stream:
+    # android-a: two sponsored clicks count, a stocks card doesn't, another day doesn't, and a
+    # search suggestion isn't read at all. android-c has clicks but no search row: kept, no dims.
+    - submission_timestamp: "2026-10-28 10:00:00"
+      client_id: android-a
+      sample_id: 11
+      event_category: awesomebar
+      event_name: sponsored_suggestion_clicked
+      event_extra: {provider: amp}
+    - submission_timestamp: "2026-10-28 11:00:00"
+      client_id: android-a
+      sample_id: 11
+      event_category: awesomebar
+      event_name: sponsored_suggestion_clicked
+      event_extra: {provider: amp}
+    - submission_timestamp: "2026-10-28 12:00:00"
+      client_id: android-a
+      sample_id: 11
+      event_category: awesomebar
+      event_name: optimized_suggestion_card_clicked
+      event_extra: {card_type: stocks}
+    - submission_timestamp: "2026-10-28 13:00:00"
+      client_id: android-a
+      sample_id: 11
+      event_category: awesomebar
+      event_name: search_suggestion_clicked
+    - submission_timestamp: "2026-10-27 10:00:00"
+      client_id: android-a
+      sample_id: 11
+      event_category: awesomebar
+      event_name: sponsored_suggestion_clicked
+      event_extra: {provider: amp}
+    - submission_timestamp: "2026-10-28 10:00:00"
+      client_id: android-c
+      sample_id: 15
+      event_category: awesomebar
+      event_name: non_sponsored_suggestion_clicked
+      event_extra: {provider: wikipedia}
+    - submission_timestamp: "2026-10-28 11:00:00"
+      client_id: android-c
+      sample_id: 15
+      event_category: awesomebar
+      event_name: optimized_suggestion_card_clicked
+      event_extra: {card_type: flights}
+    # android-d only clicked a card that doesn't count and has no searches: dropped.
+    - submission_timestamp: "2026-10-28 10:00:00"
+      client_id: android-d
+      sample_id: 16
+      event_category: awesomebar
+      event_name: optimized_suggestion_card_clicked
+      event_extra: {card_type: stocks}
+    # android-deleted's click is dropped with the client.
+    - submission_timestamp: "2026-10-28 10:00:00"
+      client_id: android-deleted
+      sample_id: 19
+      event_category: awesomebar
+      event_name: sponsored_suggestion_clicked
+      event_extra: {provider: amp}
+  moz-fx-data-shared-prod.firefox_ios.deletion_request:
+    - submission_timestamp: "2025-01-15 10:00:00"
+      client_info: {client_id: ios-deleted}
+    # A Fenix client_id in the iOS stream doesn't remove the Fenix client.
+    - submission_timestamp: "2025-01-15 10:00:00"
+      client_info: {client_id: android-a}
+  moz-fx-data-shared-prod.firefox_ios.events_stream:
+    # ios-a: one sponsored tap counts, a history tap doesn't.
+    - submission_timestamp: "2026-10-28 10:00:00"
+      client_id: ios-a
+      sample_id: 14
+      event_category: awesomebar
+      event_name: search_result_tap
+      event_extra: {type: amp-suggestion}
+    - submission_timestamp: "2026-10-28 11:00:00"
+      client_id: ios-a
+      sample_id: 14
+      event_category: awesomebar
+      event_name: search_result_tap
+      event_extra: {type: history-item}
+  moz-fx-data-shared-prod.search.search_clients_daily_glean:
+    # client-a has two rows (engines or sources); SAP is summed. client-d searched but never
+    # used the urlbar: kept. client-e only has a row with no searches: dropped. Rows with an
+    # exclusion reason go to sap_excluded: client-a's alongside its SAP, and client-f, with only
+    # that, stays so the exclusion can be audited.
+    - {submission_date: "2026-10-28", client_id: client-a, sample_id: 1, normalized_engine: Google, sap_counts_total: 3}
+    - {submission_date: "2026-10-28", client_id: client-a, sample_id: 1, normalized_engine: Bing, sap_counts_total: 2}
+    - submission_date: "2026-10-28"
+      client_id: client-a
+      sample_id: 1
+      normalized_engine: DuckDuckGo
+      sap_counts_total: 10000
+      sap_exclusion_reason: sap_row_ge_10000
+    - submission_date: "2026-10-28"
+      client_id: client-f
+      sample_id: 6
+      normalized_engine: Google
+      sap_counts_total: 638260
+      sap_exclusion_reason: sap_row_ge_10000
+    - {submission_date: "2026-10-28", client_id: client-d, sample_id: 4, normalized_engine: Google, sap_counts_total: 4}
+    - {submission_date: "2026-10-28", client_id: client-e, sample_id: 5, normalized_engine: Google, sap_counts_total: 0}
+    - {submission_date: "2026-10-27", client_id: client-a, sample_id: 1, normalized_engine: Google, sap_counts_total: 100}
+  moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1:
+    # client-d has no dims row, so its dimensions are null and it fails the version floor.
+    - submission_date: "2026-10-28"
+      client_id: client-a
+      profile_group_id: group-a-dims
+      sample_id: 1
+      country: US
+      normalized_channel: release
+      os: Windows_NT
+      app_version_major: 142
+      normalized_default_search_engine: Google
+      is_default_browser: true
+    - submission_date: "2026-10-28"
+      client_id: client-b
+      profile_group_id: group-b
+      sample_id: 2
+      country: DE
+      normalized_channel: beta
+      os: Darwin
+      app_version_major: 143
+      normalized_default_search_engine: Bing
+      is_default_browser: false
+    - submission_date: "2026-10-28"
+      client_id: client-c
+      profile_group_id: group-c-dims
+      sample_id: 3
+      country: FR
+      normalized_channel: release
+      os: Linux
+      app_version_major: 130
+      is_default_browser: false
+    - submission_date: "2026-10-28"
+      client_id: client-e
+      profile_group_id: group-e
+      sample_id: 5
+      country: US
+      normalized_channel: release
+      os: Windows_NT
+      app_version_major: 142
+    - submission_date: "2026-10-27"
+      client_id: client-d
+      profile_group_id: group-d
+      sample_id: 4
+      country: CA
+      normalized_channel: release
+      os: Windows_NT
+      app_version_major: 142
+  moz-fx-data-shared-prod.search_derived.kpi_component_map_v1:
+    # rust_yelp counted until 2026-10-01 and is excluded after (definition_version 2).
+    # The merino_wikipedia row starts after the test date, so desktop's definition_version stays 2.
+    # definition_version is per platform: the mobile rows' 4 doesn't raise desktop's.
+    # The android row shares a desktop result type's name and must be ignored.
+    - result_type: rust_adm_sponsored
+      platform: desktop
+      product_result_type: admarketplace_sponsored
+      component: suggest_sponsored
+      effective_from: "1970-01-01"
+      reason: paid
+      definition_version: 1
+    - result_type: rust_adm_sponsored
+      platform: android
+      product_result_type: admarketplace_sponsored
+      component: excluded
+      effective_from: "1970-01-01"
+      reason: other platform
+      definition_version: 1
+    - result_type: rust_wikipedia
+      platform: desktop
+      product_result_type: wikipedia_enhanced
+      component: suggest_nonsponsored
+      effective_from: "1970-01-01"
+      reason: unpaid
+      definition_version: 1
+    - result_type: ai_chat
+      platform: desktop
+      product_result_type: ai_chat
+      component: ai_chat
+      effective_from: "1970-01-01"
+      reason: ask
+      definition_version: 1
+    - result_type: history
+      platform: desktop
+      product_result_type: history
+      component: excluded
+      effective_from: "1970-01-01"
+      reason: navigation
+      definition_version: 1
+    - result_type: rust_yelp
+      platform: desktop
+      product_result_type: yelp_suggestion
+      component: suggest_sponsored
+      effective_from: "1970-01-01"
+      effective_to: "2026-10-01"
+      reason: paid
+      definition_version: 1
+    - result_type: rust_yelp
+      platform: desktop
+      product_result_type: yelp_suggestion
+      component: excluded
+      effective_from: "2026-10-01"
+      reason: changed
+      definition_version: 2
+    - result_type: merino_wikipedia
+      platform: desktop
+      product_result_type: wikipedia
+      component: suggest_nonsponsored
+      effective_from: "2026-11-01"
+      reason: future
+      definition_version: 3
+    # Mobile rows use the events' own names.
+    - result_type: amp
+      platform: android
+      product_result_type: admarketplace_sponsored
+      component: suggest_sponsored
+      effective_from: "1970-01-01"
+      reason: paid
+      definition_version: 4
+    - result_type: wikipedia
+      platform: android
+      product_result_type: wikipedia_enhanced
+      component: suggest_nonsponsored
+      effective_from: "1970-01-01"
+      reason: free
+      definition_version: 4
+    - result_type: flights
+      platform: android
+      product_result_type: flights
+      component: suggest_nonsponsored
+      effective_from: "1970-01-01"
+      reason: free
+      definition_version: 4
+    - result_type: stocks
+      platform: android
+      product_result_type: market
+      component: excluded
+      effective_from: "1970-01-01"
+      reason: already SAP
+      definition_version: 4
+    - result_type: amp-suggestion
+      platform: ios
+      product_result_type: admarketplace_sponsored
+      component: suggest_sponsored
+      effective_from: "1970-01-01"
+      reason: paid
+      definition_version: 4
+    - result_type: history-item
+      platform: ios
+      product_result_type: history
+      component: excluded
+      effective_from: "1970-01-01"
+      reason: history
+      definition_version: 4
+  moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2:
+    # android-a has three rows: SAP is summed, the country on most rows wins, and a real engine
+    # beats 'unavailable'. android-b has no SAP and no clicks: dropped. focus-a is another app:
+    # dropped. ios-a is labeled Fennec, as Firefox iOS is in this table. android-nightly is
+    # Nightly (app_name Firefox Preview): kept. ios-legacy is a core-ping row (before 28):
+    # dropped. android-deleted and ios-deleted have sent a deletion request: dropped.
+    - submission_date: "2026-10-28"
+      client_id: android-a
+      sample_id: 11
+      normalized_app_name: Fenix
+      os: Android
+      search_count: 2
+      country: US
+      channel: release
+      app_version: "144.0.1"
+      default_search_engine: google-b-m
+    - submission_date: "2026-10-28"
+      client_id: android-a
+      sample_id: 11
+      normalized_app_name: Fenix
+      os: Android
+      search_count: 3
+      country: US
+      channel: release
+      app_version: "144.0.1"
+      default_search_engine: unavailable
+    - submission_date: "2026-10-28"
+      client_id: android-a
+      sample_id: 11
+      normalized_app_name: Fenix
+      os: Android
+      search_count: 1
+      country: DE
+      channel: release
+      app_version: "144.0.1"
+      default_search_engine: unavailable
+    - submission_date: "2026-10-28"
+      client_id: android-b
+      sample_id: 12
+      normalized_app_name: Fenix
+      os: Android
+      search_count: 0
+      country: US
+      channel: release
+      app_version: "144.0.1"
+      default_search_engine: google-b-m
+    - submission_date: "2026-10-28"
+      client_id: focus-a
+      sample_id: 13
+      app_name: Focus Android Glean
+      normalized_app_name: Focus
+      os: Android
+      search_count: 4
+      country: US
+      channel: release
+      app_version: "144.0.1"
+      default_search_engine: google-b-m
+    - submission_date: "2026-10-28"
+      client_id: ios-a
+      sample_id: 14
+      normalized_app_name: Fennec
+      os: iOS
+      search_count: 4
+      country: CA
+      channel: beta
+      app_version: "145.2"
+      default_search_engine: DuckDuckGo
+    - submission_date: "2026-10-27"
+      client_id: android-a
+      sample_id: 11
+      normalized_app_name: Fenix
+      os: Android
+      search_count: 9
+      country: US
+      channel: release
+      app_version: "144.0.1"
+      default_search_engine: google-b-m
+    - submission_date: "2026-10-28"
+      client_id: android-nightly
+      sample_id: 17
+      app_name: Firefox Preview
+      normalized_app_name: Fenix
+      os: Android
+      search_count: 1
+      country: FR
+      channel: nightly
+      app_version: "147.0a1"
+      default_search_engine: google-b-m
+    - submission_date: "2026-10-28"
+      client_id: ios-legacy
+      sample_id: 18
+      normalized_app_name: Fennec
+      os: iOS
+      search_count: 5
+      country: US
+      channel: release
+      app_version: "27.1"
+      default_search_engine: Google
+    - submission_date: "2026-10-28"
+      client_id: android-deleted
+      sample_id: 19
+      normalized_app_name: Fenix
+      os: Android
+      search_count: 3
+      country: US
+      channel: release
+      app_version: "144.0.1"
+      default_search_engine: google-b-m
+    - submission_date: "2026-10-28"
+      client_id: ios-deleted
+      sample_id: 20
+      normalized_app_name: Fennec
+      os: iOS
+      search_count: 2
+      country: US
+      channel: release
+      app_version: "145.2"
+      default_search_engine: Google
+  moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1:
+    # client-a (release): Suggest clicks of every component, plus clicks that don't count
+    # (history, unmapped action_*, autofill_* and restrict_keyword_* types, rust_yelp after it
+    # became excluded) and an unmapped type that was only shown, which must not trip the guard.
+    - submission_date: "2026-10-28"
+      client_id: client-a
+      profile_group_id: group-a-urlbar
+      sample_id: 1
+      sessions_total: 6
+      sessions_engaged: 6
+      sessions_abandoned: 0
+      results:
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 2, sessions_shown: 2}
+        - {window_mode: smart, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 1, sessions_shown: 1}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_wikipedia, clicks: 1, sessions_shown: 1}
+        - {window_mode: smart, sap: urlbar, interaction: typed, result_type: ai_chat, clicks: 1, sessions_shown: 1}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: history, clicks: 1, sessions_shown: 3}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: action_new_thing, clicks: 1, sessions_shown: 1}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: autofill_new_thing, clicks: 1, sessions_shown: 1}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: restrict_keyword_new_thing, clicks: 1, sessions_shown: 1}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_yelp, clicks: 1, sessions_shown: 1}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: brand_new_type, clicks: 0, sessions_shown: 1}
+    # client-b (beta): urlbar user whose clicks don't count: history, and an unmapped type that
+    # beta clicks can't fail the run on. Kept, with zeros.
+    - submission_date: "2026-10-28"
+      client_id: client-b
+      profile_group_id: group-b
+      sample_id: 2
+      sessions_total: 1
+      sessions_engaged: 1
+      sessions_abandoned: 0
+      results:
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: history, clicks: 1, sessions_shown: 1}
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: prerelease_new_type, clicks: 2, sessions_shown: 2}
+    # client-c: no profile group id here (falls back to dims), no results at all.
+    - submission_date: "2026-10-28"
+      client_id: client-c
+      sample_id: 3
+      sessions_total: 1
+      sessions_engaged: 0
+      sessions_abandoned: 1
+    # Another day: ignored.
+    - submission_date: "2026-10-27"
+      client_id: client-a
+      sample_id: 1
+      sessions_total: 1
+      sessions_engaged: 1
+      sessions_abandoned: 0
+      results:
+        - {window_mode: classic, sap: urlbar, interaction: typed, result_type: rust_adm_sponsored, clicks: 9, sessions_shown: 1}
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: "2026-10-28"
+
+expect:
+  # NULL columns are omitted: the harness drops null keys from the result row.
+
+  # Sponsored 3 across both window modes, one each of non-sponsored and ai_chat. history,
+  # action_new_thing and rust_yelp (excluded since 2026-10-01) don't count.
+  - submission_date: "2026-10-28"
+    platform: desktop
+    client_id: client-a
+    profile_group_id: group-a-urlbar
+    sample_id: 1
+    country: US
+    normalized_channel: release
+    os: Windows_NT
+    app_version_major: "142"
+    normalized_default_search_engine: Google
+    is_default_browser: true
+    sap: 5
+    sap_excluded: 10000
+    suggest_sponsored: 3
+    suggest_nonsponsored: 1
+    ai_chat: 1
+    search_queries: 10
+    in_urlbar: true
+    meets_population_rules: true
+    definition_version: 2
+  - submission_date: "2026-10-28"
+    platform: desktop
+    client_id: client-b
+    profile_group_id: group-b
+    sample_id: 2
+    country: DE
+    normalized_channel: beta
+    os: Darwin
+    app_version_major: "143"
+    normalized_default_search_engine: Bing
+    is_default_browser: false
+    sap: 0
+    sap_excluded: 0
+    suggest_sponsored: 0
+    suggest_nonsponsored: 0
+    ai_chat: 0
+    search_queries: 0
+    in_urlbar: true
+    meets_population_rules: true
+    definition_version: 2
+  # profile_group_id from dims; below the version floor.
+  - submission_date: "2026-10-28"
+    platform: desktop
+    client_id: client-c
+    profile_group_id: group-c-dims
+    sample_id: 3
+    country: FR
+    normalized_channel: release
+    os: Linux
+    app_version_major: "130"
+    is_default_browser: false
+    sap: 0
+    sap_excluded: 0
+    suggest_sponsored: 0
+    suggest_nonsponsored: 0
+    ai_chat: 0
+    search_queries: 0
+    in_urlbar: true
+    meets_population_rules: false
+    definition_version: 2
+  # Search only, no dims row that day.
+  - submission_date: "2026-10-28"
+    platform: desktop
+    client_id: client-d
+    sample_id: 4
+    sap: 4
+    sap_excluded: 0
+    suggest_sponsored: 0
+    suggest_nonsponsored: 0
+    ai_chat: 0
+    search_queries: 4
+    in_urlbar: false
+    meets_population_rules: false
+    definition_version: 2
+  # Only an excluded row: nothing counted, kept so the exclusion can be audited.
+  - submission_date: "2026-10-28"
+    platform: desktop
+    client_id: client-f
+    sample_id: 6
+    sap: 0
+    sap_excluded: 638260
+    suggest_sponsored: 0
+    suggest_nonsponsored: 0
+    ai_chat: 0
+    search_queries: 0
+    in_urlbar: false
+    meets_population_rules: false
+    definition_version: 2
+  # Mobile: two sponsored clicks and SAP summed over three rows; the US and google-b-m rows win.
+  - submission_date: "2026-10-28"
+    platform: android
+    client_id: android-a
+    sample_id: 11
+    country: US
+    normalized_channel: release
+    os: Android
+    app_version_major: "144"
+    normalized_default_search_engine: Google
+    sap: 6
+    sap_excluded: 0
+    suggest_sponsored: 2
+    suggest_nonsponsored: 0
+    ai_chat: 0
+    search_queries: 8
+    in_urlbar: false
+    meets_population_rules: true
+    definition_version: 4
+  # Clicks with no search row: kept, with no dimensions.
+  - submission_date: "2026-10-28"
+    platform: android
+    client_id: android-c
+    sample_id: 15
+    sap: 0
+    sap_excluded: 0
+    suggest_sponsored: 0
+    suggest_nonsponsored: 2
+    ai_chat: 0
+    search_queries: 2
+    in_urlbar: false
+    meets_population_rules: true
+    definition_version: 4
+  # Nightly (app_name Firefox Preview) is Fenix too: kept.
+  - submission_date: "2026-10-28"
+    platform: android
+    client_id: android-nightly
+    sample_id: 17
+    country: FR
+    normalized_channel: nightly
+    os: Android
+    app_version_major: "147"
+    normalized_default_search_engine: Google
+    sap: 1
+    sap_excluded: 0
+    suggest_sponsored: 0
+    suggest_nonsponsored: 0
+    ai_chat: 0
+    search_queries: 1
+    in_urlbar: false
+    meets_population_rules: true
+    definition_version: 4
+  - submission_date: "2026-10-28"
+    platform: ios
+    client_id: ios-a
+    sample_id: 14
+    country: CA
+    normalized_channel: beta
+    os: iOS
+    app_version_major: "145"
+    normalized_default_search_engine: DuckDuckGo
+    sap: 4
+    sap_excluded: 0
+    suggest_sponsored: 1
+    suggest_nonsponsored: 0
+    ai_chat: 0
+    search_queries: 5
+    in_urlbar: false
+    meets_population_rules: true
+    definition_version: 4

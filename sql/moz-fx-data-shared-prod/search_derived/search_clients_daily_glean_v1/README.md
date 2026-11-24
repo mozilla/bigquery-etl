@@ -40,4 +40,4 @@ A consequence when comparing the two tables: a given day's partition here is pro
 
 Re-running a date rewrites that date alone.
 
-Every column has a description in `schema.yaml`. Query tests are in `tests/sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_glean_v1/`.
+Every column has a description in `schema.yaml`. Query tests are in the `tests` subdirectory.

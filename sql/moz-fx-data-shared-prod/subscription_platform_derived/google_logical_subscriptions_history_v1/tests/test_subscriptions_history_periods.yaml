@@ -1,0 +1,191 @@
+sources:
+  moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_history_v1:
+    # Subscription 1: active, then expired, then active
+    - id: s1-2000-01-01T00:00:00.000000
+      valid_from: 2000-01-01 00:00:00Z
+      valid_to: 2000-02-01 00:00:00Z
+      original_subscription_purchase_token: s1
+      subscription:
+        metadata:
+          purchase_token: s1
+        auto_renewing: false
+        expiry_time: 2000-02-01 00:00:00Z
+    - id: s1-2000-02-01T00:00:00.000000
+      valid_from: 2000-02-01 00:00:00Z
+      valid_to: 2000-03-01 00:00:00Z
+      original_subscription_purchase_token: s1
+      subscription:
+        metadata:
+          purchase_token: s1
+        auto_renewing: false
+        expiry_time: 2000-02-01 00:00:00Z
+    - id: s1-2000-03-01T00:00:00.000000
+      valid_from: 2000-03-01 00:00:00Z
+      valid_to: 9999-12-31 23:59:59.999999Z
+      original_subscription_purchase_token: s1
+      subscription:
+        metadata:
+          purchase_token: s1
+        auto_renewing: true
+        expiry_time: 2000-04-01 00:00:00Z
+
+    # Subscription 2: active, then replaced, then expired
+    - id: s2-2000-02-01T00:00:00.000000
+      valid_from: 2000-02-01 00:00:00Z
+      valid_to: 2000-03-01 00:00:00Z
+      original_subscription_purchase_token: s2
+      subscription:
+        metadata:
+          purchase_token: s2
+        auto_renewing: true
+        expiry_time: 2000-03-01 00:00:00Z
+    - id: s2-2000-03-01T00:00:00.000000
+      valid_from: 2000-03-01 00:00:00Z
+      valid_to: 2000-04-01 00:00:00Z
+      original_subscription_purchase_token: s2
+      subscription:
+        metadata:
+          purchase_token: s2b
+        auto_renewing: false
+        expiry_time: 2000-04-01 00:00:00Z
+    - id: s2-2000-04-01T00:00:00.000000
+      valid_from: 2000-04-01 00:00:00Z
+      valid_to: 9999-12-31 23:59:59.999999Z
+      original_subscription_purchase_token: s2
+      subscription:
+        metadata:
+          purchase_token: s2b
+        auto_renewing: false
+        expiry_time: 2000-04-01 00:00:00Z
+  moz-fx-data-shared-prod.subscription_platform_derived.services_v1: []
+  moz-fx-data-shared-prod.subscription_platform_derived.stripe_plans_v1: []
+  moz-fx-data-shared-prod.subscription_platform_derived.stripe_products_v1: []
+
+parameters: []
+
+expect:
+  # Subscription 1: active, then expired, then active
+  - id: Google-s1-2000-01-01T00:00:00.000000-2000-01-01T00:00:00.000000
+    valid_from: 2000-01-01 00:00:00Z
+    valid_to: 2000-02-01 00:00:00Z
+    provider_subscriptions_history_id: s1-2000-01-01T00:00:00.000000
+    subscription:
+      id: Google-s1-2000-01-01T00:00:00.000000
+      provider: Google
+      payment_provider: Google
+      provider_subscription_id: s1
+      services: []
+      is_bundle: false
+      is_trial: false
+      is_active: true
+      provider_status: SUBSCRIPTION_STATE_CANCELED
+      started_at: 2000-01-01 00:00:00Z
+      current_period_ends_at: 2000-02-01 00:00:00Z
+      auto_renew: false
+      current_period_discount_amount: '0'
+      ongoing_discount_amount: '0'
+      payment_method: Google Play Store
+  - id: Google-s1-2000-01-01T00:00:00.000000-2000-02-01T00:00:00.000000
+    valid_from: 2000-02-01 00:00:00Z
+    valid_to: 9999-12-31 23:59:59.999999Z
+    provider_subscriptions_history_id: s1-2000-02-01T00:00:00.000000
+    subscription:
+      id: Google-s1-2000-01-01T00:00:00.000000
+      provider: Google
+      payment_provider: Google
+      provider_subscription_id: s1
+      services: []
+      is_bundle: false
+      is_trial: false
+      is_active: false
+      provider_status: SUBSCRIPTION_STATE_EXPIRED
+      started_at: 2000-01-01 00:00:00Z
+      ended_at: 2000-02-01 00:00:00Z
+      ended_reason: Other
+      auto_renew: false
+      current_period_discount_amount: '0'
+      ongoing_discount_amount: '0'
+      payment_method: Google Play Store
+  - id: Google-s1-2000-03-01T00:00:00.000000-2000-03-01T00:00:00.000000
+    valid_from: 2000-03-01 00:00:00Z
+    valid_to: 9999-12-31 23:59:59.999999Z
+    provider_subscriptions_history_id: s1-2000-03-01T00:00:00.000000
+    subscription:
+      id: Google-s1-2000-03-01T00:00:00.000000
+      provider: Google
+      payment_provider: Google
+      provider_subscription_id: s1
+      services: []
+      is_bundle: false
+      is_trial: false
+      is_active: true
+      provider_status: SUBSCRIPTION_STATE_ACTIVE
+      started_at: 2000-03-01 00:00:00Z
+      current_period_ends_at: 2000-04-01 00:00:00Z
+      auto_renew: true
+      current_period_discount_amount: '0'
+      ongoing_discount_amount: '0'
+      payment_method: Google Play Store
+
+  # Subscription 2: active, then replaced, then expired
+  - id: Google-s2-2000-02-01T00:00:00.000000-2000-02-01T00:00:00.000000
+    valid_from: 2000-02-01 00:00:00Z
+    valid_to: 2000-03-01 00:00:00Z
+    provider_subscriptions_history_id: s2-2000-02-01T00:00:00.000000
+    subscription:
+      id: Google-s2-2000-02-01T00:00:00.000000
+      provider: Google
+      payment_provider: Google
+      provider_subscription_id: s2
+      services: []
+      is_bundle: false
+      is_trial: false
+      is_active: true
+      provider_status: SUBSCRIPTION_STATE_ACTIVE
+      started_at: 2000-02-01 00:00:00Z
+      current_period_ends_at: 2000-03-01 00:00:00Z
+      auto_renew: true
+      current_period_discount_amount: '0'
+      ongoing_discount_amount: '0'
+      payment_method: Google Play Store
+  - id: Google-s2-2000-02-01T00:00:00.000000-2000-03-01T00:00:00.000000
+    valid_from: 2000-03-01 00:00:00Z
+    valid_to: 2000-04-01 00:00:00Z
+    provider_subscriptions_history_id: s2-2000-03-01T00:00:00.000000
+    subscription:
+      id: Google-s2-2000-02-01T00:00:00.000000
+      provider: Google
+      payment_provider: Google
+      provider_subscription_id: s2b
+      services: []
+      is_bundle: false
+      is_trial: false
+      is_active: true
+      provider_status: SUBSCRIPTION_STATE_CANCELED
+      started_at: 2000-02-01 00:00:00Z
+      current_period_ends_at: 2000-04-01 00:00:00Z
+      auto_renew: false
+      current_period_discount_amount: '0'
+      ongoing_discount_amount: '0'
+      payment_method: Google Play Store
+  - id: Google-s2-2000-02-01T00:00:00.000000-2000-04-01T00:00:00.000000
+    valid_from: 2000-04-01 00:00:00Z
+    valid_to: 9999-12-31 23:59:59.999999Z
+    provider_subscriptions_history_id: s2-2000-04-01T00:00:00.000000
+    subscription:
+      id: Google-s2-2000-02-01T00:00:00.000000
+      provider: Google
+      payment_provider: Google
+      provider_subscription_id: s2b
+      services: []
+      is_bundle: false
+      is_trial: false
+      is_active: false
+      provider_status: SUBSCRIPTION_STATE_EXPIRED
+      started_at: 2000-02-01 00:00:00Z
+      ended_at: 2000-04-01 00:00:00Z
+      ended_reason: Other
+      auto_renew: false
+      current_period_discount_amount: '0'
+      ongoing_discount_amount: '0'
+      payment_method: Google Play Store

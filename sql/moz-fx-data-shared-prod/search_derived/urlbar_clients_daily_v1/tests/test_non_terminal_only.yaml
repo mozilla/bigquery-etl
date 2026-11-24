@@ -1,0 +1,45 @@
+sources:
+  moz-fx-data-shared-prod.firefox_desktop_derived.urlbar_events_v2:
+    # A bounce is engaged but non-terminal: no completed session and no click.
+    - submission_date: "2026-10-14"
+      glean_client_id: client-b
+      sample_id: 2
+      event_name: bounce
+      event_timestamp: 50
+      event_id: e1
+      interaction: typed
+      selected_result: history
+      product_selected_result: history
+      event_action: engaged
+      is_terminal: false
+      window_mode: classic
+      sap: urlbar
+      results:
+        - {position: 1, result_type: history, product_result_type: history, result_group: general}
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: "2026-10-14"
+
+expect:
+  # NULL columns are omitted: the harness drops null keys from the result row.
+
+  # No completed session, but the row and the element are kept.
+  - submission_date: "2026-10-14"
+    client_id: client-b
+    sample_id: 2
+    sessions_total: 0
+    sessions_engaged: 0
+    sessions_abandoned: 0
+    results:
+      - window_mode: classic
+        sap: urlbar
+        interaction: typed
+        result_type: history
+        product_result_type: history
+        result_group: general
+        clicks: 0
+        sessions_shown: 0
+        sessions_shown_abandoned: 0
+        annoyances: 0

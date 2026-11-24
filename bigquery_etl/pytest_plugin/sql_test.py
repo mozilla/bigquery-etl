@@ -5,19 +5,17 @@
 
 import codecs
 import json
-import os
-import os.path
 import pprint
+import re
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal
 from functools import lru_cache
-from io import BytesIO, TextIOWrapper
+from io import BytesIO
 from pathlib import Path
-from typing import Any, Callable, Generator, List, Optional, Tuple, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
-import yaml
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
@@ -30,72 +28,53 @@ QueryParameter = Union[
     bigquery.StructQueryParameter,
 ]
 
-TABLE_EXTENSIONS = {
-    "ndjson": bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-    "csv": bigquery.SourceFormat.CSV,
-    "backup_info": bigquery.SourceFormat.DATASTORE_BACKUP,
-    "export_metadata": bigquery.SourceFormat.DATASTORE_BACKUP,
-    "avro": bigquery.SourceFormat.AVRO,
-    "parquet": bigquery.SourceFormat.PARQUET,
-    "orc": bigquery.SourceFormat.ORC,
-}
-
 
 @dataclass
 class Table:
     """Define info needed to create a table for a generated test."""
 
     name: str
-    source_format: str
-    # a tuple means read via `load(*source_path)` and format as source_format
-    # a string means source_path is already in source_format
-    source_path: Union[str, Tuple[str, str]]
-    # post_init fields
+    rows: List[Dict[str, Any]]
     schema: Optional[List[bigquery.SchemaField]] = None
 
-    def __post_init__(self):
-        """Fill in calculated fields if not provided."""
-        if self.schema is None:
-            if isinstance(self.source_path, str):
-                resource_dir, resource = os.path.split(self.source_path)
-                full_name, _ = resource.rsplit(".", 1)
-            else:
-                resource_dir, full_name = self.source_path
 
-            table_dir, _ = os.path.split(resource_dir)
-            if any(
-                os.path.exists(os.path.join(table_dir, f"{full_name}.schema.{ext}"))
-                for ext in ("json", "yaml")
+def get_source_schema(
+    full_name: str, tests_dir: Path, sql_dir: Path
+) -> Optional[List[bigquery.SchemaField]]:
+    """Get the schema for a test source table/view, if one can be found."""
+    if "." not in full_name:
+        return None
+    name_parts = full_name.split(".")
+    dataset_name, table_name = name_parts[-2:]
+    stable_match = re.fullmatch(r"(?P<dataset_family>.+)_(?:stable|live)", dataset_name)
+
+    schema_files = [
+        tests_dir / f"{full_name}.schema.yaml",
+        sql_dir.joinpath(*name_parts) / SCHEMA_FILE,
+    ]
+    if stable_match and dataset_name.endswith("_live"):
+        # Live tables have the same schemas as their stable tables, which may have `schema.yaml` files.
+        stable_name_parts = [
+            *name_parts[:-2],
+            f"{stable_match['dataset_family']}_stable",
+            table_name,
+        ]
+        schema_files.append(sql_dir.joinpath(*stable_name_parts) / SCHEMA_FILE)
+    for schema_file in schema_files:
+        if schema_file.exists():
+            return Schema.from_schema_file(schema_file).to_bigquery_schema()
+
+    if stable_match:
+        for stable_table_schema in get_stable_table_schemas():
+            if (
+                stable_table_schema.bq_dataset_family == stable_match["dataset_family"]
+                and stable_table_schema.bq_table == table_name
             ):
-                schema = load(table_dir, f"{full_name}.schema")
-                self.schema = [
-                    bigquery.SchemaField.from_api_repr(field)
-                    for field in (schema["fields"] if "fields" in schema else schema)
-                ]
-            else:
-                schema_file = (
-                    Path("sql") / full_name.replace(".", os.path.sep) / SCHEMA_FILE
-                )
-                if schema_file.exists():
-                    schema = Schema.from_schema_file(schema_file)
-                    self.schema = schema.to_bigquery_schema()
-                elif "_stable." in full_name:
-                    for stable_table_schema in get_stable_table_schemas():
-                        if full_name.endswith("." + stable_table_schema.stable_table):
-                            schema = Schema({"fields": stable_table_schema.schema})
-                            self.schema = schema.to_bigquery_schema()
+                return Schema(
+                    {"fields": stable_table_schema.schema}
+                ).to_bigquery_schema()
 
-
-class NDJsonDecodeError(Exception):
-    """ndjson decode error."""
-
-    pass
-
-
-class JsonDecodeError(Exception):
-    """JSON decode error."""
-
-    pass
+    return None
 
 
 @lru_cache(maxsize=1)
@@ -132,7 +111,7 @@ def load_table(bq: bigquery.Client, dataset: bigquery.Dataset, table: Table):
     """Load table for a test."""
     destination = dataset.table(table.name)
     job_config = bigquery.LoadJobConfig(
-        source_format=table.source_format,
+        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
 
@@ -149,15 +128,11 @@ def load_table(bq: bigquery.Client, dataset: bigquery.Dataset, table: Table):
                 )
                 break  # stop because there can only be one time partitioning field
 
-    if isinstance(table.source_path, str):
-        with open(table.source_path, "rb") as file_obj:
-            job = bq.load_table_from_file(file_obj, destination, job_config=job_config)
-    else:
-        mem_file = BytesIO()
-        for row in load(*table.source_path):
-            mem_file.write(json.dumps(row, default=default_encoding).encode() + b"\n")
-        mem_file.seek(0)
-        job = bq.load_table_from_file(mem_file, destination, job_config=job_config)
+    mem_file = BytesIO()
+    for row in table.rows:
+        mem_file.write(json.dumps(row, default=default_encoding).encode() + b"\n")
+    mem_file.seek(0)
+    job = bq.load_table_from_file(mem_file, destination, job_config=job_config)
 
     try:
         job.result()
@@ -168,80 +143,10 @@ def load_table(bq: bigquery.Client, dataset: bigquery.Dataset, table: Table):
         raise
 
 
-def load_view(
-    bq: bigquery.Client, dataset: bigquery.Dataset, view_name: str, view_query: str
-):
-    """Load view for a test."""
-    view = bigquery.Table(dataset.table(view_name))
-    view.view_query = view_query.format(
-        project=dataset.project, dataset=dataset.dataset_id
-    )
-    bq.create_table(view)
-
-
-def read(*paths: str, decoder: Optional[Callable] = None, **kwargs):
-    """Read a file and apply decoder if provided."""
-    with open(os.path.join(*paths), **kwargs) as f:
-        return decoder(f) if decoder else f.read()
-
-
-def ndjson_load(file_obj: TextIOWrapper) -> List[Any]:
-    """Decode newline delimited json from file_obj."""
-    res = []
-    for i, line in enumerate(file_obj):
-        try:
-            res.append(json.loads(line))
-        except json.JSONDecodeError as e:
-            raise NDJsonDecodeError(
-                f"Line {i+1} column {e.colno} of file {file_obj.name}, {e.msg}"
-            )
-
-    return res
-
-
-def json_load(file_obj: TextIOWrapper) -> List[Any]:
-    """Decode json from file_obj."""
-    try:
-        return json.load(file_obj)
-    except json.JSONDecodeError as e:
-        raise JsonDecodeError(
-            f"Line {e.lineno} column {e.colno} of file {file_obj.name}, {e.msg}"
-        )
-
-
-def load(resource_dir: str, *basenames: str, **search: Optional[Callable]) -> Any:
-    """Read the first matching file found in resource_dir.
-
-    Calls read on paths under resource_dir with a name sans extension in
-    basenames and an extension and decoder in search.
-
-    :param resource_dir: directory to check for files
-    :param basenames: file names to look for, without an extension
-    :param search: mapping of file extension to decoder
-    :return: first response from read() that doesn't raise FileNotFoundError
-    :raises FileNotFoundError: when all matching files raise FileNotFoundError
-    """
-    search = search or {
-        "yaml": yaml.full_load,
-        "json": json_load,
-        "ndjson": ndjson_load,
-    }
-    not_found: List[str] = []
-    for basename in basenames:
-        for ext, decoder in search.items():
-            try:
-                return read(resource_dir, f"{basename}.{ext}", decoder=decoder)
-            except FileNotFoundError:
-                not_found.append(f"{basename}.{ext}")
-    raise FileNotFoundError(f"[Errno 2] No such files in '{resource_dir}': {not_found}")
-
-
-def get_query_params(resource_dir: str) -> Generator[QueryParameter, None, None]:
-    """Attempt to load the first query params found in resource_dir."""
-    try:
-        params = load(resource_dir, "query_params")
-    except FileNotFoundError:
-        params = []
+def get_query_params(
+    params: List[Dict[str, Any]],
+) -> Generator[QueryParameter, None, None]:
+    """Convert test parameters to BigQuery query parameters."""
     for param in params:
         if {"name", "type", "type_", "value"}.issuperset(param.keys()):
             # this is a scalar query param
@@ -266,7 +171,7 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
     Coerce bigquery.Row to dict using comprehensions.
     Coerce bytes to base64 encoded strings.
     Omit dict keys named "created_at" or "generated_time".
-    Omit columns with null results to simplify `expect` files.
+    Omit columns with null or empty array results to simplify `expect` files.
     """
     for element in elements:
         if isinstance(element, (dict, bigquery.Row)):
@@ -278,7 +183,9 @@ def coerce_result(*elements: Any) -> Generator[Any, None, None]:
                 )
                 for key, value in element.items()
                 # drop generated_time column
-                if key not in ("created_at", "generated_time") and value is not None
+                if key not in ("created_at", "generated_time")
+                and value is not None
+                and value != []
             }
         elif isinstance(element, (date, datetime)):
             yield element.isoformat()

@@ -1,0 +1,30 @@
+fields:
+- name: client_info
+  type: RECORD
+  fields:
+  - name: client_id
+    type: STRING
+- name: sample_id
+  type: INTEGER
+- name: normalized_channel
+  type: STRING
+- name: submission_timestamp
+  type: TIMESTAMP
+- name: metrics
+  type: RECORD
+  fields:
+  - name: string
+    type: RECORD
+    fields:
+    - name: metrics_adjust_campaign
+      type: STRING
+    - name: metrics_adjust_network
+      type: STRING
+    - name: metrics_adjust_ad_group
+      type: STRING
+    - name: metrics_adjust_creative
+      type: STRING
+    - name: metrics_install_source
+      type: STRING
+    - name: metrics_distribution_id
+      type: STRING

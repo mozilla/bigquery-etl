@@ -1,0 +1,35 @@
+sources:
+  moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus:
+    - question_id: 1
+      created_utc: "2024-01-01 10:00:00 UTC"
+      product: firefox
+      is_spam: false
+      is_locked: false
+    - question_id: 2
+      created_utc: "2024-01-01 11:00:00 UTC"
+      product: firefox
+      is_spam: false
+      is_locked: false
+    - question_id: 3
+      created_utc: "2024-01-01 10:00:00 UTC"
+      product: ios
+      is_spam: false
+      is_locked: false
+    - question_id: 4
+      created_utc: "2024-01-02 10:00:00 UTC"
+      product: firefox
+      is_spam: false
+      is_locked: false
+
+parameters: []
+
+expect:
+  - creation_date: "2024-01-01"
+    product: Firefox
+    forum_questions_posted: 2
+  - creation_date: "2024-01-01"
+    product: Firefox iOS
+    forum_questions_posted: 1
+  - creation_date: "2024-01-02"
+    product: Firefox
+    forum_questions_posted: 1

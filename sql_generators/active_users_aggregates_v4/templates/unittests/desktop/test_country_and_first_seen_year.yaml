@@ -1,0 +1,57 @@
+sources:
+  {{ project }}.telemetry.desktop_active_users:
+    # country null should result in ??. first_seen_year_new calculated correctly.
+    - submission_date: 2020-01-01
+      app_name: {{ app_name }}
+      client_id: client-1
+      sample_id: 0
+      first_seen_date: 2000-01-01
+      is_dau: False
+      is_wau: False
+      is_mau: False
+    # country not null. first_seen_year_new calculated correctly.
+    - submission_date: 2020-01-01
+      app_name: {{ app_name }}
+      client_id: client-2
+      sample_id: 2
+      country: CO
+      first_seen_date: 2010-11-01
+      is_daily_user: True
+      is_weekly_user: True
+      is_monthly_user: True
+      is_dau: True
+      is_wau: True
+      is_mau: True
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2020-01-01
+
+expect:
+  - submission_date: 2020-01-01
+    app_name: {{ app_name }}
+    first_seen_year_new: 2000
+    city: ??
+    country: ??
+    os_version_major: 0
+    os_version_minor: 0
+    daily_users: 0
+    weekly_users: 0
+    monthly_users: 0
+    dau: 0
+    wau: 0
+    mau: 0
+  - submission_date: 2020-01-01
+    app_name: {{ app_name }}
+    first_seen_year_new: 2010
+    city: ??
+    country: CO
+    os_version_major: 0
+    os_version_minor: 0
+    daily_users: 1
+    weekly_users: 1
+    monthly_users: 1
+    dau: 1
+    wau: 1
+    mau: 1

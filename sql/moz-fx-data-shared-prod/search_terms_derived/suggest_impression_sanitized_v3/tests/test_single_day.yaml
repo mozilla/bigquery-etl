@@ -1,0 +1,977 @@
+sources:
+  moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1:
+    - submission_timestamp: "2021-01-01 12:00:00"
+      request_id: rid1
+      search_query: null
+      advertiser: shoe store
+      block_id: 101
+      context_id: cid1
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: OH
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: nightly
+      position: 1
+      reporting_url: "url1"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    - submission_timestamp: "2021-01-01 12:03:00"
+      request_id: null
+      search_query: null
+      advertiser: awesome guitar store
+      block_id: 102
+      context_id: cid2
+      sample_id: null
+      is_clicked: true
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: AK
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: nightly
+      position: 2
+      reporting_url: "url2"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    - submission_timestamp: "2021-01-01 13:06:00"
+      request_id: rid_overlap
+      search_query: null
+      advertiser: legacy store
+      block_id: 105
+      context_id: cid_overlap
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: TX
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: release
+      position: 5
+      reporting_url: "url_overlap"
+      scenario: "online"
+      version: "94.0.2"
+      # Different slug/branch from glean rid_overlap fixture to confirm legacy source wins dedup
+      experiments:
+        - key: overlap-exp
+          value:
+            branch: legacy-wins
+    - submission_timestamp: "2021-01-01 12:07:00"
+      request_id: rid7
+      search_query: null
+      advertiser: null
+      block_id: 107
+      context_id: cid7
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: AZ
+      normalized_os: macOS
+      normalized_os_version: "10.9"
+      release_channel: beta
+      position: 7
+      reporting_url: "url7"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    # sid_multi: impressions for both requests in the session (see rid_multi_low below)
+    - submission_timestamp: "2021-01-01 13:20:30"
+      request_id: rid_multi_high
+      search_query: null
+      advertiser: pizza place
+      block_id: 120
+      context_id: cid_multi_high
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: CO
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: release
+      position: 20
+      reporting_url: "url_multi_high"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    # query normalization: LTRIM(LOWER(search_query)) produces telemetry_query "best shoes"
+    - submission_timestamp: "2021-01-01 13:40:00"
+      request_id: rid_norm
+      search_query: "  BEST SHOES"
+      advertiser: norm store
+      block_id: 140
+      context_id: cid_norm
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: GA
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: release
+      position: 40
+      reporting_url: "url_norm"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    # impression for the earlier request of sid_multi; still gets its own query
+    - submission_timestamp: "2021-01-01 13:20:10"
+      request_id: rid_multi_low
+      search_query: null
+      advertiser: pizza place
+      block_id: 121
+      context_id: cid_multi_low
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: CO
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: release
+      position: 21
+      reporting_url: "url_multi_low"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    # merino record for rid_redeliver is logged twice; impression yields one row
+    - submission_timestamp: "2021-01-01 14:00:00"
+      request_id: rid_redeliver
+      search_query: null
+      advertiser: redeliver store
+      block_id: 160
+      context_id: cid_redeliver
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: WA
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: release
+      position: 60
+      reporting_url: "url_redeliver"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    # merino records without session_id; each impression still gets its query
+    - submission_timestamp: "2021-01-01 14:10:00"
+      request_id: rid_no_session_a
+      search_query: null
+      advertiser: no session store
+      block_id: 170
+      context_id: cid_no_session_a
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: OR
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: release
+      position: 70
+      reporting_url: "url_no_session_a"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+    - submission_timestamp: "2021-01-01 14:11:00"
+      request_id: rid_no_session_b
+      search_query: null
+      advertiser: no session store
+      block_id: 171
+      context_id: cid_no_session_b
+      sample_id: null
+      is_clicked: false
+      locale: en-US
+      metadata:
+        geo:
+          country: US
+          subdivision1: OR
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      release_channel: release
+      position: 71
+      reporting_url: "url_no_session_b"
+      scenario: "online"
+      version: "94.0.2"
+      experiments:
+        - key: suggest-exp
+          value:
+            branch: control
+  moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1:
+    - submission_timestamp: "2021-01-01 13:01:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: false
+        quantity:
+          quick_suggest_position: 11
+        string:
+          quick_suggest_advertiser: acme corp
+          quick_suggest_block_id: 201
+          quick_suggest_country: US
+          quick_suggest_experiment_branch: treatment
+          quick_suggest_experiment_name: glean-exp
+          quick_suggest_match_type: "firefox-suggest"
+          quick_suggest_ping_type: "quicksuggest-impression"
+          quick_suggest_request_id: rid11
+        url2:
+          quick_suggest_reporting_url: "https://example.com/acme-corp"
+        uuid:
+          quick_suggest_context_id: cid11
+      normalized_channel: release
+      normalized_os: macOS
+      normalized_os_version: "15.2"
+      sample_id: null
+    - submission_timestamp: "2021-01-01 13:02:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: true
+        quantity:
+          quick_suggest_position: 12
+        string:
+          quick_suggest_advertiser: dunder mifflin
+          quick_suggest_block_id: 202
+          quick_suggest_country: US
+          quick_suggest_experiment_branch: treatment
+          quick_suggest_experiment_name: glean-exp
+          quick_suggest_match_type: "best-match"
+          quick_suggest_ping_type: "quicksuggest-impression"
+          quick_suggest_request_id: rid12
+        url2:
+          quick_suggest_reporting_url: "https://example.com/dunder-mifflin"
+        uuid:
+          quick_suggest_context_id: cid12
+      normalized_channel: beta
+      normalized_os: macOS
+      normalized_os_version: "15.0"
+      sample_id: null
+    - submission_timestamp: "2021-01-01 13:03:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: false
+        quantity:
+          quick_suggest_position: 13
+        string:
+          quick_suggest_advertiser: duff beer
+          quick_suggest_block_id: 203
+          quick_suggest_country: US
+          quick_suggest_experiment_branch: treatment
+          quick_suggest_experiment_name: glean-exp
+          quick_suggest_match_type: "firefox-suggest"
+          quick_suggest_ping_type: "quicksuggest-impression"
+          quick_suggest_request_id: null
+        url2:
+          quick_suggest_reporting_url: "https://example.com/duff-beer"
+        uuid:
+          quick_suggest_context_id: cid13
+      normalized_channel: nightly
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      sample_id: null
+    - submission_timestamp: "2021-01-01 13:05:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: false
+        quantity:
+          quick_suggest_position: 5
+        string:
+          quick_suggest_advertiser: glean store
+          quick_suggest_block_id: 205
+          quick_suggest_country: US
+          # Different branch from legacy rid_overlap fixture to confirm legacy source wins dedup
+          quick_suggest_experiment_branch: glean-loses
+          quick_suggest_experiment_name: overlap-exp
+          quick_suggest_match_type: "firefox-suggest"
+          quick_suggest_ping_type: "quicksuggest-impression"
+          quick_suggest_request_id: rid_overlap
+        url2:
+          quick_suggest_reporting_url: "url_overlap_glean"
+        uuid:
+          quick_suggest_context_id: cid_overlap_glean
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      sample_id: null
+    - submission_timestamp: "2021-01-01 13:04:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: true
+        quantity:
+          quick_suggest_position: 14
+        string:
+          quick_suggest_advertiser: umbrella corp
+          quick_suggest_block_id: 204
+          quick_suggest_country: US
+          quick_suggest_experiment_branch: treatment
+          quick_suggest_experiment_name: glean-exp
+          quick_suggest_match_type: "firefox-suggest"
+          quick_suggest_ping_type: "quicksuggest-click"
+          quick_suggest_request_id: rid14
+        url2:
+          quick_suggest_reporting_url: "https://example.com/umbrella-corp"
+        uuid:
+          quick_suggest_context_id: cid14
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      sample_id: null
+    # within-Glean dedup: two pings for rid_glean_dup; latest submission_timestamp wins
+    - submission_timestamp: "2021-01-01 13:30:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: false
+        quantity:
+          quick_suggest_position: 30
+        string:
+          quick_suggest_advertiser: widget co
+          quick_suggest_block_id: 130
+          quick_suggest_country: US
+          # Different branch from the 13:31 row to confirm 13:31 wins dedup
+          quick_suggest_experiment_branch: loses
+          quick_suggest_experiment_name: glean-dup-exp
+          quick_suggest_match_type: "firefox-suggest"
+          quick_suggest_ping_type: "quicksuggest-impression"
+          quick_suggest_request_id: rid_glean_dup
+        url2:
+          quick_suggest_reporting_url: "url_glean_dup"
+        uuid:
+          quick_suggest_context_id: cid_glean_dup
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      sample_id: null
+    - submission_timestamp: "2021-01-01 13:31:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: false
+        quantity:
+          quick_suggest_position: 30
+        string:
+          quick_suggest_advertiser: widget co 2
+          quick_suggest_block_id: 131
+          quick_suggest_country: US
+          quick_suggest_experiment_branch: wins
+          quick_suggest_experiment_name: glean-dup-exp
+          quick_suggest_match_type: "best-match"
+          quick_suggest_ping_type: "quicksuggest-impression"
+          quick_suggest_request_id: rid_glean_dup
+        url2:
+          quick_suggest_reporting_url: "url_glean_dup_2"
+        uuid:
+          quick_suggest_context_id: cid_glean_dup_2
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      sample_id: null
+    # no quick_suggest_experiment_name/_branch metrics (not enrolled, or a version that
+    # doesn't send them); expect experiments: []
+    - submission_timestamp: "2021-01-01 13:50:00"
+      metrics:
+        boolean:
+          quick_suggest_is_clicked: false
+        quantity:
+          quick_suggest_position: 50
+        string:
+          quick_suggest_advertiser: no exp store
+          quick_suggest_block_id: 150
+          quick_suggest_country: US
+          quick_suggest_match_type: "firefox-suggest"
+          quick_suggest_ping_type: "quicksuggest-impression"
+          quick_suggest_request_id: rid_no_exp
+        url2:
+          quick_suggest_reporting_url: "url_no_exp"
+        uuid:
+          quick_suggest_context_id: cid_no_exp
+      normalized_channel: release
+      normalized_os: Windows
+      normalized_os_version: "11.0"
+      sample_id: null
+  moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v4:
+    - timestamp: "2021-01-01 12:00:01.456789"
+      request_id: rid1
+      session_id: sid1
+      sequence_no: 1
+      query: "shoes for"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    - timestamp: "2021-01-01 12:05:00.000000"
+      request_id: rid_overlap
+      session_id: sid_overlap
+      sequence_no: 5
+      query: "overlap query"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    - timestamp: "2021-01-01 12:07:00.223"
+      request_id: rid7
+      session_id: sid7
+      sequence_no: 7
+      query: "another query"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: macos
+    - timestamp: "2021-01-01 12:09:00.223"
+      request_id: rid9
+      session_id: sid9
+      sequence_no: 9
+      query: "query with no impression"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: macos
+    - timestamp: "2021-01-01 13:01:00.000000"
+      request_id: rid11
+      session_id: sid11
+      sequence_no: 11
+      query: "anvils"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(134)
+      os_family: macos
+    - timestamp: "2021-01-01 13:02:00.000000"
+      request_id: rid12
+      session_id: sid12
+      sequence_no: 12
+      query: "best paper"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(134)
+      os_family: macos
+    - timestamp: "2021-01-01 13:04:00.000000"
+      request_id: rid14
+      session_id: sid14
+      sequence_no: 14
+      query: "adravil"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(134)
+      os_family: windows
+    # sid_multi has two requests; each joins to its own impression, not only the
+    # last request of the session (sequence_no 21)
+    - timestamp: "2021-01-01 13:20:00.000000"
+      request_id: rid_multi_low
+      session_id: sid_multi
+      sequence_no: 20
+      query: "low seq query"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    - timestamp: "2021-01-01 13:21:00.000000"
+      request_id: rid_multi_high
+      session_id: sid_multi
+      sequence_no: 21
+      query: "best pizza"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    # within-Glean dedup: merino record for rid_glean_dup
+    - timestamp: "2021-01-01 13:33:00.000000"
+      request_id: rid_glean_dup
+      session_id: sid_glean_dup
+      sequence_no: 33
+      query: "best widget"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(134)
+      os_family: windows
+    # merino record for rid_no_exp (impression with no experiment metrics)
+    - timestamp: "2021-01-01 13:50:00.000000"
+      request_id: rid_no_exp
+      session_id: sid_no_exp
+      sequence_no: 50
+      query: "unenrolled query"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(134)
+      os_family: windows
+    # query normalization: LTRIM(LOWER("  Great Sandals")) = "great sandals"
+    - timestamp: "2021-01-01 13:40:00.000000"
+      request_id: rid_norm
+      session_id: sid_norm
+      sequence_no: 40
+      query: "  Great Sandals"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    # redelivered log record: rid_redeliver appears twice; the later timestamp wins
+    - timestamp: "2021-01-01 14:00:01.000000"
+      request_id: rid_redeliver
+      session_id: sid_redeliver
+      sequence_no: 60
+      query: "rain boots"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    - timestamp: "2021-01-01 14:00:03.000000"
+      request_id: rid_redeliver
+      session_id: sid_redeliver
+      sequence_no: 60
+      query: "rain boots"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    # requests without session_id/sequence_no are kept individually
+    - timestamp: "2021-01-01 14:10:00.000000"
+      request_id: rid_no_session_a
+      session_id: null
+      sequence_no: null
+      query: "flight status"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+    - timestamp: "2021-01-01 14:11:00.000000"
+      request_id: rid_no_session_b
+      session_id: null
+      sequence_no: null
+      query: "stock price"
+      country: null
+      region: null
+      dma: null
+      form_factor: desktop
+      browser: firefox(96)
+      os_family: windows
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: '2021-01-01'
+
+expect:
+  - advertiser: shoe store
+    request_id: rid1
+    session_id: sid1
+    sequence_no: 1
+    block_id: 101
+    context_id: cid1
+    country: US
+    is_clicked: false
+    locale: en-US
+    browser: firefox(96)
+    form_factor: desktop
+    os_family: windows
+    timestamp: 2021-01-01T12:00:01+00:00
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    position: 1
+    region: OH
+    normalized_channel: nightly
+    reporting_url: url1
+    query: "shoes for"
+    scenario: online
+    submission_timestamp: 2021-01-01T12:00:00+00:00
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control
+  - block_id: 107
+    context_id: cid7
+    request_id: rid7
+    session_id: sid7
+    sequence_no: 7
+    country: US
+    is_clicked: false
+    locale: en-US
+    browser: firefox(96)
+    form_factor: desktop
+    os_family: macos
+    timestamp: 2021-01-01T12:07:00+00:00
+    normalized_os: macOS
+    normalized_os_version: "10.9"
+    position: 7
+    region: AZ
+    normalized_channel: beta
+    reporting_url: url7
+    query: "another query"
+    scenario: online
+    submission_timestamp: 2021-01-01T12:07:00+00:00
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control
+  - advertiser: acme corp
+    block_id: 201
+    browser: firefox(134)
+    context_id: cid11
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    normalized_channel: release
+    normalized_os: macOS
+    normalized_os_version: "15.2"
+    os_family: macos
+    position: 11
+    query: anvils
+    reporting_url: https://example.com/acme-corp
+    request_id: rid11
+    sequence_no: 11
+    session_id: sid11
+    submission_timestamp: "2021-01-01T13:01:00+00:00"
+    timestamp: "2021-01-01T13:01:00+00:00"
+    match_type: "firefox-suggest"
+    experiments:
+      - slug: glean-exp
+        branch: treatment
+  - advertiser: dunder mifflin
+    block_id: 202
+    browser: firefox(134)
+    context_id: cid12
+    country: US
+    form_factor: desktop
+    is_clicked: true
+    normalized_channel: beta
+    normalized_os: macOS
+    normalized_os_version: "15.0"
+    os_family: macos
+    position: 12
+    query: "best paper"
+    reporting_url: https://example.com/dunder-mifflin
+    request_id: rid12
+    sequence_no: 12
+    session_id: sid12
+    submission_timestamp: "2021-01-01T13:02:00+00:00"
+    timestamp: "2021-01-01T13:02:00+00:00"
+    match_type: "best-match"
+    experiments:
+      - slug: glean-exp
+        branch: treatment
+  # legacy rid_overlap wins over glean rid_overlap (13:06 > 13:05); experiments from legacy source
+  - advertiser: legacy store
+    block_id: 105
+    browser: firefox(96)
+    context_id: cid_overlap
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    locale: en-US
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 5
+    query: "overlap query"
+    region: TX
+    reporting_url: url_overlap
+    request_id: rid_overlap
+    scenario: online
+    sequence_no: 5
+    session_id: sid_overlap
+    submission_timestamp: "2021-01-01T13:06:00+00:00"
+    timestamp: "2021-01-01T12:05:00+00:00"
+    version: "94"
+
+    experiments:
+      - slug: overlap-exp
+        branch: legacy-wins
+  - advertiser: duff beer
+    block_id: 203
+    context_id: cid13
+    country: US
+    is_clicked: false
+    normalized_channel: nightly
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    position: 13
+    reporting_url: https://example.com/duff-beer
+    submission_timestamp: "2021-01-01T13:03:00+00:00"
+    match_type: "firefox-suggest"
+    experiments:
+      - slug: glean-exp
+        branch: treatment
+  - advertiser: pizza place
+    block_id: 120
+    browser: firefox(96)
+    context_id: cid_multi_high
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    locale: en-US
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 20
+    query: "best pizza"
+    region: CO
+    reporting_url: url_multi_high
+    request_id: rid_multi_high
+    scenario: online
+    sequence_no: 21
+    session_id: sid_multi
+    submission_timestamp: "2021-01-01T13:20:30+00:00"
+    timestamp: "2021-01-01T13:21:00+00:00"
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control
+  # glean-dup 13:31 row wins dedup; advertiser/block_id come from the 13:31 ping
+  - advertiser: widget co 2
+    block_id: 131
+    browser: firefox(134)
+    context_id: cid_glean_dup_2
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 30
+    query: "best widget"
+    reporting_url: url_glean_dup_2
+    request_id: rid_glean_dup
+    sequence_no: 33
+    session_id: sid_glean_dup
+    submission_timestamp: "2021-01-01T13:31:00+00:00"
+    timestamp: "2021-01-01T13:33:00+00:00"
+    match_type: "best-match"
+    experiments:
+      - slug: glean-dup-exp
+        branch: wins
+  - advertiser: norm store
+    block_id: 140
+    browser: firefox(96)
+    context_id: cid_norm
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    locale: en-US
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 40
+    query: "great sandals"
+    region: GA
+    reporting_url: url_norm
+    request_id: rid_norm
+    scenario: online
+    sequence_no: 40
+    session_id: sid_norm
+    submission_timestamp: "2021-01-01T13:40:00+00:00"
+    telemetry_query: "best shoes"
+    timestamp: "2021-01-01T13:40:00+00:00"
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control
+  # experiment_name is unset, so experiments is empty rather than [(null, null)]
+  - advertiser: no exp store
+    block_id: 150
+    browser: firefox(134)
+    context_id: cid_no_exp
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 50
+    query: "unenrolled query"
+    reporting_url: url_no_exp
+    request_id: rid_no_exp
+    sequence_no: 50
+    session_id: sid_no_exp
+    submission_timestamp: "2021-01-01T13:50:00+00:00"
+    timestamp: "2021-01-01T13:50:00+00:00"
+    match_type: "firefox-suggest"
+    experiments: []
+  # earlier request of sid_multi joins to its own impression
+  - advertiser: pizza place
+    block_id: 121
+    browser: firefox(96)
+    context_id: cid_multi_low
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    locale: en-US
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 21
+    query: "low seq query"
+    region: CO
+    reporting_url: url_multi_low
+    request_id: rid_multi_low
+    scenario: online
+    sequence_no: 20
+    session_id: sid_multi
+    submission_timestamp: "2021-01-01T13:20:10+00:00"
+    timestamp: "2021-01-01T13:20:00+00:00"
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control
+  # redelivered merino record: one output row, from the later log entry
+  - advertiser: redeliver store
+    block_id: 160
+    browser: firefox(96)
+    context_id: cid_redeliver
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    locale: en-US
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 60
+    query: "rain boots"
+    region: WA
+    reporting_url: url_redeliver
+    request_id: rid_redeliver
+    scenario: online
+    sequence_no: 60
+    session_id: sid_redeliver
+    submission_timestamp: "2021-01-01T14:00:00+00:00"
+    timestamp: "2021-01-01T14:00:03+00:00"
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control
+  # merino records without session_id each join to their own impression
+  - advertiser: no session store
+    block_id: 170
+    browser: firefox(96)
+    context_id: cid_no_session_a
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    locale: en-US
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 70
+    query: "flight status"
+    region: OR
+    reporting_url: url_no_session_a
+    request_id: rid_no_session_a
+    scenario: online
+    submission_timestamp: "2021-01-01T14:10:00+00:00"
+    timestamp: "2021-01-01T14:10:00+00:00"
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control
+  - advertiser: no session store
+    block_id: 171
+    browser: firefox(96)
+    context_id: cid_no_session_b
+    country: US
+    form_factor: desktop
+    is_clicked: false
+    locale: en-US
+    normalized_channel: release
+    normalized_os: Windows
+    normalized_os_version: "11.0"
+    os_family: windows
+    position: 71
+    query: "stock price"
+    region: OR
+    reporting_url: url_no_session_b
+    request_id: rid_no_session_b
+    scenario: online
+    submission_timestamp: "2021-01-01T14:11:00+00:00"
+    timestamp: "2021-01-01T14:11:00+00:00"
+    version: "94"
+
+    experiments:
+      - slug: suggest-exp
+        branch: control

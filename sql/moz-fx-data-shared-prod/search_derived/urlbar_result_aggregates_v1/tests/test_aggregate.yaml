@@ -1,0 +1,136 @@
+sources:
+  moz-fx-data-shared-prod.search_derived.desktop_client_day_dims_v1:
+    - &dims
+      submission_date: "2026-10-28"
+      client_id: a
+      country: US
+      normalized_channel: release
+      os: Windows
+      app_version_major: 150
+      normalized_default_search_engine: Google
+      is_default_browser: true
+    - <<: *dims
+      client_id: b
+    - <<: *dims
+      client_id: c
+    # Another day's row for d doesn't give d dims today.
+    - <<: *dims
+      submission_date: "2026-10-27"
+      client_id: d
+  moz-fx-data-shared-prod.search_derived.urlbar_clients_daily_v1:
+    # a and b share every dimension: one row, summed, client_count 2. a also sees
+    # rust_adm_sponsored after pasting: its own row. c turned sponsored Suggest off: its own
+    # row. d has no dims row: kept with NULL dims.
+    - &client
+      submission_date: "2026-10-28"
+      client_id: a
+      sample_id: 1
+      pref_suggest_enabled: true
+      pref_sponsored_enabled: true
+      pref_online_suggest_available: true
+      pref_online_suggest_enabled: false
+      pref_data_collection: false
+      results:
+        - &result
+          window_mode: classic
+          sap: urlbar
+          interaction: typed
+          result_type: rust_adm_sponsored
+          product_result_type: admarketplace_sponsored
+          result_group: suggest
+          clicks: 1
+          sessions_shown: 4
+          sessions_shown_abandoned: 2
+          annoyances: 0
+        - <<: *result
+          interaction: pasted
+          clicks: 0
+          sessions_shown: 1
+          sessions_shown_abandoned: 1
+          annoyances: 1
+    - <<: *client
+      client_id: b
+      results:
+        - <<: *result
+          clicks: 2
+          sessions_shown: 3
+          sessions_shown_abandoned: 0
+    - <<: *client
+      client_id: c
+      pref_sponsored_enabled: false
+      results:
+        - <<: *result
+          clicks: 0
+          sessions_shown: 2
+          sessions_shown_abandoned: 2
+    - <<: *client
+      client_id: d
+      results:
+        - <<: *result
+          clicks: 1
+          sessions_shown: 1
+          sessions_shown_abandoned: 0
+    # Another day: left out.
+    - <<: *client
+      submission_date: "2026-10-27"
+      client_id: a
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: "2026-10-28"
+
+expect:
+  - &row
+    submission_date: "2026-10-28"
+    country: US
+    normalized_channel: release
+    os: Windows
+    app_version_major: "150"
+    normalized_default_search_engine: Google
+    is_default_browser: true
+    pref_suggest_enabled: true
+    pref_sponsored_enabled: true
+    pref_online_suggest_available: true
+    pref_online_suggest_enabled: false
+    pref_data_collection: false
+    window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: rust_adm_sponsored
+    product_result_type: admarketplace_sponsored
+    clicks: 3
+    sessions_shown: 7
+    sessions_shown_abandoned: 2
+    annoyances: 0
+    client_count: 2
+  - <<: *row
+    interaction: pasted
+    clicks: 0
+    sessions_shown: 1
+    sessions_shown_abandoned: 1
+    annoyances: 1
+    client_count: 1
+  - <<: *row
+    pref_sponsored_enabled: false
+    clicks: 0
+    sessions_shown: 2
+    sessions_shown_abandoned: 2
+    client_count: 1
+  # d: no dims row.
+  - submission_date: "2026-10-28"
+    pref_suggest_enabled: true
+    pref_sponsored_enabled: true
+    pref_online_suggest_available: true
+    pref_online_suggest_enabled: false
+    pref_data_collection: false
+    window_mode: classic
+    sap: urlbar
+    interaction: typed
+    result_type: rust_adm_sponsored
+    product_result_type: admarketplace_sponsored
+    clicks: 1
+    sessions_shown: 1
+    sessions_shown_abandoned: 0
+    annoyances: 0
+    client_count: 1

@@ -6,13 +6,14 @@ import logging
 import os
 import random
 import re
+import shutil
 import string
 import sys
 import tempfile
 import warnings
 from functools import cache, wraps
 from pathlib import Path
-from typing import Callable, List, Optional, Set, Tuple
+from typing import Callable, Dict, List, Optional, Set, Tuple
 from uuid import uuid4
 
 import click
@@ -201,10 +202,43 @@ def get_table_dir(output_dir, full_table_id, parts=2):
     return Path(os.path.join(output_dir, *list(full_table_id.split(".")[-parts:])))
 
 
-def get_unittests_dir(sql_dir):
-    """Return the unittests directory associated to a sql directory."""
-    sql_dir = Path(sql_dir)
-    return sql_dir.parent / "tests" / sql_dir.name
+def rewrite_sql_tests(
+    source_tests_dir: Path, target_tests_dir: Path, id_map: Dict[str, str]
+) -> None:
+    """Rewrite an ETL/view's SQL tests into the target directory, renaming their source table/view IDs per `id_map`.
+
+    The source/target directories may be the same to rewrite in place, in which case
+    only files referencing a renamed ID are changed.
+    """
+    in_place = source_tests_dir.resolve() == target_tests_dir.resolve()
+    if in_place:
+        # In case the same directory was specified in different ways, just use one variant for accurate path comparisons.
+        target_tests_dir = source_tests_dir
+    else:
+        target_tests_dir.mkdir(parents=True, exist_ok=True)
+
+    for source_file in sorted(f for f in source_tests_dir.iterdir() if f.is_file()):
+        target_file = target_tests_dir / source_file.name
+        if source_file.name.startswith("test_") and source_file.suffix == ".yaml":
+            test = yaml.safe_load(source_file.read_text())
+            sources = test.get("sources") or {}
+            if any(source_id in id_map for source_id in sources):
+                test["sources"] = {id_map.get(k, k): v for k, v in sources.items()}
+                target_file.write_text(
+                    yaml.safe_dump(test, sort_keys=False, allow_unicode=True)
+                )
+            elif not in_place:
+                shutil.copy2(source_file, target_file)
+        elif source_file.name.endswith(".schema.yaml"):
+            source_id = source_file.name.removesuffix(".schema.yaml")
+            if target_id := id_map.get(source_id):
+                target_file = target_tests_dir / f"{target_id}.schema.yaml"
+            if target_file != source_file:
+                shutil.copy2(source_file, target_file)
+                if in_place:
+                    source_file.unlink()
+        elif not in_place:
+            shutil.copy2(source_file, target_file)
 
 
 def write_sql(output_dir, full_table_id, basename, sql, skip_existing=False):

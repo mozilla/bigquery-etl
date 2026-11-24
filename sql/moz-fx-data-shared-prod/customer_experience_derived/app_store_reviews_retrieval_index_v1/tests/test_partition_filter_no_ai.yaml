@@ -1,0 +1,23 @@
+sources:
+  moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review:
+    - id: "1"
+      app_id: 999
+      territory: "USA"
+      rating: 5
+      title: "Day before"
+      body: "This row is before the submission_date and should be filtered out."
+      created_date: "2026-04-01T23:59:59+00:00"
+    - id: "2"
+      app_id: 999
+      territory: "USA"
+      rating: 1
+      title: "Day after"
+      body: "This row is after the submission_date and should be filtered out."
+      created_date: "2026-04-03T00:00:00+00:00"
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: '2026-04-02'
+
+expect: []

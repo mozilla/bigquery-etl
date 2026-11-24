@@ -1,0 +1,64 @@
+sources:
+  glam-fenix-dev.glam_etl.org_mozilla_fenix_glam_nightly__histogram_bucket_counts_v1:
+    - agg_type: summed_histogram
+      app_build_id: '*'
+      app_version: 84
+      channel: '*'
+      key: ''
+      metric: network_tcp_connection
+      metric_type: timing_distribution
+      os: '*'
+      ping_type: '*'
+      range_max: 3
+      record:
+        key: '1'
+        value: 1.0
+    - agg_type: summed_histogram
+      app_build_id: '*'
+      app_version: 84
+      channel: '*'
+      key: ''
+      metric: network_tcp_connection
+      metric_type: timing_distribution
+      os: '*'
+      ping_type: '*'
+      range_max: 3
+      record:
+        key: '2'
+        value: 0.0
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: '2020-10-01'
+  - name: min_sample_id
+    type: INT64
+    value: 0
+  - name: max_sample_id
+    type: INT64
+    value: 99
+  - name: sample_size
+    type: INT64
+    value: 100
+
+expect:
+  - agg_type: histogram
+    aggregates:
+      - key: '0'
+        value: 0.125
+      - key: '1'
+        value: 0.625
+      - key: '2'
+        value: 0.125
+      - key: '3'
+        value: 0.125
+    app_build_id: '*'
+    app_version: 84
+    channel: '*'
+    client_agg_type: summed_histogram
+    key: ''
+    metric: network_tcp_connection
+    metric_type: timing_distribution
+    os: '*'
+    ping_type: '*'
+    total_users: 1

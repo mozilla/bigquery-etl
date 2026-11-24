@@ -1,0 +1,35 @@
+# Reusable workflow, called from build.yml here and from mozilla/private-bigquery-etl.
+#
+# Jobs run in the caller's context: the checkout is the caller's repo.
+name: Validate Tests
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  validate-tests:
+    name: Validate Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout: tests/sql
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      # SQL tests in the old `tests/sql/` layout are no longer collected, so they'd silently not run.
+      - name: Check for files in tests/sql/
+        run: |
+          files=$(git ls-files tests/sql)
+          if [ -n "$files" ]; then
+            message="SQL tests now go in `sql/<project>/<dataset>/<table_or_view>/tests/`"
+            message+=", so files in `tests/sql/` won't be run (see `docs/cookbooks/testing.md`)."
+            while IFS= read -r file; do
+              echo "::error file=$file::$message"
+            done <<< "$files"
+            exit 1
+          fi

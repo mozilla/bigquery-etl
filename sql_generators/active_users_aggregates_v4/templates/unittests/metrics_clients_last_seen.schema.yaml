@@ -1,0 +1,17 @@
+fields:
+- name: submission_date
+  type: DATE
+- name: client_id
+  type: STRING
+- name: sample_id
+  type: INTEGER
+- name: normalized_channel
+  type: STRING
+- name: n_metrics_ping
+  type: INTEGER
+- name: days_sent_metrics_ping_bits
+  type: INTEGER
+- name: uri_count
+  type: INTEGER
+- name: is_default_browser
+  type: BOOLEAN

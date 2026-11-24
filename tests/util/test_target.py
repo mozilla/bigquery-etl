@@ -964,38 +964,41 @@ class TestStripMaterializedView:
 
 
 class TestRewriteTestsForTarget:
-    def test_renames_files_in_target_subtree(self, tmp_path):
+    def test_copies_tests_and_renames_sources(self, tmp_path):
         from bigquery_etl.cli.deploy import _rewrite_tests_for_target
 
         # Source artifact + its tests
         source_artifact = tmp_path / "sql" / "src-p" / "src_ds" / "tbl" / "query.sql"
         source_artifact.parent.mkdir(parents=True)
         source_artifact.write_text("SELECT 1")
-        src_test_dir = tmp_path / "tests" / "sql" / "src-p" / "src_ds" / "tbl"
-        src_test_dir.mkdir(parents=True)
-        # Files that encode the source identity in their basename: full
-        # `<proj>.<ds>.<tbl>` form and the `.schema` variant.
-        (src_test_dir / "src-p.src_ds.tbl.yaml").write_text("rows: []")
-        (src_test_dir / "src-p.src_ds.tbl.schema.yaml").write_text("fields: []")
+        src_tests_dir = source_artifact.parent / "tests"
+        src_tests_dir.mkdir()
+        (src_tests_dir / "test_x.yaml").write_text(
+            "sources:\n  src-p.src_ds.tbl: []\n  other-p.ds.other: []\n"
+            "parameters: []\nexpect: []\n"
+        )
+        (src_tests_dir / "src-p.src_ds.tbl.schema.yaml").write_text("fields: []")
+        (src_tests_dir / "other-p.ds.other.schema.yaml").write_text("fields: []")
 
         # Target path mapping
         target_artifact = tmp_path / "sql" / "tgt-p" / "tgt_ds" / "tbl" / "query.sql"
         target_artifact.parent.mkdir(parents=True)
         target_artifact.write_text("SELECT 1")
 
-        _rewrite_tests_for_target(
-            {source_artifact: target_artifact},
-            tmp_path / "tests" / "sql",
-        )
+        _rewrite_tests_for_target({source_artifact: target_artifact})
 
-        tgt_test_dir = tmp_path / "tests" / "sql" / "tgt-p" / "tgt_ds" / "tbl"
-        assert (tgt_test_dir / "tgt-p.tgt_ds.tbl.yaml").exists()
-        assert (tgt_test_dir / "tgt-p.tgt_ds.tbl.schema.yaml").exists()
-        # Source files preserved at their original location.
-        assert (src_test_dir / "src-p.src_ds.tbl.yaml").exists()
+        tgt_tests_dir = target_artifact.parent / "tests"
+        test = yaml.safe_load((tgt_tests_dir / "test_x.yaml").read_text())
+        assert list(test["sources"]) == ["tgt-p.tgt_ds.tbl", "other-p.ds.other"]
+        assert (tgt_tests_dir / "tgt-p.tgt_ds.tbl.schema.yaml").exists()
+        assert (tgt_tests_dir / "other-p.ds.other.schema.yaml").exists()
+        assert not (tgt_tests_dir / "src-p.src_ds.tbl.schema.yaml").exists()
+        # Source tests preserved as is.
+        assert "src-p.src_ds.tbl:" in (src_tests_dir / "test_x.yaml").read_text()
+        assert (src_tests_dir / "src-p.src_ds.tbl.schema.yaml").exists()
 
-    def test_renames_fixtures_for_stubbed_tables(self, tmp_path):
-        """Table stubs (e.g. for a stable table) should have their tests renamed."""
+    def test_renames_sources_for_stubbed_tables(self, tmp_path):
+        """Table stubs (e.g. for a stable table) should have their test sources renamed."""
         from bigquery_etl.cli.deploy import _rewrite_tests_for_target
 
         source_artifact = tmp_path / "sql" / "src-p" / "src_ds" / "tbl" / "query.sql"
@@ -1027,31 +1030,25 @@ class TestRewriteTestsForTarget:
             )
         )
 
-        src_test_dir = tmp_path / "tests" / "sql" / "src-p" / "src_ds" / "tbl" / "test"
-        src_test_dir.mkdir(parents=True)
-        (src_test_dir / "src-p.src_stable.upstream_v1.yaml").write_text("- a: 1")
-        (src_test_dir / "src-p.src_stable.upstream_v1.schema.yaml").write_text(
+        src_tests_dir = source_artifact.parent / "tests"
+        src_tests_dir.mkdir()
+        (src_tests_dir / "test_x.yaml").write_text(
+            "sources:\n  src-p.src_stable.upstream_v1:\n    - a: 1\n"
+            "parameters: []\nexpect: []\n"
+        )
+        (src_tests_dir / "src-p.src_stable.upstream_v1.schema.yaml").write_text(
             "fields: []"
         )
 
-        _rewrite_tests_for_target(
-            {source_artifact: target_artifact, stub: stub},
-            tmp_path / "tests" / "sql",
-        )
+        _rewrite_tests_for_target({source_artifact: target_artifact, stub: stub})
 
-        tgt_test_dir = (
-            tmp_path
-            / "tests"
-            / "sql"
-            / "tgt-p"
-            / "tgt_ds"
-            / "src_p__src_ds__tbl"
-            / "test"
-        )
+        tgt_tests_dir = target_artifact.parent / "tests"
         stub_id = "tgt-p.tgt_ds.src_p__src_stable__upstream_v1"
-        assert (tgt_test_dir / f"{stub_id}.yaml").exists()
-        assert (tgt_test_dir / f"{stub_id}.schema.yaml").exists()
-        assert not (tgt_test_dir / "src-p.src_stable.upstream_v1.yaml").exists()
+        test = yaml.safe_load((tgt_tests_dir / "test_x.yaml").read_text())
+        assert test["sources"] == {stub_id: [{"a": 1}]}
+        assert (tgt_tests_dir / f"{stub_id}.schema.yaml").exists()
+        assert not (tgt_tests_dir / "src-p.src_stable.upstream_v1.schema.yaml").exists()
+        assert not (stub.parent / "tests").exists()
 
 
 class TestResolveIsolatedSchema:

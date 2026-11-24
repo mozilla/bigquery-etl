@@ -1,0 +1,67 @@
+sources:
+  moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_changelog_v1:
+    # Subscription 2: no synthetic record because expiry time too recent
+    - timestamp: 2000-02-01 00:00:00Z
+      firestore_export_operation: CREATE
+      subscription:
+        metadata:
+          purchase_token: s2
+        start_time: 2000-02-01 00:00:00Z
+        expiry_time: 2999-03-01 00:00:00Z
+
+    # Subscription 3: synthetic record
+    - timestamp: 2000-03-01 00:00:00Z
+      firestore_export_operation: CREATE
+      subscription:
+        metadata:
+          purchase_token: s3
+        start_time: 2000-03-01 00:00:00Z
+        expiry_time: 2000-04-01 00:00:00Z
+  moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1:
+    # Subscription 1: no synthetic record because subscription not active
+    - id: s1-2000-01-01T00:00:00.000000-UPDATE
+      timestamp: 2000-01-01 00:00:00Z
+      type: original
+      firestore_export_operation: UPDATE
+      subscription:
+        metadata:
+          purchase_token: s1
+        start_time: 1999-12-01 00:00:00Z
+        expiry_time: 2000-01-01 00:00:00Z
+
+parameters: []
+
+is_init: false
+
+expect:
+  # Subscription 2: no synthetic record because expiry time too recent
+  - id: s2-2000-02-01T00:00:00.000000-CREATE
+    timestamp: 2000-02-01 00:00:00Z
+    type: original
+    firestore_export_operation: CREATE
+    subscription:
+      metadata:
+        purchase_token: s2
+      start_time: 2000-02-01 00:00:00Z
+      expiry_time: 2999-03-01 00:00:00Z
+
+  # Subscription 3: synthetic record
+  - id: s3-2000-03-01T00:00:00.000000-CREATE
+    timestamp: 2000-03-01 00:00:00Z
+    type: original
+    firestore_export_operation: CREATE
+    subscription:
+      metadata:
+        purchase_token: s3
+      start_time: 2000-03-01 00:00:00Z
+      expiry_time: 2000-04-01 00:00:00Z
+  - id: s3-2000-04-01T00:00:00.000000-CREATE
+    timestamp: 2000-04-01 00:00:00Z
+    type: synthetic_suspected_subscription_expiration
+    firestore_export_operation: CREATE
+    subscription:
+      metadata:
+        purchase_token: s3
+        is_mutable: false
+      start_time: 2000-03-01 00:00:00Z
+      expiry_time: 2000-04-01 00:00:00Z

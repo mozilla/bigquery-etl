@@ -1,0 +1,255 @@
+sources:
+  moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1:
+    # DENG-11596: verifies that crossword keystroke/cursor noise and context menu echo
+    # events are excluded, while genuine crossword actions, crossword `interaction`
+    # events with retained action values, events with no action_value, and identical
+    # `interaction` events on other widgets are all still counted.
+    - submission_timestamp: 2026-05-04 12:00:00 UTC
+      normalized_os: Windows
+      normalized_os_version: "10.0"
+      normalized_channel: release
+      normalized_country_code: US
+      sample_id: 42
+      client_info:
+        client_id: client_id_1
+        app_display_version: "138.0.0"
+        locale: en-US
+        windows_build_number: 22631
+      metrics:
+        uuid:
+          legacy_telemetry_client_id: legacy_id_1
+          legacy_telemetry_profile_group_id: profile_group_id_1
+        string:
+          newtab_homepage_category: enabled
+          newtab_newtab_category: enabled
+          newtab_locale: en-US
+      events:
+        - category: newtab
+          name: opened
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: source
+              value: about:newtab
+        # impression keeps the crossword row alive even though most of its
+        # user events are excluded
+        - category: newtab
+          name: widgets_impression
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+        # EXCLUDED: keystroke and cursor noise
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: interaction
+            - key: action_value
+              value: input_letter
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: interaction
+            - key: action_value
+              value: cell_click
+        # EXCLUDED: context menu echo
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: interaction
+            - key: action_value
+              value: reveal_grid_completed
+        # RETAINED: `interaction` with an action value that is not on the bad list
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: interaction
+            - key: action_value
+              value: play_started
+        # RETAINED: genuine crossword action
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: puzzle_completed
+            - key: action_value
+              value: "0"
+        # RETAINED: crossword `interaction` with no action_value key at all. Guards
+        # against NULL propagation - the predicate must treat this as a genuine event
+        # rather than evaluating to NULL and silently dropping it.
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: interaction
+        # RETAINED: genuine action with no action_value
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: learn_more
+        # RETAINED: counts toward change_size_or_learn_more_count
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: crossword
+            - key: widget_size
+              value: large
+            - key: user_action
+              value: change_size
+            - key: action_value
+              value: large
+        # RETAINED: identical bad action value on a different widget is unaffected
+        - category: newtab
+          name: widgets_impression
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: lists
+            - key: widget_size
+              value: mini
+        - category: newtab
+          name: widgets_user_event
+          extra:
+            - key: newtab_visit_id
+              value: visit_id_1
+            - key: widget_name
+              value: lists
+            - key: widget_size
+              value: mini
+            - key: user_action
+              value: interaction
+            - key: action_value
+              value: input_letter
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2026-05-04
+
+expect:
+  # crossword: 3 of the 8 user events are excluded (input_letter, cell_click,
+  # reveal_grid_completed). The 5 retained events are the `interaction` with
+  # play_started, the `interaction` with no action_value, puzzle_completed,
+  # learn_more and change_size.
+  - submission_date: 2026-05-04
+    client_id: client_id_1
+    newtab_visit_id: visit_id_1
+    widget_name: crossword
+    widget_size: large
+    impression_count: 1
+    user_event_count: 5
+    change_size_or_learn_more_count: 2
+    enabled_count: 0
+    disabled_count: 0
+    submission_timestamp: "2026-05-04T12:00:00+00:00"
+    app_version: 138
+    os: Windows
+    os_version: "10.0"
+    windows_build_number: 22631
+    channel: release
+    locale: en-US
+    country: US
+    sample_id: 42
+    legacy_telemetry_client_id: legacy_id_1
+    profile_group_id: profile_group_id_1
+    homepage_category: enabled
+    newtab_category: enabled
+    newtab_blocked_sponsors: []
+    newtab_content_surface_id: NEW_TAB_EN_US
+    experiments: []
+    is_default_ui: true
+    user_action_counts:
+      - user_action: interaction
+        count: 2
+      - user_action: puzzle_completed
+        count: 1
+      - user_action: learn_more
+        count: 1
+      - user_action: change_size
+        count: 1
+  # lists: the same `interaction` / input_letter event is retained because the
+  # exclusion is scoped to the crossword widget
+  - submission_date: 2026-05-04
+    client_id: client_id_1
+    newtab_visit_id: visit_id_1
+    widget_name: lists
+    widget_size: mini
+    impression_count: 1
+    user_event_count: 1
+    change_size_or_learn_more_count: 0
+    enabled_count: 0
+    disabled_count: 0
+    submission_timestamp: "2026-05-04T12:00:00+00:00"
+    app_version: 138
+    os: Windows
+    os_version: "10.0"
+    windows_build_number: 22631
+    channel: release
+    locale: en-US
+    country: US
+    sample_id: 42
+    legacy_telemetry_client_id: legacy_id_1
+    profile_group_id: profile_group_id_1
+    homepage_category: enabled
+    newtab_category: enabled
+    newtab_blocked_sponsors: []
+    newtab_content_surface_id: NEW_TAB_EN_US
+    experiments: []
+    is_default_ui: true
+    user_action_counts:
+      - user_action: interaction
+        count: 1

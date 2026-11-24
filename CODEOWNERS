@@ -3,7 +3,6 @@
 
 # do not require review from data platform for the following files and directories
 /sql/
-/tests/sql/
 dags.yaml
 
 # require review on datasets, otherwise permissions could be changed without review

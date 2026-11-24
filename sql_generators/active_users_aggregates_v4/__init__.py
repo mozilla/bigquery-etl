@@ -10,15 +10,10 @@ from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import get_table_dir, get_unittests_dir, render, write_sql
+from bigquery_etl.util.common import render, write_sql
 
 THIS_PATH = Path(os.path.dirname(__file__))
-MOBILE_UNITTESTS_PATH = THIS_PATH / "templates/unittests/mobile"
-DESKTOP_UNITTESTS_PATH = THIS_PATH / "templates/unittests/desktop"
-MOBILE_UNITTESTS_TEMPLATES = THIS_PATH / "templates" / "mobile_unittests_templates.yaml"
-DESKTOP_UNITTESTS_TEMPLATES = (
-    THIS_PATH / "templates" / "desktop_unittests_templates.yaml"
-)
+UNITTESTS_PATH = THIS_PATH / "templates" / "unittests"
 
 TABLE_NAME = os.path.basename(os.path.normpath(THIS_PATH))
 BASE_NAME = "_".join(TABLE_NAME.split("_")[:-1])
@@ -116,112 +111,33 @@ def generate(target_project, output_dir, use_cloud_function):
     # checks templates for BigEye
     bigeye_checks_template = env.get_template("bigconfig.yml")
 
-    def output_unittest_templates(
-        dataset, app_name, templates, template_type, source, test_name=None
-    ):
-        """Load, render and output unitest template."""
-        test_folder = ""
-        parts = 2
-        output_path = get_unittests_dir(output_dir.parent) / output_dir.name
+    unittests_env = Environment(
+        loader=FileSystemLoader(str(UNITTESTS_PATH)),
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
 
-        for group in templates[template_type]:
-            try:
-                for file_name, file_template in group[source].items():
-                    if template_type == "test_data":
-                        parts = 3
-                        test_folder = (
-                            "/desktop" if dataset == "firefox_desktop" else "/mobile"
-                        ) + f"/{test_name}"
-                    _dataset = (
-                        "telemetry"
-                        if (
-                            dataset == "firefox_desktop"
-                            and file_name == "desktop_active_users"
-                        )
-                        or (
-                            dataset == "focus_android"
-                            and file_name == "core_clients_last_seen"
-                        )
-                        else dataset
+    def output_unittests(dataset, app_name):
+        """Render and output unittests and the source schemas they need."""
+        tests_dir = output_dir / f"{dataset}_derived" / TABLE_NAME / "tests"
+        tests_dir.mkdir(parents=True, exist_ok=True)
+        test_type = "desktop" if dataset == "firefox_desktop" else "mobile"
+        for test_file in sorted((UNITTESTS_PATH / test_type).glob("test_*.yaml")):
+            test = unittests_env.get_template(f"{test_type}/{test_file.name}").render(
+                project=target_project, dataset=dataset, app_name=app_name
+            )
+            target = tests_dir / test_file.name
+            click.echo(f"INFO:Writing {target}")
+            target.write_text(test)
+            for source_id in yaml.safe_load(test)["sources"]:
+                schema_file = UNITTESTS_PATH / f"{source_id.split('.')[-1]}.schema.yaml"
+                if schema_file.exists():
+                    (tests_dir / f"{source_id}.schema.yaml").write_text(
+                        schema_file.read_text()
                     )
-                    _file = (
-                        file_template
-                        if file_name in ["expect", "query_params"]
-                        else f"{target_project}.{_dataset}.{file_template}"
-                    )
-
-                    unittest_template = env.get_template(
-                        f"unittests{test_folder}/{file_template}"
-                    )
-                    full_table_id = (
-                        f"{target_project}.{dataset}_derived.{TABLE_NAME}"
-                        + (f".{test_name}" if template_type == "test_data" else "")
-                    )
-                    d = get_table_dir(output_path, full_table_id, parts)
-                    d.mkdir(parents=True, exist_ok=True)
-                    target = d / _file
-                    click.echo(f"INFO:Writing {target}")
-                    with target.open("w") as f:
-                        f.write(
-                            unittest_template.render(
-                                app_name=app_name,
-                                format=False,
-                            )
-                        )
-                        f.write("\n")
-            except KeyError:
-                continue
 
     for browser in Browsers:
-        # Load list of unittests schemas and data templates.
-        templates_yaml_path = (
-            DESKTOP_UNITTESTS_TEMPLATES
-            if browser.name == "firefox_desktop"
-            else MOBILE_UNITTESTS_TEMPLATES
-        )
-        tests_path = (
-            DESKTOP_UNITTESTS_PATH
-            if browser.name == "firefox_desktop"
-            else MOBILE_UNITTESTS_PATH
-        )
-
-        with open(templates_yaml_path) as f:
-            templates = yaml.safe_load(f)
-
-        # Write unittests test schemas.
-        output_unittest_templates(
-            dataset=browser.name,
-            app_name=browser.value,
-            templates=templates,
-            template_type="test_schemas",
-            source="common",
-        )
-        output_unittest_templates(
-            dataset=browser.name,
-            app_name=browser.value,
-            templates=templates,
-            template_type="test_schemas",
-            source=browser.name,
-        )
-
-        # Write unittests test data.
-        for test in next(os.walk(tests_path))[1]:
-            output_unittest_templates(
-                dataset=browser.name,
-                app_name=browser.value,
-                templates=templates,
-                template_type="test_data",
-                source="common",
-                test_name=test,
-            )
-            output_unittest_templates(
-                dataset=browser.name,
-                app_name=browser.value,
-                templates=templates,
-                template_type="test_data",
-                source=browser.name,
-                test_name=test,
-            )
+        output_unittests(dataset=browser.name, app_name=browser.value)
 
         # Write queries.
         if browser.name == "firefox_desktop":

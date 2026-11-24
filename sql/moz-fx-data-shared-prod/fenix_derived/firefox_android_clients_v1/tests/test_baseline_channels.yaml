@@ -1,0 +1,151 @@
+sources:
+  moz-fx-data-shared-prod.fenix.baseline_clients_daily:
+    - client_id: client-1
+      sample_id: 54
+      first_seen_date: 2023-05-02
+      submission_date: 2023-05-02
+      first_run_date: 2023-05-01
+      normalized_channel: release
+      is_new_profile: true
+      device_model: model-1
+    - client_id: client-2
+      sample_id: 90
+      first_seen_date: 2023-05-02
+      submission_date: 2023-05-02
+      first_run_date: 2023-05-02
+      normalized_channel: beta
+      is_new_profile: true
+    - client_id: client-3
+      sample_id: 60
+      first_seen_date: 2023-05-02
+      submission_date: 2023-05-02
+      first_run_date: 2023-05-02
+      normalized_channel: nightly
+      is_new_profile: true
+  moz-fx-data-shared-prod.fenix.first_session:
+    - client_info:
+        client_id: client-1
+        first_run_date: '2023-05-02+08:00'
+      sample_id: 50
+      submission_timestamp: '2023-05-02 12:55:49'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          first_session_network: 'Organic'
+          meta_attribution_app: 'Test Meta'
+    - client_info:
+        client_id: client-2
+        first_run_date: '2023-05-02+08:00'
+      sample_id: 50
+      submission_timestamp: '2023-05-02 00:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          first_session_network: 'Untrusted Devices'
+          meta_attribution_app: 'Test Meta'
+  moz-fx-data-shared-prod.fenix.metrics:
+    - client_info:
+        client_id: client-3
+      submission_timestamp: '2023-05-02 00:00:00'
+      metrics:
+        string:
+          metrics_install_source: 'com.android.vending'
+    - client_info:
+        client_id: client-4
+      submission_timestamp: '2023-05-02 01:00:00'
+      normalized_channel: beta
+  moz-fx-data-shared-prod.fenix.new_profile_activation:
+    - client_id: client-2
+      activated: 1
+      submission_date: 2023-05-02
+  moz-fx-data-shared-prod.fenix.play_store_attribution: []
+  moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1:
+    - client_id: client-3
+      sample_id: 70
+      first_seen_date: 2023-05-01
+      submission_date: 2023-05-02
+      first_run_date: 2023-05-01
+      last_reported_date: 2023-05-02
+      activated: false
+      metadata:
+        reported_first_session_ping: false
+        reported_metrics_ping: false
+        install_source__source_ping: metrics
+      meta_attribution_app: 'Test Meta'
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2023-05-02
+
+is_init: false
+
+expect:
+  - client_id: client-1
+    sample_id: 54
+    first_seen_date: 2023-05-02
+    first_run_date: 2023-05-01
+    submission_date: 2023-05-02
+    adjust_network: Organic
+    channel: release
+    device_model: model-1
+    last_reported_channel: release
+    last_reported_device_model: model-1
+    last_reported_date: 2023-05-02
+    metadata:
+      reported_first_session_ping: true
+      reported_metrics_ping: false
+      reported_baseline_ping: true
+      min_first_session_ping_submission_date: 2023-05-02
+      min_first_session_ping_run_date: 2023-05-02
+      adjust_network__source_ping: first_session
+      adjust_network__source_ping_datetime: '2023-05-02T12:55:49'
+      meta_attribution_app__ping_datetime: '2023-05-02T12:55:49'
+    meta_attribution_app: 'Test Meta'
+  - client_id: client-2
+    sample_id: 90
+    first_seen_date: 2023-05-02
+    first_run_date: 2023-05-02
+    submission_date: 2023-05-02
+    last_reported_date: 2023-05-02
+    last_reported_channel: beta
+    activated: true
+    channel: beta
+    adjust_network: Untrusted Devices
+    metadata:
+      reported_first_session_ping: true
+      reported_metrics_ping: false
+      reported_baseline_ping: true
+      min_first_session_ping_submission_date: 2023-05-02
+      min_first_session_ping_run_date: 2023-05-02
+      adjust_network__source_ping: first_session
+      adjust_network__source_ping_datetime: '2023-05-02T00:00:00'
+      meta_attribution_app__ping_datetime: '2023-05-02T00:00:00'
+    meta_attribution_app: 'Test Meta'
+  - client_id: client-3
+    sample_id: 70
+    first_seen_date: 2023-05-01
+    submission_date: 2023-05-02
+    first_run_date: 2023-05-01
+    last_reported_date: 2023-05-02
+    channel: nightly
+    activated: false
+    install_source: com.android.vending
+    last_reported_channel: nightly
+    metadata:
+      reported_first_session_ping: false
+      reported_metrics_ping: true
+      reported_baseline_ping: true
+      install_source__source_ping: metrics
+      install_source__source_ping_datetime: '2023-05-02T00:00:00'
+      min_metrics_ping_submission_date: 2023-05-02
+    meta_attribution_app: 'Test Meta'
+  - client_id: client-4
+    channel: beta
+    metadata:
+      reported_first_session_ping: false
+      reported_metrics_ping: true
+      reported_baseline_ping: false
+      min_metrics_ping_submission_date: 2023-05-02

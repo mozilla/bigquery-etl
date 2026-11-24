@@ -12,10 +12,10 @@ from bigquery_etl.util.common import (
     exit_if_running_under_coding_agent,
     extract_last_group_by_from_query,
     get_table_dir,
-    get_unittests_dir,
     project_dirs,
     qualify_table_references_in_file,
     render,
+    rewrite_sql_tests,
 )
 
 IMPERSONATE_ENV = common.IMPERSONATE_ENV_VAR
@@ -558,12 +558,20 @@ class TestUtilCommon:
             parts=3,
         )
 
-    def test_get_unittests_dir(self):
-        """Test cases using relative and absolute sql directories."""
-        assert Path("tests/sql") == get_unittests_dir("sql")
-        assert Path("/tmp/workspace/generated-sql/tests/sql") == get_unittests_dir(
-            Path("/tmp/workspace/generated-sql/sql/")
-        )
+    def test_rewrite_sql_tests_in_place(self, tmp_path):
+        renamed = tmp_path / "test_renamed.yaml"
+        renamed.write_text("sources:\n  p.d.t: []\nparameters: []\nexpect: []\n")
+        unchanged_text = "# comment\nsources:\n  p.d.other: []\nexpect: []\n"
+        unchanged = tmp_path / "test_unchanged.yaml"
+        unchanged.write_text(unchanged_text)
+        (tmp_path / "p.d.t.schema.yaml").write_text("fields: []")
+
+        rewrite_sql_tests(tmp_path, tmp_path, {"p.d.t": "x.y.z"})
+
+        assert "x.y.z: []" in renamed.read_text()
+        assert unchanged.read_text() == unchanged_text
+        assert (tmp_path / "x.y.z.schema.yaml").exists()
+        assert not (tmp_path / "p.d.t.schema.yaml").exists()
 
 
 class TestCodingAgentGate:

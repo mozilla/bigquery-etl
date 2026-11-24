@@ -1,0 +1,282 @@
+sources:
+  moz-fx-data-shared-prod.fenix.baseline_clients_daily:
+    - client_id: client-1
+      sample_id: 10
+      first_seen_date: 2026-07-01
+      submission_date: 2026-07-01
+      first_run_date: 2026-07-01
+      normalized_channel: release
+      is_new_profile: true
+    - client_id: client-2
+      sample_id: 20
+      first_seen_date: 2026-07-01
+      submission_date: 2026-07-01
+      first_run_date: 2026-07-01
+      normalized_channel: release
+      is_new_profile: true
+    - client_id: client-3
+      sample_id: 30
+      first_seen_date: 2026-07-01
+      submission_date: 2026-07-01
+      first_run_date: 2026-07-01
+      normalized_channel: release
+      is_new_profile: true
+    - client_id: client-4
+      sample_id: 40
+      first_seen_date: 2026-07-01
+      submission_date: 2026-07-01
+      first_run_date: 2026-07-01
+      normalized_channel: release
+      is_new_profile: true
+  moz-fx-data-shared-prod.fenix.first_session:
+    # No Play Store attribution in the first_session ping, as is the case after the
+    # 2026-04-07 cutover.
+    - client_info:
+        client_id: client-1
+        first_run_date: '2026-07-01+08:00'
+      sample_id: 10
+      submission_timestamp: '2026-07-01 01:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          first_session_network: 'Organic'
+    # Play Store attribution still present in the first_session ping; the dedicated ping
+    # supplies only term and campaign, so the remaining fields fall back to these values.
+    - client_info:
+        client_id: client-2
+        first_run_date: '2026-07-01+08:00'
+      sample_id: 20
+      submission_timestamp: '2026-07-01 01:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          first_session_network: 'Organic'
+          play_store_attribution_campaign: 'first-session-campaign'
+          play_store_attribution_content: 'first-session-content'
+          play_store_attribution_medium: 'first-session-medium'
+          play_store_attribution_source: 'first-session-source'
+          play_store_attribution_term: 'first-session-term'
+        text2:
+          play_store_attribution_install_referrer_response: 'first-session-referrer'
+    # No dedicated ping at all, so the pre-cutover first_session values must survive.
+    - client_info:
+        client_id: client-3
+        first_run_date: '2026-07-01+08:00'
+      sample_id: 30
+      submission_timestamp: '2026-07-01 01:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          first_session_network: 'Organic'
+          play_store_attribution_campaign: 'first-session-campaign'
+          play_store_attribution_content: 'first-session-content'
+          play_store_attribution_medium: 'first-session-medium'
+          play_store_attribution_source: 'first-session-source'
+          play_store_attribution_term: 'first-session-term'
+        text2:
+          play_store_attribution_install_referrer_response: 'first-session-referrer'
+    # Sends two dedicated pings; see the play_store_attribution fixture.
+    - client_info:
+        client_id: client-4
+        first_run_date: '2026-07-01+08:00'
+      sample_id: 40
+      submission_timestamp: '2026-07-01 01:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          first_session_network: 'Organic'
+  moz-fx-data-shared-prod.fenix.metrics: []
+  moz-fx-data-shared-prod.fenix.new_profile_activation: []
+  moz-fx-data-shared-prod.fenix.play_store_attribution:
+    # All six fields arrive on the dedicated ping.
+    - client_info:
+        client_id: client-1
+      submission_timestamp: '2026-07-01 06:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          play_store_attribution_campaign: 'ping-campaign'
+          play_store_attribution_content: 'ping-content'
+          play_store_attribution_medium: 'ping-medium'
+          play_store_attribution_source: 'ping-source'
+          play_store_attribution_term: 'ping-term'
+        text2:
+          play_store_attribution_install_referrer_response: 'ping-referrer'
+    # Only term and campaign arrive here; empty strings must not win over the
+    # first_session values for the other fields.
+    - client_info:
+        client_id: client-2
+      submission_timestamp: '2026-07-01 06:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          play_store_attribution_campaign: 'ping-campaign'
+          play_store_attribution_medium: ''
+          play_store_attribution_term: 'ping-term'
+    # An empty ping arrives before the one carrying the real values: the install referrer had
+    # not been fetched yet. The recorded ping datetimes must be the seq=1 ping's, not seq=0's.
+    - client_info:
+        client_id: client-4
+      submission_timestamp: '2026-07-01 03:00:00'
+      ping_info:
+        seq: 0
+      metrics:
+        string:
+          play_store_attribution_campaign: ''
+          play_store_attribution_content: ''
+          play_store_attribution_medium: ''
+          play_store_attribution_source: ''
+          play_store_attribution_term: ''
+        text2:
+          play_store_attribution_install_referrer_response: ''
+    - client_info:
+        client_id: client-4
+      submission_timestamp: '2026-07-01 09:00:00'
+      ping_info:
+        seq: 1
+      metrics:
+        string:
+          play_store_attribution_campaign: 'late-campaign'
+          play_store_attribution_content: 'late-content'
+          play_store_attribution_medium: 'late-medium'
+          play_store_attribution_source: 'late-source'
+          play_store_attribution_term: 'late-term'
+        text2:
+          play_store_attribution_install_referrer_response: 'late-referrer'
+  moz-fx-data-shared-prod.fenix_derived.firefox_android_clients_v1: []
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2026-07-01
+
+is_init: false
+
+expect:
+  # All six fields come from the dedicated ping, so every ping datetime is the ping's.
+  - client_id: client-1
+    sample_id: 10
+    first_seen_date: 2026-07-01
+    submission_date: 2026-07-01
+    first_run_date: 2026-07-01
+    channel: release
+    adjust_network: Organic
+    last_reported_date: 2026-07-01
+    last_reported_channel: release
+    play_store_attribution_campaign: 'ping-campaign'
+    play_store_attribution_content: 'ping-content'
+    play_store_attribution_medium: 'ping-medium'
+    play_store_attribution_source: 'ping-source'
+    play_store_attribution_term: 'ping-term'
+    play_store_attribution_install_referrer_response: 'ping-referrer'
+    metadata:
+      reported_first_session_ping: true
+      reported_metrics_ping: false
+      reported_baseline_ping: true
+      min_first_session_ping_submission_date: 2026-07-01
+      min_first_session_ping_run_date: 2026-07-01
+      adjust_network__source_ping: first_session
+      adjust_network__source_ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_campaign__ping_datetime: '2026-07-01T06:00:00'
+      play_store_attribution_content__ping_datetime: '2026-07-01T06:00:00'
+      play_store_attribution_medium__ping_datetime: '2026-07-01T06:00:00'
+      play_store_attribution_source__ping_datetime: '2026-07-01T06:00:00'
+      play_store_attribution_term__ping_datetime: '2026-07-01T06:00:00'
+      play_store_attribution_install_referrer_response__ping_datetime: '2026-07-01T06:00:00'
+  # Term and campaign come from the dedicated ping, the rest from first_session, and each
+  # ping datetime tracks whichever ping supplied that field.
+  - client_id: client-2
+    sample_id: 20
+    first_seen_date: 2026-07-01
+    submission_date: 2026-07-01
+    first_run_date: 2026-07-01
+    channel: release
+    adjust_network: Organic
+    last_reported_date: 2026-07-01
+    last_reported_channel: release
+    play_store_attribution_campaign: 'ping-campaign'
+    play_store_attribution_content: 'first-session-content'
+    play_store_attribution_medium: 'first-session-medium'
+    play_store_attribution_source: 'first-session-source'
+    play_store_attribution_term: 'ping-term'
+    play_store_attribution_install_referrer_response: 'first-session-referrer'
+    metadata:
+      reported_first_session_ping: true
+      reported_metrics_ping: false
+      reported_baseline_ping: true
+      min_first_session_ping_submission_date: 2026-07-01
+      min_first_session_ping_run_date: 2026-07-01
+      adjust_network__source_ping: first_session
+      adjust_network__source_ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_campaign__ping_datetime: '2026-07-01T06:00:00'
+      play_store_attribution_content__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_medium__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_source__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_term__ping_datetime: '2026-07-01T06:00:00'
+      play_store_attribution_install_referrer_response__ping_datetime: '2026-07-01T01:00:00'
+  # No dedicated ping, so the pre-cutover first_session behaviour is unchanged.
+  - client_id: client-3
+    sample_id: 30
+    first_seen_date: 2026-07-01
+    submission_date: 2026-07-01
+    first_run_date: 2026-07-01
+    channel: release
+    adjust_network: Organic
+    last_reported_date: 2026-07-01
+    last_reported_channel: release
+    play_store_attribution_campaign: 'first-session-campaign'
+    play_store_attribution_content: 'first-session-content'
+    play_store_attribution_medium: 'first-session-medium'
+    play_store_attribution_source: 'first-session-source'
+    play_store_attribution_term: 'first-session-term'
+    play_store_attribution_install_referrer_response: 'first-session-referrer'
+    metadata:
+      reported_first_session_ping: true
+      reported_metrics_ping: false
+      reported_baseline_ping: true
+      min_first_session_ping_submission_date: 2026-07-01
+      min_first_session_ping_run_date: 2026-07-01
+      adjust_network__source_ping: first_session
+      adjust_network__source_ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_campaign__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_content__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_medium__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_source__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_term__ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_install_referrer_response__ping_datetime: '2026-07-01T01:00:00'
+  # The seq=0 ping reported nothing, so every value and every datetime comes from seq=1.
+  - client_id: client-4
+    sample_id: 40
+    first_seen_date: 2026-07-01
+    submission_date: 2026-07-01
+    first_run_date: 2026-07-01
+    channel: release
+    adjust_network: Organic
+    last_reported_date: 2026-07-01
+    last_reported_channel: release
+    play_store_attribution_campaign: 'late-campaign'
+    play_store_attribution_content: 'late-content'
+    play_store_attribution_medium: 'late-medium'
+    play_store_attribution_source: 'late-source'
+    play_store_attribution_term: 'late-term'
+    play_store_attribution_install_referrer_response: 'late-referrer'
+    metadata:
+      reported_first_session_ping: true
+      reported_metrics_ping: false
+      reported_baseline_ping: true
+      min_first_session_ping_submission_date: 2026-07-01
+      min_first_session_ping_run_date: 2026-07-01
+      adjust_network__source_ping: first_session
+      adjust_network__source_ping_datetime: '2026-07-01T01:00:00'
+      play_store_attribution_campaign__ping_datetime: '2026-07-01T09:00:00'
+      play_store_attribution_content__ping_datetime: '2026-07-01T09:00:00'
+      play_store_attribution_medium__ping_datetime: '2026-07-01T09:00:00'
+      play_store_attribution_source__ping_datetime: '2026-07-01T09:00:00'
+      play_store_attribution_term__ping_datetime: '2026-07-01T09:00:00'
+      play_store_attribution_install_referrer_response__ping_datetime: '2026-07-01T09:00:00'

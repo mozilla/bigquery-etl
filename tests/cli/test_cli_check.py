@@ -40,7 +40,7 @@ class TestCheck:
 
     def test_check_render(self):
         checks_file = Path(
-            "tests/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/checks.sql"
+            "tests/data/test_sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_v6/checks.sql"
         )
 
         actual = _render(

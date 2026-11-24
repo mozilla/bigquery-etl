@@ -1,0 +1,133 @@
+sources:
+  moz-fx-data-shared-prod.stripe_external.coupon_v1: []
+  moz-fx-data-shared-prod.stripe_external.plan_v1:
+    - id: plan_1
+      product_id: prod_1
+    - id: plan_2
+      product_id: prod_2
+    - id: plan_3
+      product_id: prod_3
+  moz-fx-data-shared-prod.stripe_external.product_v1:
+    - id: prod_1
+      name: Product 1
+    - id: prod_2
+      name: Product 2
+    - id: prod_3
+      name: Product 3
+  moz-fx-data-shared-prod.stripe_external.subscription_discount_v2: []
+  moz-fx-data-shared-prod.stripe_external.subscription_history_v1:
+    - id: sub_1
+      _fivetran_start: 2000-01-01 00:00:00Z
+      _fivetran_active: false
+    - id: sub_1
+      _fivetran_start: 2000-02-01 00:00:00Z
+      _fivetran_active: false
+    - id: sub_1
+      _fivetran_start: 2000-03-01 00:00:00Z
+      _fivetran_active: false
+      metadata: '{"previous_plan_id": "plan_1"}'
+    - id: sub_1
+      _fivetran_start: 2000-04-01 00:00:00Z
+      _fivetran_active: false
+      metadata: '{"previous_plan_id": "plan_1"}'
+    - id: sub_1
+      _fivetran_start: 2000-05-01 00:00:00Z
+      _fivetran_active: true
+      metadata: '{"previous_plan_id": "plan_2"}'
+    - id: sub_1
+      _fivetran_start: 2000-06-01 00:00:00Z
+      _fivetran_active: true
+      metadata: '{"previous_plan_id": "plan_2"}'
+  moz-fx-data-shared-prod.stripe_external.subscription_item_v1:
+    - id: si_1
+      subscription_id: sub_1
+      plan_id: plan_3
+  moz-fx-data-shared-prod.stripe_external.subscription_tax_rate_v1: []
+  moz-fx-data-shared-prod.stripe_external.subscriptions_changelog_v1:
+    - id: sub_1-2000-01-01T00:00:00.000000
+      timestamp: 2000-01-01 00:00:00Z
+      subscription:
+        id: sub_1
+        items:
+          - id: si_1
+            plan:
+              id: plan_1
+              product:
+                id: prod_1
+                name: Product 1
+  moz-fx-data-shared-prod.stripe_external.tax_rate_v1: []
+
+parameters: []
+
+is_init: false
+
+expect:
+  - id: sub_1-2000-02-01T00:00:00.000000
+    timestamp: 2000-02-01 00:00:00Z
+    subscription:
+      id: sub_1
+      default_tax_rates: []
+      items:
+        - id: si_1
+          plan:
+            id: plan_1
+            product:
+              id: prod_1
+              name: Product 1
+      cancellation_details: {}
+  - id: sub_1-2000-03-01T00:00:00.000000
+    timestamp: 2000-03-01 00:00:00Z
+    subscription:
+      id: sub_1
+      default_tax_rates: []
+      items:
+        - id: si_1
+          plan:
+            id: plan_2
+            product:
+              id: prod_2
+              name: Product 2
+      metadata: {"previous_plan_id": "plan_1"}
+      cancellation_details: {}
+  - id: sub_1-2000-04-01T00:00:00.000000
+    timestamp: 2000-04-01 00:00:00Z
+    subscription:
+      id: sub_1
+      default_tax_rates: []
+      items:
+        - id: si_1
+          plan:
+            id: plan_2
+            product:
+              id: prod_2
+              name: Product 2
+      metadata: {"previous_plan_id": "plan_1"}
+      cancellation_details: {}
+  - id: sub_1-2000-05-01T00:00:00.000000
+    timestamp: 2000-05-01 00:00:00Z
+    subscription:
+      id: sub_1
+      default_tax_rates: []
+      items:
+        - id: si_1
+          plan:
+            id: plan_3
+            product:
+              id: prod_3
+              name: Product 3
+      metadata: {"previous_plan_id": "plan_2"}
+      cancellation_details: {}
+  - id: sub_1-2000-06-01T00:00:00.000000
+    timestamp: 2000-06-01 00:00:00Z
+    subscription:
+      id: sub_1
+      default_tax_rates: []
+      items:
+        - id: si_1
+          plan:
+            id: plan_3
+            product:
+              id: prod_3
+              name: Product 3
+      metadata: {"previous_plan_id": "plan_2"}
+      cancellation_details: {}

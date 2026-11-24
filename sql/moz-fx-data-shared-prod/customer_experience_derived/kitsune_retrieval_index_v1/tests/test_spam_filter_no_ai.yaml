@@ -1,0 +1,32 @@
+sources:
+  moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw:
+    - answer_id: 1
+      creator_username: "testuser"
+      question_id: 1
+      answer_content: "Test answer"
+      created_date: "2026-04-01T00:00:00+00:00"
+      num_helpful_votes: 0
+      num_unhelpful_votes: 0
+      is_spam: true
+  moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus:
+    - question_id: 1
+      created_date: "2026-04-01T00:00:00+00:00"
+      creator_username: "testuser"
+      product: "firefox"
+      ff_version: "100.0"
+      locale: "en-US"
+      topic: "other"
+      tier1_topic: "other"
+      tier2_topic: "other"
+      tier3_topic: "other"
+      title: "Test question"
+      question_content: "Test content"
+      is_spam: true
+      is_locked: false
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: '2026-04-01'
+
+expect: []

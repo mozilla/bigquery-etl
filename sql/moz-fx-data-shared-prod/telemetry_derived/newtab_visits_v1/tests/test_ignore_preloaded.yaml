@@ -1,0 +1,20 @@
+sources:
+  moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1:
+    - submission_timestamp: 2021-09-01 22:09:03.243074 UTC
+      client_info:
+        client_id: client_id_1
+      events:
+        - category: newtab
+          name: closed
+          extra:
+            - key: newtab_visit_id
+              value: preloaded_visit_id
+  moz-fx-data-shared-prod.telemetry.desktop_active_users:
+    - client_id: legacy_id_1
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2021-09-01
+
+expect: []

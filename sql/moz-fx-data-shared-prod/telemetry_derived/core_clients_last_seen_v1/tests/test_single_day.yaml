@@ -1,0 +1,52 @@
+sources:
+  moz-fx-data-shared-prod.telemetry_derived.core_clients_daily_v1:
+    - submission_date: '2019-01-02'
+      app_name: Fennec
+      country: US
+      client_id: b
+      first_seen_date: '2019-01-01'
+      is_new_profile: false
+    - submission_date: '2019-01-02'
+      app_name: Fennec
+      country: FI
+      client_id: c
+  moz-fx-data-shared-prod.telemetry_derived.core_clients_last_seen_v1:
+    - submission_date: '2019-01-01'
+      app_name: Fennec
+      country: GB
+      client_id: a
+      profile_date: '2019-01-01'
+      days_seen_bits: 2
+      days_created_profile_bits: 16
+    - submission_date: '2019-01-01'
+      app_name: Fennec
+      country: US
+      client_id: b
+      days_seen_bits: 3
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2019-01-02
+
+expect:
+  - submission_date: '2019-01-02'
+    app_name: Fennec
+    country: GB
+    client_id: a
+    profile_date: '2019-01-01'
+    days_seen_bits: 4
+    days_created_profile_bits: 32
+  - submission_date: '2019-01-02'
+    app_name: Fennec
+    country: US
+    client_id: b
+    days_seen_bits: 7
+    days_created_profile_bits: 0
+    first_seen_date: '2019-01-01'
+  - submission_date: '2019-01-02'
+    app_name: Fennec
+    country: FI
+    client_id: c
+    days_seen_bits: 1
+    days_created_profile_bits: 0

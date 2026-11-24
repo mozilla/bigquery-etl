@@ -27,15 +27,13 @@ from ..routine.parse_routine import (
     read_routine_dir,
 )
 from ..schema import SCHEMA_FILE, Schema
-from ..util.common import block_coding_agents, render
+from ..util.common import block_coding_agents, render, rewrite_sql_tests
 from ..view import View
 
 VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
 QUERY_SCRIPT = "query.py"
 MATERIALIZED_VIEW = "materialized_view.sql"
-ROOT = Path(__file__).parent.parent.parent
-TEST_DIR = ROOT / "tests" / "sql"
 
 
 @click.group(help="Commands for managing stage deploys")
@@ -52,9 +50,6 @@ def stage():
 
     Examples:
     ./bqetl stage deploy sql/moz-fx-data-shared-prod/telemetry_derived/
-
-    # Deploy with custom test directory
-    ./bqetl stage deploy --test-dir /path/to/tests sql/moz-fx-data-shared-prod/telemetry_derived/
     """)
 @block_coding_agents
 @click.argument(
@@ -95,13 +90,6 @@ def stage():
     help="Remove artifacts that have been updated and deployed to stage from prod folder. This ensures that"
     + " tests don't run on outdated or undeployed artifacts (required for CI)",
 )
-@click.option(
-    "--test-dir",
-    "--test_dir",
-    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
-    default=TEST_DIR,
-    help="Directory containing test files (default: tests/sql relative to repository root)",
-)
 @click.pass_context
 def deploy(
     ctx,
@@ -112,7 +100,6 @@ def deploy(
     update_references,
     copy_sql_to_tmp_dir,
     remove_updated_artifacts,
-    test_dir,
 ):
     """Deploy provided artifacts to destination project."""
     if copy_sql_to_tmp_dir:
@@ -167,9 +154,6 @@ def deploy(
         artifact_project = artifact_file.parent.parent.parent.name
         artifact_dataset = artifact_file.parent.parent.name
         artifact_name = artifact_file.parent.name
-        artifact_test_path = (
-            test_dir / artifact_project / artifact_dataset / artifact_name
-        )
 
         if (
             artifact_dataset == "INFORMATION_SCHEMA"
@@ -223,52 +207,22 @@ def deploy(
 
         updated_artifact_files.add(new_artifact_path / artifact_file.name)
 
-        # copy tests to the right structure
-        if artifact_test_path.exists():
-            new_artifact_test_path = (
-                test_dir / project_id / new_artifact_dataset / artifact_name
-            )
-            shutil.copytree(
-                artifact_test_path, new_artifact_test_path, dirs_exist_ok=True
-            )
-            if remove_updated_artifacts:
-                shutil.rmtree(artifact_test_path)
-
-    # rename test files
-    for test_file_path in map(Path, glob(f"{test_dir}/**/*", recursive=True)):
-        test_file_suffix = test_file_path.suffix
-        for artifact_file in artifact_files:
-            artifact_project = artifact_file.parent.parent.parent.name
-            artifact_dataset = artifact_file.parent.parent.name
-            artifact_name = artifact_file.parent.name
-            if test_file_path.name in (
-                f"{artifact_project}.{artifact_dataset}.{artifact_name}{test_file_suffix}",
-                f"{artifact_project}.{artifact_dataset}.{artifact_name}.schema{test_file_suffix}",
-            ) or (
-                test_file_path.name
-                in (
-                    f"{artifact_dataset}.{artifact_name}{test_file_suffix}",
-                    f"{artifact_dataset}.{artifact_name}.schema{test_file_suffix}",
-                )
-                and artifact_project in test_file_path.parent.parts
-            ):
-                new_artifact_dataset = (
-                    f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
-                )
-                if dataset_suffix:
-                    new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
-
-                new_test_file_name = (
-                    f"{project_id}.{new_artifact_dataset}.{artifact_name}"
-                )
-                if test_file_path.name.endswith(f".schema{test_file_suffix}"):
-                    new_test_file_name += ".schema"
-                new_test_file_name += test_file_suffix
-
-                new_test_file_path = test_file_path.parent / new_test_file_name
-                if not new_test_file_path.exists():
-                    test_file_path.rename(new_test_file_path)
-                break
+    # Rename test sources referencing deployed artifacts, since references to them
+    # have been updated throughout the SQL directory.
+    id_map = {}
+    for artifact_file in artifact_files:
+        artifact_project = artifact_file.parent.parent.parent.name
+        artifact_dataset = artifact_file.parent.parent.name
+        artifact_name = artifact_file.parent.name
+        new_artifact_dataset = (
+            f"{artifact_dataset}_{artifact_project.replace('-', '_')}"
+        )
+        if dataset_suffix:
+            new_artifact_dataset = f"{new_artifact_dataset}_{dataset_suffix}"
+        new_id = f"{project_id}.{new_artifact_dataset}.{artifact_name}"
+        id_map[f"{artifact_project}.{artifact_dataset}.{artifact_name}"] = new_id
+    for tests_dir in Path(sql_dir).glob("*/*/*/tests"):
+        rewrite_sql_tests(tests_dir, tests_dir, id_map)
 
     # remove artifacts from the "prod" folders
     if remove_updated_artifacts:

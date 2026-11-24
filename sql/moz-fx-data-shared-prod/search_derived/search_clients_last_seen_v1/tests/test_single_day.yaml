@@ -1,0 +1,492 @@
+sources:
+  moz-fx-data-shared-prod.search_derived.search_clients_daily_v8:
+    - submission_date: '2019-10-02'
+      client_id: client1
+      engine: engine1
+      source: alias-1
+      country: RE
+      app_version: 69.0.1
+      locale: en-US
+      os: Windows_NT
+      channel: release
+      profile_creation_date: 18171
+      default_search_engine: other-Yahoo Web
+      default_search_engine_data_load_path: c0ffee
+      sample_id: 84
+      sessions_started_on_this_day: 1
+      profile_age_in_days: 0
+      subsession_hours_sum: 1
+      active_addons_count_mean: 1
+      max_concurrent_tab_count_max: 1
+      tab_open_event_count_sum: 1
+      active_hours_sum: 1
+      sap: 5
+      user_pref_browser_search_region: RE
+      os_version: '1'
+      ad_click: 1
+      organic: 0
+    - submission_date: '2019-10-02'
+      client_id: client1
+      engine: engine1
+      source: alias
+      country: RE
+      app_version: 69.0.1
+      locale: en-US
+      os: Windows_NT
+      channel: release
+      profile_creation_date: 18171
+      default_search_engine: other-Yahoo Web
+      default_search_engine_data_load_path: c0ffee
+      sample_id: 84
+      sessions_started_on_this_day: 1
+      profile_age_in_days: 0
+      subsession_hours_sum: 1
+      active_addons_count_mean: 1
+      max_concurrent_tab_count_max: 1
+      tab_open_event_count_sum: 1
+      active_hours_sum: 1
+      sap: 1
+      user_pref_browser_search_region: RE
+      os_version: '1'
+      organic: 0
+    - submission_date: '2019-10-02'
+      client_id: client2
+      engine: engine2
+      source: alias
+      country: EE
+      app_version: '69.0'
+      locale: en-US
+      os: Linux
+      channel: release
+      profile_creation_date: 17764
+      default_search_engine: other
+      default_search_engine_data_load_path: c0ffee
+      default_search_engine_data_submission_url: https://duckduckgo.com/html/
+      sample_id: 84
+      sessions_started_on_this_day: 2
+      profile_age_in_days: 2
+      subsession_hours_sum: 2
+      active_addons_count_mean: 2
+      max_concurrent_tab_count_max: 2
+      tab_open_event_count_sum: 2
+      active_hours_sum: 2
+      sap: 2
+      user_pref_browser_search_region: EE
+      os_version: '2'
+      organic: 0
+    - submission_date: '2019-10-02'
+      client_id: client2
+      engine: engine3
+      source: in-content:organic:lm
+      country: EE
+      app_version: '69.0'
+      locale: en-US
+      os: Linux
+      channel: release
+      profile_creation_date: 17764
+      default_search_engine: other
+      default_search_engine_data_load_path: c0ffee
+      default_search_engine_data_submission_url: https://duckduckgo.com/html/
+      sample_id: 84
+      sessions_started_on_this_day: 2
+      profile_age_in_days: 2
+      subsession_hours_sum: 2
+      active_addons_count_mean: 2
+      max_concurrent_tab_count_max: 2
+      tab_open_event_count_sum: 2
+      active_hours_sum: 2
+      tagged_sap: 2
+      user_pref_browser_search_region: EE
+      os_version: '2'
+      organic: 0
+  moz-fx-data-shared-prod.search_derived.search_clients_last_seen_v1:
+    - submission_date: '2019-10-01'
+      client_id: client2
+      days_seen_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA==
+      days_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      days_tagged_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      days_searched_with_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      days_clicked_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      days_created_profile_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      engine_searches: []
+      ad_click: 0
+      sample_id: 84
+      search_with_ads: 0
+      tagged_searches: 0
+      total_searches: 0
+      profile_age_in_days: 2
+    - submission_date: '2019-10-01'
+      client_id: client3
+      days_seen_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA==
+      days_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA==
+      days_tagged_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      days_searched_with_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      days_clicked_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      days_created_profile_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      engine_searches:
+        - key: Engine1
+          value:
+            total_searches:
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 2
+              - 0
+              - 0
+            tagged_searches:
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+            search_with_ads:
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+            ad_click:
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+              - 0
+      ad_click: 0
+      sample_id: 84
+      search_with_ads: 0
+      tagged_searches: 0
+      total_searches: 0
+      profile_age_in_days: 3
+
+parameters:
+  - name: submission_date
+    type: DATE
+    value: 2019-10-02
+
+expect:
+  - submission_date: '2019-10-02'
+    client_id: client1
+    days_seen_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==
+    days_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==
+    days_tagged_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    days_searched_with_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    days_clicked_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==
+    days_created_profile_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==
+    engine_searches:
+      - key: Engine1
+        value:
+          total_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 6
+          tagged_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          ad_click:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 1
+          search_with_ads:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+    sample_id: 84
+    country: RE
+    user_pref_browser_search_region: RE
+    app_version: 69.0.1
+    default_search_engine: other-Yahoo Web
+    default_search_engine_data_load_path: c0ffee
+    locale: en-US
+    profile_age_in_days: 0
+    active_addons_count_mean: 1
+    max_concurrent_tab_count_max: 1
+    tab_open_event_count_sum: 2
+    active_hours_sum: 2
+    subsession_hours_sum: 2
+    sessions_started_on_this_day: 2
+    total_searches: 6
+    tagged_searches: 0
+    ad_click: 1
+    search_with_ads: 0
+    organic: 0
+    sap: 6
+    profile_creation_date: 18171
+    os: Windows_NT
+    os_version: '1'
+    channel: release
+  - submission_date: '2019-10-02'
+    client_id: client2
+    days_seen_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAQ==
+    days_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==
+    days_tagged_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ==
+    days_searched_with_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    days_clicked_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    days_created_profile_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    engine_searches:
+      - key: Engine2
+        value:
+          total_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 2
+          tagged_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          ad_click:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          search_with_ads:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+      - key: Engine3
+        value:
+          total_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 2
+          tagged_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 2
+          ad_click:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          search_with_ads:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+    sample_id: 84
+    country: EE
+    user_pref_browser_search_region: EE
+    app_version: '69.0'
+    default_search_engine: other
+    default_search_engine_data_load_path: c0ffee
+    locale: en-US
+    profile_age_in_days: 2
+    active_addons_count_mean: 2
+    max_concurrent_tab_count_max: 2
+    tab_open_event_count_sum: 4
+    active_hours_sum: 4
+    subsession_hours_sum: 4
+    sessions_started_on_this_day: 4
+    total_searches: 4
+    tagged_searches: 2
+    ad_click: 0
+    search_with_ads: 0
+    organic: 0
+    sap: 2
+    tagged_sap: 2
+    profile_creation_date: 17764
+    os: Linux
+    default_search_engine_data_submission_url: https://duckduckgo.com/html/
+    os_version: '2'
+    channel: release
+  - submission_date: '2019-10-02'
+    client_id: client3
+    days_seen_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAA==
+    days_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAA==
+    days_tagged_searched_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    days_searched_with_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    days_clicked_ads_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    days_created_profile_bytes: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+    engine_searches:
+      - key: Engine1
+        value:
+          total_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 2
+            - 0
+            - 0
+          tagged_searches:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          search_with_ads:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          ad_click:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+    ad_click: 0
+    sample_id: 84
+    search_with_ads: 0
+    tagged_searches: 0
+    total_searches: 0
+    profile_age_in_days: 3

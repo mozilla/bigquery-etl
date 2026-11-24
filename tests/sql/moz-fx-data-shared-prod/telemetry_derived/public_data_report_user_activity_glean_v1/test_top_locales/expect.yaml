@@ -1,0 +1,51 @@
+---
+# 8 clients with a locale: en-US 3/8, de 2/8, then a three-way tie at 1/8 ordered it, ja, pt-BR.
+- submission_date: 2026-11-02
+  country_name: Country A
+  mau: 50
+  top_locales:
+  - locale: en-US
+    ratio: 0.375
+  - locale: de
+    ratio: 0.25
+  - locale: it
+    ratio: 0.125
+  - locale: ja
+    ratio: 0.125
+  - locale: pt-BR
+    ratio: 0.125
+  mau_desktop: 50
+  mau_mobile: 0
+# MAU but no locale clients, so an empty list.
+- submission_date: 2026-11-02
+  country_name: Country C
+  mau: 7
+  top_locales: []
+  mau_desktop: 7
+  mau_mobile: 0
+# The no-country and empty-country clients, both sv.
+- submission_date: 2026-11-02
+  country_name: '??'
+  mau: 5
+  top_locales:
+  - locale: sv
+    ratio: 1.0
+  mau_desktop: 5
+  mau_mobile: 0
+# 10 clients, each counted once: de and sv tie at 2/10, de first; six locales, so pt-BR is dropped.
+- submission_date: 2026-11-02
+  country_name: Worldwide
+  mau: 62
+  top_locales:
+  - locale: en-US
+    ratio: 0.3
+  - locale: de
+    ratio: 0.2
+  - locale: sv
+    ratio: 0.2
+  - locale: it
+    ratio: 0.1
+  - locale: ja
+    ratio: 0.1
+  mau_desktop: 62
+  mau_mobile: 0

@@ -25,6 +25,8 @@ One row per week and country name, plus a `Worldwide` row per week. `submission_
   - Desktop MAU comes from Glean and includes MozillaOnline, as does Fenix
   - a missing locale is dropped rather than ranked
   - locale shares are out of clients with a locale
+  - top languages count weekly active clients, the same rule as MAU; the legacy table counted every client seen in the week
+  - BrowserStack clients are left out of top languages, as in MAU; the legacy table's top languages included them
 
 ## Sources
 

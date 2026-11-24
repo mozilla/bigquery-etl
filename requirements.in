@@ -40,7 +40,7 @@ mkdocs-material==9.7.7
 mkdocs-awesome-pages-plugin==2.10.1
 mozilla-metric-config-parser==2026.10.4
 mozilla-schema-generator==0.5.1
-mypy==1.15.0
+mypy==2.4.1
 openai==2.6.1
 pandas==2.3.3
 paramiko==5.0.0

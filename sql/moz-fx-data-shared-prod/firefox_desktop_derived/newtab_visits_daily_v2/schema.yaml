@@ -11,6 +11,21 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Unique identifier for the newtab visit
+- name: first_submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: >-
+    Earliest submission_timestamp of the newtab pings carrying this visit's events on this
+    submission_date. Equal to last_submission_timestamp when the visit arrived in a single ping
+    on the day. A visit's pings can land on more than one submission_date; take the MIN across
+    its rows for when events about the visit were first received.
+- name: last_submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: >-
+    Latest submission_timestamp of the newtab pings carrying this visit's events on this
+    submission_date. A visit's pings can land on more than one submission_date; take the MAX
+    across its rows for when events about the visit were last received.
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -19,10 +34,41 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Operating system of the host system
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: bigquery_etl/schema/global.yaml
+    field: os_version
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: windows_build_number
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Windows version name derived from os, os_version and windows_build_number with
+    mozfun.norm.glean_windows_version_info (e.g. 'Windows 10', 'Windows 11'). Builds 22000
+    and above on os_version 10.0 are Windows 11. 'build unknown - likely Windows 10 or 11'
+    when the build number is missing. NULL for non-Windows clients.
 - name: channel
   type: STRING
   mode: NULLABLE
   description: Firefox Desktop deployment channel (e.g. release, beta)
+- name: newtab_addon_version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    table: moz-fx-data-shared-prod.firefox_desktop_derived.newtab_addon_versions_daily_v1
+    field: newtab_addon_version
+    append: >-
+      Selects the version on the client's last addons ping for the day and makes it the same
+      for all of the client's visits that day. NULL when the client sent no addons ping
+      reporting the newtab addon that day, and for dates before newtab_addon_versions_daily_v1
+      has data.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -117,6 +163,15 @@ fields:
 - name: sponsored_content_impression_count
   type: INTEGER
   description: Count of sponsored content impressions with newtab opened in default ui
+- name: sponsored_content_inventory_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    How many times a story slot that can hold a sponsored story was shown. It counts the slot
+    whether it showed a sponsored story or an organic one, so it measures sponsored story
+    inventory; compare with sponsored_content_impression_count for how much of it was filled.
+    0 when newtab wasn't opened in the default UI, or when the user has sponsored stories
+    turned off. NULL for Firefox versions before 157, which don't report ad-eligible slots.
 - name: is_topsite_interaction
   type: BOOLEAN
   mode: NULLABLE
@@ -150,15 +205,49 @@ fields:
 - name: organic_topsite_click_count
   type: INTEGER
   description: Count of clicks on organic topsite with newtab opened in default ui
+- name: organic_pinned_topsite_click_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Count of clicks on pinned organic topsites with newtab opened in default ui. NULL for
+    clients on Firefox versions before 144, which don't report whether a tile is pinned.
+- name: organic_unpinned_topsite_click_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Count of clicks on unpinned organic topsites with newtab opened in default ui. NULL for
+    clients on Firefox versions before 144, which don't report whether a tile is pinned.
 - name: organic_topsite_impression_count
   type: INTEGER
   description: Count of organic topsite impressions with newtab opened in default ui
+- name: organic_pinned_topsite_impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Count of pinned organic topsite impressions with newtab opened in default ui. NULL for
+    clients on Firefox versions before 144, which don't report whether a tile is pinned.
+- name: organic_unpinned_topsite_impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    Count of unpinned organic topsite impressions with newtab opened in default ui. NULL for
+    clients on Firefox versions before 144, which don't report whether a tile is pinned.
 - name: sponsored_topsite_click_count
   type: INTEGER
   description: Count of clicks on sponsored topsite with newtab opened in default ui
 - name: sponsored_topsite_impression_count
   type: INTEGER
   description: Count of sponsored topsite impressions with newtab opened in default ui
+- name: sponsored_topsites_inventory_count
+  type: INTEGER
+  mode: NULLABLE
+  description: >-
+    How many times a shortcut slot that can hold a sponsored shortcut was shown.
+    It counts the slot whether it showed a sponsored shortcut or an
+    organic one, so it measures sponsored shortcut inventory; compare with
+    sponsored_topsite_impression_count for how much of it was filled. 0 when newtab wasn't
+    opened in the default UI, or when the user has sponsored shortcuts turned off. NULL for
+    Firefox versions before 157, which don't report ad-eligible slots.
 - name: is_widget_interaction
   type: BOOLEAN
   mode: NULLABLE
@@ -324,6 +413,22 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Whether the tile is a sponsored topsite
+  - name: is_ad_eligible_position
+    type: BOOLEAN
+    mode: NULLABLE
+    description: >-
+      Whether the tile was in a position that can hold a sponsored tile: TRUE if any of the
+      tile's impressions in the visit reported it. FALSE otherwise on Firefox 157 and later,
+      where Firefox only sends it on impressions and only when true. NULL for clients on Firefox
+      versions before 157, which don't report ad-eligible positions.
+  - name: is_pinned
+    type: BOOLEAN
+    mode: NULLABLE
+    description: >-
+      Whether the organic tile is pinned: TRUE if any of the tile's events in the visit reported
+      it as pinned. NULL for sponsored tiles, which can't be pinned, and for clients on Firefox
+      versions before 144, which don't report it, and when the entry has no impression or click
+      in this row (e.g. a dismissal whose impression arrived on another day).
   - name: impression_count
     type: INTEGER
     mode: NULLABLE
@@ -357,10 +462,36 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Whether the content is sponsored
+  - name: is_ad_eligible_position
+    type: BOOLEAN
+    mode: NULLABLE
+    description: >-
+      Whether the card was in a position that can hold a sponsored story: TRUE if any of the
+      card's impressions in the visit reported it. FALSE otherwise on Firefox 157 and later,
+      where Firefox only sends it on impressions and only when true. NULL for clients on Firefox
+      versions before 157, which don't report ad-eligible positions.
   - name: section_position
     type: INTEGER
     mode: NULLABLE
     description: Position of the section containing this content
+  - name: layout_name
+    type: STRING
+    mode: NULLABLE
+    description: >-
+      Layout of the section containing this content (e.g. '7-double-row-2-ad'). NULL for
+      clients on Firefox versions before 144, for cards not shown in a section, and when the
+      entry has no impression or click in this row (e.g. a dismissal whose impression arrived on
+      another day). If the card reported two layouts in the visit, one of them is kept.
+  - name: card_column
+    type: INTEGER
+    mode: NULLABLE
+    description: >-
+      The 1-based grid column (1-4) the card occupied; a card spanning several columns reports
+      its leftmost one. Several cards in a section can share a column. NULL for clients on
+      Firefox versions before 157, for cards not shown in a section, and when the entry has no
+      impression or click in this row (e.g. a dismissal whose impression arrived on another
+      day). If the card reported two columns in the visit (for example after a window resize),
+      the lower one is kept.
   - name: format
     type: STRING
     mode: NULLABLE

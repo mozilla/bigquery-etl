@@ -42,6 +42,9 @@ SELECT
   play_store_attribution_term,
   play_store_attribution_install_referrer_response,
   install_source,
+  -- NULL in partitions written before DENG-12035 that were not backfilled. Those are older than
+  -- every confirmed bot fleet, so return FALSE: then NOT is_automated keeps their rows.
+  COALESCE(is_automated, FALSE) AS is_automated,
   num_clients_in_cohort,
   num_clients_active_on_day
 FROM

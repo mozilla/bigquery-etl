@@ -75,6 +75,18 @@ def all_metric_groups() -> list["MetricGroup"]:
         ),
         MetricGroup(
             ping="metrics",
+            category="rust_component_errors",
+            applications=[
+                Application.firefox_android,
+                Application.firefox_ios,
+                Application.firefox_desktop,
+            ],
+            metrics=[
+                DualLabeledCounter("expected_failures"),
+            ],
+        ),
+        MetricGroup(
+            ping="metrics",
             category="suggest",
             applications=[
                 Application.firefox_desktop,

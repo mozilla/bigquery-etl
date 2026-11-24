@@ -238,10 +238,8 @@ class Backfill:
                         override_depends_on_past_null_partition=entry.get(
                             "override_depends_on_past_null_partition", False
                         ),
-                        # TODO srose to remove `ignore_date_partition_offset` logic after migration to `ignore_partition_offset`
                         ignore_partition_offset=entry.get(
-                            "ignore_partition_offset",
-                            entry.get("ignore_date_partition_offset", False),
+                            "ignore_partition_offset", False
                         ),
                         billing_project=entry.get("billing_project", None),
                         query_script_entrypoint=entry.get(

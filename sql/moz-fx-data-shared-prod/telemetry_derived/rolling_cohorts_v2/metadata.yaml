@@ -9,6 +9,16 @@ description: |-
   etc. are based on the values at the time the cohort is created.
   This might not be the same as when activity happens. For example
   if a client changes whether Firefox is the default browser.
+
+  is_automated flags confirmed automated (bot) desktop clients from
+  telemetry_derived.desktop_automated_clients_v1 (DENG-11925, every fleet), from
+  cohort_date 2026-08-27 (DENG-12035). Bots are flagged, not removed, so totals that ignore
+  this column still include them.
+
+  In this table, is_automated is NULL in cohorts written before DENG-12035 that were not
+  backfilled (cohort dates before 2026-08-27). To exclude bots here, filter on
+  `is_automated IS NOT TRUE`: `NOT is_automated` would also drop those older rows. The view
+  telemetry.rolling_cohorts returns FALSE instead of NULL, so `NOT is_automated` is safe there.
 owners:
 - kik@mozilla.com
 labels:

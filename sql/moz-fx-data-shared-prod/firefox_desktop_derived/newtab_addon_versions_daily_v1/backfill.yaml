@@ -1,0 +1,12 @@
+2026-11-24:
+  start_date: 2026-01-01
+  end_date: 2026-11-18
+  reason: 'DENG-12015: initial backfill of newly created table from 2026-01-01.'
+  watchers:
+  - gkaberere@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_partition_offset: false

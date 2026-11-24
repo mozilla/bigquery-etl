@@ -203,3 +203,9 @@ fields:
   description: !include-field-description
     file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
     field: install_source
+- name: is_automated
+  type: BOOLEAN
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: is_automated

@@ -10,12 +10,13 @@ AI-enriched retrieval table derived from Zendesk customer support tickets, one r
 |---|---|
 | **Grain** | One row per Zendesk ticket (keyed by `creation_date`, `ticket_id`) |
 | **Source** | `moz-fx-data-shared-prod.zendesk_syndicate.ticket` (+ joins to `group`, `user`, `ticket_field_history`, `ticket_tag`) |
-| **DAG** | `bqetl_analytics_tables` · daily · incremental |
-| **Partitioning** | `creation_date` *(partition filter required)* |
+| **DAG** | `bqetl_customer_experience` · daily · incremental |
+| **Partitioning** | `creation_date` *(partition filter not required)* |
 | **Clustering** | `product`, `locale` |
 | **Retention** | No automatic expiration |
 | **Owner** | lvargas@mozilla.com |
 | **Version** | v1 (initial version) |
+| **Level** | Gold |
 
 **Use cases:** support ticket analysis · semantic search via embeddings · sentiment trend monitoring
 
@@ -25,13 +26,13 @@ AI-enriched retrieval table derived from Zendesk customer support tickets, one r
 
 > Read this section before writing queries. These are the most common sources of incorrect results.
 
-- **`creation_date` filter is required.** The table enforces a partition filter — omitting it will error or cause a full table scan.
+- **Filter on `creation_date` to limit the scan.** The table does not require a partition filter; without one, queries scan the full table.
 - **The table excludes obvious noise, not real corpus.** Upstream filters drop: deleted tickets (`status != 'deleted'`), internal test/QA groups (`Sumo Test`, `VPN QA`), the Appbot non-English bucket (`ticket_group != 'Appbot - Non-English'`), and tickets tagged as tests (regex `(^|[-_])test([-_]|$)` or `qatest`). These filters are minimal; the rest of the corpus is otherwise complete.
 - **`metadata.embedding_succeeded` is the *only* reprocessing driver.** Today this equals `embedding IS NOT NULL`. The reprocess job runs `WHERE NOT metadata.embedding_succeeded`. LLM-field issues do **not** trigger reruns — they are visible via `failure_reasons` for triage but never gate reprocessing.
 - **Filter on individual LLM columns when you need clean values.** `ticket_summary_llm`, `ticket_category_llm`, `ticket_language_llm`, `ticket_entities_llm`, `ticket_topics_llm`, and `ticket_sentiment_score` can each be NULL or empty independently. If you're aggregating or grouping by one of them, filter `WHERE <col> IS NOT NULL` (and for arrays, `ARRAY_LENGTH(<col>) > 0`).
 - **`ticket_sentiment_score` is NULL'd at write time when the model returns out-of-range values.** A NULL sentiment is either "model returned nothing" or "model returned >1 / <-1 and we discarded it." `metadata.failure_reasons` distinguishes the two: tags `ticket_sentiment_score_missing` vs `ticket_sentiment_score_out_of_range`.
-- **`metadata.failure_reasons` lists every quality check that fired.** Tags include `embedding_missing`, `ticket_summary_llm_missing`, `ticket_category_llm_missing`, `ticket_language_llm_missing`, `ticket_sentiment_score_missing`, `ticket_sentiment_score_out_of_range`, `ticket_entities_llm_missing`, `ticket_entities_llm_has_empty_elements`, `ticket_topics_llm_missing`, `ticket_topics_llm_has_empty_elements`. Empty array when all checks pass. Use for model/prompt regression triage; **never** as a reprocessing condition.
-- **For embedding/retrieval, filter on `embedding IS NOT NULL` (equivalent to `metadata.embedding_succeeded`) at minimum.** This is what the consumer-facing view (`customer_experience.zendesk_retrieval_index`) enforces.
+- **`metadata.failure_reasons` lists every quality check that fired.** Tags include `embedding_missing`, `ticket_summary_llm_missing`, `ticket_category_llm_missing`, `ticket_language_llm_missing`, `ticket_sentiment_score_missing`, `ticket_sentiment_score_out_of_range`, `ticket_entities_llm_missing`, `ticket_entities_llm_over_limit`, `ticket_entities_llm_has_empty_elements`, `ticket_topics_llm_missing`, `ticket_topics_llm_over_limit`, `ticket_topics_llm_has_empty_elements`. Empty array when all checks pass. Use for model/prompt regression triage; **never** as a reprocessing condition.
+- **Rows with failed embeddings are included in the view.** Filter `WHERE metadata.embedding_succeeded` for vector search, or `WHERE NOT IFNULL(metadata.embedding_succeeded, FALSE)` to list the failures.
 - **Always embed query text with `gemini-embedding-001`.** Mixing embedding models produces mathematically meaningless distances.
 - **`automation_category` reflects post-reopen recategorization.** Tickets initially flagged as automated but later reopened are recategorized as agent-handled (`automation_category = 0`).
 - **`product`, `locale`, `custom_country`, `custom_category`, `via_channel`, `group_name` come from Zendesk fields and joined records.** Treat them as upstream-supplied dimensions; format/values may drift over time.
@@ -92,9 +93,8 @@ The `embedding` column is a dense float array produced by `AI.EMBED(CONCAT(title
 ```sql
 -- Find the 10 most semantically similar Firefox mobile tickets to a free-text query.
 -- Notes:
---  • The partition filter (`creation_date >=`) MUST live inside the base subquery — the
---    underlying table requires a partition filter, and VECTOR_SEARCH scans `base` before
---    any outer WHERE is applied.
+--  • Put the `creation_date` filter inside the base subquery — VECTOR_SEARCH scans `base`
+--    before any outer WHERE is applied, so an outer filter does not reduce the scan.
 --  • The query embedding is passed as a one-row table paired with
 --    `query_column_to_search => 'embedding'`.
 SELECT
@@ -249,4 +249,4 @@ WHERE creation_date BETWEEN DATE('2026-04-01') AND DATE('2026-04-30')
 
 - Full field definitions: [`schema.yaml`](schema.yaml)
 - **Upstream**: `moz-fx-data-shared-prod.zendesk_syndicate.ticket` — Zendesk customer support tickets (Fivetran sync)
-- **Downstream**: `moz-fx-data-shared-prod.customer_experience.zendesk_retrieval_index` view (adds `recency_score`, filters to `metadata.embedding_succeeded`); customer experience dashboards and semantic search applications
+- **Downstream**: `moz-fx-data-shared-prod.customer_experience.zendesk_retrieval_index` view (adds `recency_score`); customer experience dashboards and semantic search applications

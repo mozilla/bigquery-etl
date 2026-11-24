@@ -2055,9 +2055,9 @@ pyflakes==2.4.0 \
     --hash=sha256:05a85c2872edf37a4ed30b0cce2f6093e1d0581f8c19d7393122da7e25b2b24c \
     --hash=sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e
     # via flake8
-pygments==2.16.1 \
-    --hash=sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692 \
-    --hash=sha256:1daff0494820c69bc8941e407aa20f577374ee88364ee10a98fdbe0aece96e29
+pygments==2.20.0 \
+    --hash=sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f \
+    --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176
     # via
     #   mkdocs-material
     #   pytest
@@ -2779,9 +2779,9 @@ types-pyyaml==6.0.12.20250915 \
     # via
     #   -r requirements.in
     #   bigeye-sdk
-types-requests==2.32.4.20260107 \
-    --hash=sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f \
-    --hash=sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d
+types-requests==2.33.0.20261030 \
+    --hash=sha256:06cfc2e92399bf46eda78a65cd0e2203d29ebbeede78b4ab0a5922f749ce1492 \
+    --hash=sha256:42d75eb02ed0f8220904c8fc08d3129742e7fce42fd5cf706395c8bb4c0ad990
     # via -r requirements.in
 types-ujson==5.10.0.20250822 \
     --hash=sha256:0a795558e1f78532373cf3f03f35b1f08bc60d52d924187b97995ee3597ba006 \

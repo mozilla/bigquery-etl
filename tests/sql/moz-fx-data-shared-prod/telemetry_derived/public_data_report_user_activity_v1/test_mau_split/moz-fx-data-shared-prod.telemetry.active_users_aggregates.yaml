@@ -1,0 +1,50 @@
+---
+# AA: Desktop plus the four mobile apps, each a different count so a dropped or doubled app changes the sum.
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Firefox Desktop
+  mau: 70
+  wau: 7
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Fenix
+  mau: 10
+  wau: 1
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Firefox iOS
+  mau: 6
+  wau: 1
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Focus Android
+  mau: 3
+  wau: 1
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Focus iOS
+  mau: 1
+  wau: 1
+# Not in the query's app_name list, so left out of mau and both halves.
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Other App
+  mau: 5
+  wau: 1
+# BB: mobile apps only, so mau_desktop is 0.
+- submission_date: 2026-11-02
+  country: BB
+  app_name: Fenix
+  mau: 4
+  wau: 1
+- submission_date: 2026-11-02
+  country: BB
+  app_name: Focus iOS
+  mau: 2
+  wau: 1
+# A later date: the query reads only @submission_date, so this row is left out.
+- submission_date: 2026-11-08
+  country: AA
+  app_name: Firefox Desktop
+  mau: 50
+  wau: 5

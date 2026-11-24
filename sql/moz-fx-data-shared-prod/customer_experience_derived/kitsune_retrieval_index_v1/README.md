@@ -10,12 +10,13 @@ AI-enriched retrieval table derived from Kitsune (SUMO), one row per question–
 |---|---|
 | **Grain** | One row per `(creation_date, question_id, answer_id)` |
 | **Source** | `moz-fx-data-shared-prod.sumo_syndicate.kitsune_questions_plus`, `moz-fx-data-shared-prod.sumo_syndicate.kitsune_answers_raw` |
-| **DAG** | `bqetl_analytics_tables` · daily · incremental |
-| **Partitioning** | `creation_date` *(partition filter required)* |
+| **DAG** | `bqetl_customer_experience` · daily · incremental |
+| **Partitioning** | `creation_date` *(partition filter not required)* |
 | **Clustering** | `product`, `locale` |
 | **Retention** | No automatic expiration |
 | **Owner** | lvargas@mozilla.com |
 | **Version** | v1 (initial version) |
+| **Level** | Gold |
 
 **Use cases:** support question analysis · semantic search via embeddings · sentiment trend monitoring
 
@@ -25,12 +26,12 @@ AI-enriched retrieval table derived from Kitsune (SUMO), one row per question–
 
 > Read this section before writing queries. These are the most common sources of incorrect results.
 
-- **`creation_date` filter is required.** The table enforces a partition filter — omitting it will error or cause a full table scan.
+- **Filter on `creation_date` to limit the scan.** The table does not require a partition filter; without one, queries scan the full table.
 - **`metadata.embedding_succeeded` is the *only* reprocessing driver.** Today this equals `embedding IS NOT NULL`. The reprocess job runs `WHERE NOT metadata.embedding_succeeded`. LLM-field issues do **not** trigger reruns — they are visible via `failure_reasons` for triage but never gate reprocessing.
 - **Filter on individual LLM columns when you need clean values.** `question_summary_llm`, `question_category_llm`, `question_language_llm`, `question_entities_llm`, `question_topics_llm`, and `question_sentiment_score` can each be NULL or empty independently. If you're aggregating or grouping by one of them, filter `WHERE <col> IS NOT NULL` (and for arrays, `ARRAY_LENGTH(<col>) > 0`).
 - **`question_sentiment_score` is NULL'd at write time when the model returns out-of-range values.** A NULL sentiment is either "model returned nothing" or "model returned >1 / <-1 and we discarded it." `metadata.failure_reasons` distinguishes the two: tags `question_sentiment_score_missing` vs `question_sentiment_score_out_of_range`.
-- **`metadata.failure_reasons` lists every quality check that fired.** Tags include `embedding_missing`, `question_summary_llm_missing`, `question_category_llm_missing`, `question_language_llm_missing`, `question_sentiment_score_missing`, `question_sentiment_score_out_of_range`, `question_entities_llm_missing`, `question_entities_llm_has_empty_elements`, `question_topics_llm_missing`, `question_topics_llm_has_empty_elements`. Empty array when all checks pass. Use for model/prompt regression triage; **never** as a reprocessing condition.
-- **For embedding/retrieval, filter on `embedding IS NOT NULL` (equivalent to `metadata.embedding_succeeded`) at minimum.** This is what the consumer-facing view enforces.
+- **`metadata.failure_reasons` lists every quality check that fired.** Tags include `embedding_missing`, `question_summary_llm_missing`, `question_category_llm_missing`, `question_language_llm_missing`, `question_sentiment_score_missing`, `question_sentiment_score_out_of_range`, `question_entities_llm_missing`, `question_entities_llm_over_limit`, `question_entities_llm_has_empty_elements`, `question_topics_llm_missing`, `question_topics_llm_over_limit`, `question_topics_llm_has_empty_elements`. Empty array when all checks pass. Use for model/prompt regression triage; **never** as a reprocessing condition.
+- **Rows with failed embeddings are included in the view.** Filter `WHERE metadata.embedding_succeeded` for vector search, or `WHERE NOT IFNULL(metadata.embedding_succeeded, FALSE)` to list the failures.
 - **`answer_content` is not embedded.** Vector similarity reflects question text (`title` + `content`) only — high similarity means similar *questions*, not better *answers*.
 - **Always embed query text with `gemini-embedding-001`.** Mixing embedding models produces mathematically meaningless distances.
 - **Partitions are open: late-arriving answers are picked up on rerun.** A partition is keyed on the *question's* `creation_date`, but answers can arrive any time after — even a year later — and are joined onto the partition's questions when the partition runs. Re-running an old partition (backfill) will therefore include any answers that have arrived since the last run. Question-level row counts and AI fields stay deterministic for a given source snapshot; answer-level columns (`answer_id`, `answer_content`, `num_helpful_votes`, `num_unhelpful_votes`, `is_self_answer`) reflect whatever state existed at run time. Treat the partition as the join of "questions on this date" × "all of their answers as of the last run".
@@ -94,9 +95,8 @@ The `embedding` column is a dense float array produced by `AI.EMBED(CONCAT(title
 ```sql
 -- Find the 10 most semantically similar Firefox Desktop questions to a free-text query.
 -- Notes:
---  • The partition filter (`creation_date >=`) MUST live inside the base subquery — the
---    underlying table requires a partition filter, and VECTOR_SEARCH scans `base` before
---    any outer WHERE is applied.
+--  • Put the `creation_date` filter inside the base subquery — VECTOR_SEARCH scans `base`
+--    before any outer WHERE is applied, so an outer filter does not reduce the scan.
 --  • The query embedding is passed as a one-row table (subquery aliased to `embedding`)
 --    paired with `query_column_to_search => 'embedding'`. This is the documented form for
 --    subquery-shaped query inputs and avoids relying on scalar-to-array coercion.

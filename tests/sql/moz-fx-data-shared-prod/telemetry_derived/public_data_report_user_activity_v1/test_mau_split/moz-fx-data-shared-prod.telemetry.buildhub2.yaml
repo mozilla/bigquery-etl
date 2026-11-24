@@ -1,0 +1,16 @@
+---
+# A release build before the week's Sunday, so 140 is the latest version and both clients
+# are on it.
+- build:
+    build:
+      date: "2026-06-01 00:00:00"
+    target:
+      channel: release
+      version: '140.0'
+# A beta build, so latest_releases leaves it out.
+- build:
+    build:
+      date: "2026-10-01 00:00:00"
+    target:
+      channel: beta
+      version: '145.0'

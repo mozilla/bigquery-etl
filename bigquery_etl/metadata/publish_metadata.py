@@ -48,6 +48,8 @@ def publish_metadata(
         if metadata.description is not None:
             table.description = metadata.description
 
+        # update_table merges labels, so labels not specified are not dropped.
+        # Set a label to None to remove it.
         table.labels = {
             key: value
             for key, value in metadata.labels.items()
@@ -108,6 +110,7 @@ def attach_metadata(artifact_file_path: Path, table: bigquery.Table) -> None:
 
     # BigQuery only allows for string type labels with specific requirements to be published:
     # https://cloud.google.com/bigquery/docs/labels-intro#requirements
+    # Existing labels missing from this dict, like `managed`, are kept.
     if metadata.labels:
         table.labels = {
             key: value

@@ -531,23 +531,14 @@ class TestTask:
             / "query.sql"
         )
 
-        # TODO srose to restore expecting an error after the migration to `partition_parameter`
-        # with pytest.raises(TaskParseException):
-        #     Task(
-        #         dag_name="bqetl_test_dag",
-        #         query_file=str(query_file),
-        #         owner="test@example.com",
-        #         partition_parameter="submission_date",
-        #         parameters=["submission_date:DATE:{{ds}}"],
-        #     )
-        task = Task(
-            dag_name="bqetl_test_dag",
-            query_file=str(query_file),
-            owner="test@example.com",
-            partition_parameter="submission_date",
-            parameters=["submission_date:DATE:{{ds}}"],
-        )
-        assert task.parameters == []
+        with pytest.raises(TaskParseException):
+            Task(
+                dag_name="bqetl_test_dag",
+                query_file=str(query_file),
+                owner="test@example.com",
+                partition_parameter="submission_date",
+                parameters=["submission_date:DATE:{{ds}}"],
+            )
 
         # No conflict when the partition parameter is null.
         assert Task(

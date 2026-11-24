@@ -1,0 +1,19 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+- name: is_wau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE

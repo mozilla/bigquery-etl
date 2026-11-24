@@ -1,0 +1,24 @@
+---
+# a1 to a3 have the language-only 'en' here; the query must take 'en-US' from baseline_clients_last_seen.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a1, app_name: Firefox Desktop, is_wau: true, locale: en}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a2, app_name: Firefox Desktop, is_wau: true, locale: en}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a3, app_name: Firefox Desktop, is_wau: true, locale: en}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a4, app_name: Firefox Desktop, is_wau: true}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a5, app_name: Firefox Desktop, is_wau: true}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a6, app_name: Firefox Desktop, is_wau: true}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a7, app_name: Firefox Desktop, is_wau: true}
+# a8 is a MozillaOnline client, which counts.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a8, app_name: Firefox Desktop MozillaOnline, is_wau: true}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: u1, app_name: Firefox Desktop, is_wau: true}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: u2, app_name: Firefox Desktop, is_wau: true}
+# Weekly active, but left out for their missing or empty locale in baseline_clients_last_seen.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x1, app_name: Firefox Desktop, is_wau: true}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x2, app_name: Firefox Desktop, is_wau: true}
+# Outside the 1% sample, left out.
+- {submission_date: 2026-11-08, sample_id: 2, client_id: x3, app_name: Firefox Desktop, is_wau: true}
+# Not weekly active, left out.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x4, app_name: Firefox Desktop, is_wau: false}
+# BrowserStack, not on the Desktop app list, left out.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x5, app_name: Firefox Desktop BrowserStack, is_wau: true}
+# Weekly active on the Sunday, but left out for its Saturday-only row in baseline_clients_last_seen.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x6, app_name: Firefox Desktop, is_wau: true}

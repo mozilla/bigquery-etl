@@ -486,26 +486,14 @@ class Task:
                 f" but is {self.query_file}"
             )
 
-        # TODO srose to restore raising this error instead of dropping the conflicting
-        # parameters after the migration to `partition_parameter`
         if self.partition_parameter and any(
             parameter.split(":", 1)[0] == self.partition_parameter
             for parameter in self.parameters
         ):
-            logging.warning(
+            raise TaskParseException(
                 f"Partition parameter `{self.partition_parameter}` for {self.query_file}"
-                " conflicts with an explicit parameter of the same name in `parameters`,"
-                " so the explicit parameter is being ignored."
+                " conflicts with an explicit parameter of the same name in `parameters`."
             )
-            self.parameters = [
-                parameter
-                for parameter in self.parameters
-                if parameter.split(":", 1)[0] != self.partition_parameter
-            ]
-            # raise TaskParseException(
-            #     f"Partition parameter `{self.partition_parameter}` for {self.query_file}"
-            #     " conflicts with an explicit parameter of the same name in `parameters`."
-            # )
 
     @property
     def source_file_path(self):

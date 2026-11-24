@@ -372,6 +372,178 @@ def test_glean_targets(mock_requests):
     }
 
 
+class AppUsageReportingClient(FakeClient):
+    """FakeClient with usage_profile_id tables in app-level and channel derived datasets.
+
+    org_mozilla_firefox_beta has no usage_deletion_request ping, and the
+    focus_android.usage_deletion_request view only exists if has_app_view is set.
+    """
+
+    def __init__(self, has_app_view=True):
+        self.has_app_view = has_app_view
+
+    def list_tables(self, dataset_ref):
+        tables = super().list_tables(dataset_ref)
+        if dataset_ref.dataset_id == "org_mozilla_firefox_beta_stable":
+            tables = [
+                table
+                for table in tables
+                if table.table_id != "usage_deletion_request_v1"
+            ]
+        if dataset_ref.dataset_id in {
+            "fenix_derived",
+            "focus_android_derived",
+            "org_mozilla_firefox_beta_derived",
+        }:
+            tables.append(
+                bigquery.table.TableListItem(
+                    {
+                        "tableReference": bigquery.TableReference(
+                            dataset_ref, "usage_reporting_clients_daily_v1"
+                        ).to_api_repr(),
+                    }
+                )
+            )
+        return tables
+
+    def get_table(self, table_ref):
+        if not self.has_app_view and str(table_ref).endswith(
+            "focus_android.usage_deletion_request"
+        ):
+            raise NotFound(str(table_ref))
+        return super().get_table(table_ref)
+
+
+def usage_reporting_derived_targets(client):
+    with ThreadPool(1) as pool:
+        targets = find_glean_targets(pool, client)
+    return {
+        target.table: set(sources)
+        for target, sources in targets.items()
+        if target.table.endswith("_derived.usage_reporting_clients_daily_v1")
+    }
+
+
+def usage_deletion_request_source(table):
+    return DeleteSource(table=table, field="metrics.uuid.usage_profile_id")
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
+def test_glean_targets_app_usage_reporting_view(mock_requests):
+    """App-level derived tables use the app's usage_deletion_request view."""
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    targets = usage_reporting_derived_targets(AppUsageReportingClient())
+
+    assert targets == {
+        "focus_android_derived.usage_reporting_clients_daily_v1": {
+            usage_deletion_request_source("focus_android.usage_deletion_request")
+        },
+        "fenix_derived.usage_reporting_clients_daily_v1": {
+            usage_deletion_request_source("fenix.usage_deletion_request")
+        },
+        **{
+            f"{channel}_derived.usage_reporting_clients_daily_v1": {
+                usage_deletion_request_source(
+                    f"{channel}_stable.usage_deletion_request_v1"
+                )
+            }
+            for channel in ["org_mozilla_focus", "org_mozilla_focus_beta"]
+        },
+        # org_mozilla_firefox_beta has no usage_deletion_request ping, so its table
+        # isn't a target instead of being a target with no sources
+    }
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
+def test_glean_targets_app_usage_reporting_without_view(mock_requests):
+    """Without an app view, app-level derived tables use every channel's table."""
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    targets = usage_reporting_derived_targets(
+        AppUsageReportingClient(has_app_view=False)
+    )
+
+    assert targets["focus_android_derived.usage_reporting_clients_daily_v1"] == {
+        usage_deletion_request_source(f"{channel}_stable.usage_deletion_request_v1")
+        for channel in ["org_mozilla_focus", "org_mozilla_focus_beta"]
+    }
+
+
+class SingleChannelUsageReportingClient(FakeClient):
+    """FakeClient with only firefox_desktop, where the app name is the channel name."""
+
+    def __init__(self):
+        self.requested_tables = []
+
+    def list_datasets(self, project):
+        return [
+            bigquery.DatasetReference(project, f"firefox_desktop_{suffix}")
+            for suffix in ["stable", "derived"]
+        ]
+
+    def list_tables(self, dataset_ref):
+        if dataset_ref.dataset_id == "firefox_desktop_stable":
+            table_ids = [
+                ("deletion_request_v1", {"schema_id": "glean_ping_1"}),
+                ("usage_reporting_v1", {"schema_id": "glean-min_ping_1"}),
+                ("usage_deletion_request_v1", {"schema_id": "glean-min_ping_1"}),
+            ]
+        elif dataset_ref.dataset_id == "firefox_desktop_derived":
+            table_ids = [("usage_reporting_clients_daily_v1", {})]
+        else:
+            raise Exception(f"unexpected dataset: {dataset_ref}")
+        return [
+            bigquery.table.TableListItem(
+                {
+                    "tableReference": bigquery.TableReference(
+                        dataset_ref, table_id
+                    ).to_api_repr(),
+                    "labels": labels,
+                }
+            )
+            for table_id, labels in table_ids
+        ]
+
+    def get_table(self, table_ref):
+        self.requested_tables.append(str(table_ref))
+        return super().get_table(table_ref)
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
+def test_glean_targets_single_channel_usage_reporting(mock_requests):
+    """Single channel apps use the channel's table, not the app view."""
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    client = SingleChannelUsageReportingClient()
+    with ThreadPool(1) as pool:
+        targets = find_glean_targets(pool, client)
+
+    desktop_source = usage_deletion_request_source(
+        "firefox_desktop_stable.usage_deletion_request_v1"
+    )
+    assert targets == {
+        DeleteTarget(
+            table="firefox_desktop_stable.usage_reporting_v1",
+            field=("metrics.uuid.usage_profile_id",),
+        ): (desktop_source,),
+        DeleteTarget(
+            table="firefox_desktop_derived.usage_reporting_clients_daily_v1",
+            field=("usage_profile_id",),
+        ): (desktop_source,),
+    }
+    assert not any(
+        table.endswith("firefox_desktop.usage_deletion_request")
+        for table in client.requested_tables
+    )
+
+
 @mock.patch("bigquery_etl.cli.utils.requests")
 def test_glean_targets_schema_version_and_v1_suffix(mock_requests):
     """Match any glean_ping_ schema version but only include _v1 tables.

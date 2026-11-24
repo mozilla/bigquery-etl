@@ -1423,6 +1423,11 @@ fields:
   description: The error message or reason associated with an IPC (Inter-Process Communication) channel failure, such as 'ShutDownKill' or 'GPUProcessKill'.
     A null value indicates no IPC channel error was recorded.
   type: STRING
+- name: is_automated
+  description: Whether the client is a confirmed automated (bot) client, per telemetry_derived.desktop_automated_clients_v1
+    (DENG-11925, every fleet). Always FALSE for mobile clients and for cohorts before 2026-08-27. Flagged rather than removed,
+    so totals that ignore this column include bots.
+  type: BOOLEAN
 - name: is_dau
   description: Indicates whether the client qualifies as a Daily Active User (DAU) for the given date. True means the client meets the DAU criteria;
     false means it does not.

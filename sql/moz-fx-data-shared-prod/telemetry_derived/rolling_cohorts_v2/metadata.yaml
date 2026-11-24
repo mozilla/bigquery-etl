@@ -9,6 +9,11 @@ description: |-
   etc. are based on the values at the time the cohort is created.
   This might not be the same as when activity happens. For example
   if a client changes whether Firefox is the default browser.
+
+  is_automated flags confirmed automated (bot) desktop clients from
+  telemetry_derived.desktop_automated_clients_v1 (DENG-11925, every fleet), from
+  cohort_date 2026-08-27 (DENG-12035). Bots are flagged, not removed, so totals that ignore
+  this column still include them. Filter on NOT is_automated to exclude them.
 owners:
 - kik@mozilla.com
 labels:

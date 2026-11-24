@@ -46,6 +46,9 @@ cohorts_in_range AS (
     play_store_attribution_install_referrer_response,
     install_source,
     row_source,
+    -- Cohorts written before is_automated was added (DENG-12035) have NULL. They are older than
+    -- every confirmed bot fleet (the first starts on 2026-08-27), so read NULL as FALSE.
+    COALESCE(is_automated, FALSE) AS is_automated,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
@@ -100,7 +103,8 @@ SELECT
   COUNT(cohort_client_id) AS num_clients_in_cohort,
   COUNT(active_client_id) AS num_clients_active_on_day,
   play_store_attribution_install_referrer_response,
-  install_source
+  install_source,
+  is_automated
 FROM
   activity_cohort_match
 GROUP BY
@@ -137,4 +141,5 @@ GROUP BY
   play_store_attribution_term,
   row_source,
   play_store_attribution_install_referrer_response,
-  install_source
+  install_source,
+  is_automated

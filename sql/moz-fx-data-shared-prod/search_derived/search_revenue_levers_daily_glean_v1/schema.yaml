@@ -25,7 +25,7 @@ fields:
     other measures use other labels such as unknown or tabhistory, so the values are not one
     clean list of access points. Mobile uses its own labels. It has not been mapped to the access
     points of the new Google codes. Ratios between measures within one value, such as ad clicks per
-    SAP, are not meaningful, because the measures are not all attributed to the same search.
+    SAP, are not meaningful, because the measures are not necessarily attributed to the same search.
 - name: country
   type: STRING
   mode: NULLABLE

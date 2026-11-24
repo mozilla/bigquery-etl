@@ -1,0 +1,59 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The week's Monday, the partition column. MAU is read on this day, and
+    top languages on the Sunday six days later.
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: 'The full human-readable name of the country associated with the record
+    (e.g., ''United States'', ''India'', ''Brazil''). Provides a display-friendly
+    alternative to ISO country code fields.
+
+    The raw code where static.country_names_v1 has no name, such as ''??'', and ''Worldwide''
+    for all countries.'
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: 'Monthly Active Users (MAU). The count of distinct clients that were
+    active at least one day within the previous 28 days. See detailed MAU definition
+    in https://mozilla-hub.atlassian.net/wiki/spaces/DATA/pages/314704478/Daily+Active+Users+DAU+Metric#WAU-and-MAU.
+
+    Here, mau_desktop plus mau_mobile, read on the week''s Monday; a client using
+    two apps counts in each.'
+- name: top_locales
+  type: RECORD
+  mode: REPEATED
+  description: 'An array of the most prevalent browser locales observed in a population,
+    each entry containing the locale string and the proportion of users with that
+    locale.
+
+    Here, Firefox Desktop''s top five full locales among weekly active clients with
+    a locale, in the 1% sample, read on the week''s Sunday. Empty for a country with
+    no such clients.'
+  fields:
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: A browser locale code (e.g., 'en-US', 'fr') representing one of the
+      most common locales within a given population segment.
+  - name: ratio
+    type: FLOAT64
+    mode: NULLABLE
+    description: 'The proportion of users in a population segment using the associated
+      locale, expressed as a decimal fraction between 0 and 1.
+
+      Here, the share of weekly active clients with a locale.'
+- name: mau_desktop
+  type: INT64
+  mode: NULLABLE
+  description: Desktop MAU for the week, counting Firefox Desktop and Firefox Desktop
+    MozillaOnline clients active in the 28 days ending the week's Monday. 0 if a country
+    has no Desktop clients.
+- name: mau_mobile
+  type: INT64
+  mode: NULLABLE
+  description: Mobile MAU for the week, counting Fenix, Fenix MozillaOnline, Firefox
+    iOS, Focus Android and Focus iOS clients active in the 28 days ending the week's
+    Monday. 0 if a country has no mobile clients.

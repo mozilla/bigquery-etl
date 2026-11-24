@@ -1,0 +1,37 @@
+friendly_name: Public Data Report User Activity Glean
+description: |-
+  Glean user activity figures for data.firefox.com, one row per week and country name, plus
+  Worldwide. telemetry.public_data_report_user_activity reads it for weeks from its boundary.
+
+  MAU is read on the week's Monday from glean_telemetry.active_users_aggregates: Desktop is
+  Firefox Desktop and Firefox Desktop MozillaOnline, mobile is Fenix, Fenix MozillaOnline,
+  Firefox iOS, Focus Android and Focus iOS. Top languages are Desktop's top five full locales
+  among weekly active clients with a locale, in the 1% sample, read on the week's Sunday.
+
+  Figures are exact; the user activity export in firefox-public-data-report-etl may apply
+  small-count suppression.
+owners:
+- kbammarito@mozilla.com
+- akommasani@mozilla.com
+labels:
+  incremental: true
+  table_type: aggregate
+  owner1: kbammarito
+  owner2: akommasani
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.glean_telemetry.active_users_aggregates
+  - moz-fx-data-shared-prod.static.country_names_v1
+require_column_descriptions: true

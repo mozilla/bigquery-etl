@@ -343,6 +343,10 @@ SELECT
   assert.equals('Firefox', customer_experience.normalize_product('/firefox/mobile/ios/', 'GA4')),
   assert.equals('Firefox', customer_experience.normalize_product('/firefox/ios/mobile/', 'GA4')),
   assert.equals('Firefox Android', customer_experience.normalize_product('/mobile/ios/', 'GA4')),
+  assert.equals(
+    'Firefox',
+    customer_experience.normalize_product('/firefox/mobile/ios/focus-firefox/', 'GA4')
+  ),
   assert.equals('Firefox iOS', customer_experience.normalize_product('/ios/', 'GA4')),
   assert.equals('Other', customer_experience.normalize_product('/contributor/thunderbird/', 'GA4')),
   assert.equals(

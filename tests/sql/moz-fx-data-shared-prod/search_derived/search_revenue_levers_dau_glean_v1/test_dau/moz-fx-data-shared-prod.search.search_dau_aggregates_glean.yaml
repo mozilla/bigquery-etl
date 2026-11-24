@@ -33,3 +33,10 @@
   normalized_os: Linux
   dau_w_engine_as_default: 1
   dau_engaged_w_sap: 1
+- submission_date: '2026-09-21'
+  partner: Google
+  device: desktop
+  country: RU
+  normalized_os: Windows
+  dau_w_engine_as_default: 5
+  dau_engaged_w_sap: 2

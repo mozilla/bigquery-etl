@@ -3,6 +3,7 @@
 # Mobile DAU has no operating system, so normalized_os is NULL and omitted on mobile rows.
 # The legacy search_dau_aggregates desktop row (99, 99) must not be counted: only its mobile rows are read.
 # Rows come from the DAU aggregates, not from search rows.
+# Google rows for an ineligible country (RU, on desktop and mobile) are left out, even though their fixture values are nonzero.
 - submission_date: '2026-09-21'
   partner: Google
   device: desktop

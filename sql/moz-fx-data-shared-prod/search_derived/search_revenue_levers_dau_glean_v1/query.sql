@@ -138,3 +138,9 @@ SELECT
   dau_engaged_w_sap
 FROM
   combined_search_dau
+-- Google rows are limited to the eligible countries, as the search table's Google rows are. The DAU
+-- aggregates already leave Google's measures at 0 elsewhere, so this removes rows of zeros that the
+-- legacy table never had.
+WHERE
+  partner != 'Google'
+  OR google_eligible_country(submission_date, country)

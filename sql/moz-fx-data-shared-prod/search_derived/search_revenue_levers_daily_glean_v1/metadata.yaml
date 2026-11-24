@@ -41,6 +41,11 @@ description: |-
   * `source` is the access point as reported upstream. It is not one clean list: desktop SAP uses access
     points such as `urlbar` and `searchbar`, other measures use labels such as `unknown`, and mobile has
     its own labels. Mapping it to the access points of the new Google codes is not done here.
+  * Because of that, the measures on one `source` row don't all belong to the same search. SAP is on the
+    access point the search started from, while tagged searches, searches with ads and ad clicks can sit
+    under other labels such as `unknown` and `tabhistory`. Totals across `source` are correct, but ratios
+    within one access point, such as ad clicks per SAP, are not meaningful. On mobile, SAP and those
+    measures sit under different labels altogether.
 owners:
 - mozilla/revenue_forecasting_data_reviewers
 - lmcfall@mozilla.com

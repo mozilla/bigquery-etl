@@ -40,6 +40,22 @@ SELECT
   'Desktop' AS row_source,
   CAST(NULL AS STRING) AS play_store_attribution_install_referrer_response,
   CAST(NULL AS STRING) AS install_source,
+  -- Confirmed automated (bot) clients from desktop_automated_clients_v1 (DENG-11925, every
+  -- fleet), flagged rather than removed so the totals do not change (DENG-12035). Only flags up
+  -- to @submission_date, so a rerun or backfill gives the same result as the daily run.
+  -- NOT NULL guard: IN returns NULL, not FALSE, when the list holds a NULL.
+  COALESCE(
+    au.client_id IN (
+      SELECT
+        client_id
+      FROM
+        `moz-fx-data-shared-prod.telemetry_derived.desktop_automated_clients_v1`
+      WHERE
+        submission_date <= @submission_date
+        AND client_id IS NOT NULL
+    ),
+    FALSE
+  ) AS is_automated,
 FROM
   `moz-fx-data-shared-prod.telemetry.desktop_active_users` au
 LEFT JOIN
@@ -93,7 +109,9 @@ SELECT
   mnpc.play_store_attribution_term,
   'Mobile' AS row_source,
   mnpc.play_store_attribution_install_referrer_response,
-  mnpc.install_source
+  mnpc.install_source,
+  -- No mobile bot fleets are confirmed.
+  FALSE AS is_automated,
 FROM
   (
 --in case of multiple rows per client ID / first seen date (rare), pick 1

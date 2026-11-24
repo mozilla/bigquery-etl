@@ -7,6 +7,17 @@ description: |-
   attributes at the time the cohort started (rather than the
   values at activity time)
   - Jira ticket to extend time range: https://mozilla-hub.atlassian.net/browse/DENG-10515
+
+  is_automated flags confirmed automated (bot) desktop clients from
+  telemetry_derived.desktop_automated_clients_v1 (DENG-11925, every fleet), from
+  cohort_date 2026-08-27 (DENG-12035). Bots are flagged, not removed, so totals that ignore
+  this column still include them.
+
+  In this table, is_automated is NULL in partitions written before DENG-12035 that were not
+  backfilled (activity dates before 2026-08-28). To exclude bots here, filter on
+  `is_automated IS NOT TRUE`: `NOT is_automated` would also drop those older rows. The view
+  telemetry.cohort_daily_statistics returns FALSE instead of NULL, so `NOT is_automated` is safe
+  there.
 owners:
 - mhirose@mozilla.com
 labels:

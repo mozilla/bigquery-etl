@@ -1,0 +1,53 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The week's Monday, the partition column. MAU is read on this day, and top languages on the Sunday
+    six days later.
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: country_name
+    append: The raw code where static.country_names_v1 has no name, such as '??', and 'Worldwide' for all
+      countries.
+- name: mau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: mau
+    append: Here, mau_desktop plus mau_mobile, read on the week's Monday; a client using two apps counts in each.
+- name: top_locales
+  type: RECORD
+  mode: REPEATED
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: top_locales
+    append: Here, Firefox Desktop's top five full locales among weekly active clients with a locale, in the 1%
+      sample, read on the week's Sunday. Empty for a country with no such clients.
+  fields:
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: top_locales_locale
+  - name: ratio
+    type: FLOAT64
+    mode: NULLABLE
+    description: !include-field-description
+      file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+      field: top_locales_ratio
+      append: Here, the share of weekly active clients with a locale.
+- name: mau_desktop
+  type: INT64
+  mode: NULLABLE
+  description: Desktop MAU for the week, counting Firefox Desktop and Firefox Desktop MozillaOnline clients active
+    in the 28 days ending the week's Monday. 0 if a country has no Desktop clients.
+- name: mau_mobile
+  type: INT64
+  mode: NULLABLE
+  description: Mobile MAU for the week, counting Fenix, Fenix MozillaOnline, Firefox iOS, Focus Android and Focus
+    iOS clients active in the 28 days ending the week's Monday. 0 if a country has no mobile clients.

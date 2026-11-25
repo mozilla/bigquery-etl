@@ -1,0 +1,20 @@
+- submission_date: '2026-09-21'
+  country: US
+  client_id: m1
+  is_dau: true
+  app_name: Fenix
+- submission_date: '2026-09-21'
+  country: US
+  client_id: m2
+  is_dau: true
+  app_name: Fenix
+- submission_date: '2026-09-21'
+  country: US
+  client_id: m3
+  is_dau: true
+  app_name: Klar
+- submission_date: '2026-09-21'
+  country: GB
+  client_id: m4
+  is_dau: true
+  app_name: Focus Android

@@ -75,6 +75,18 @@ def all_metric_groups() -> list["MetricGroup"]:
         ),
         MetricGroup(
             ping="metrics",
+            category="rust_component_errors",
+            applications=[
+                Application.firefox_android,
+                Application.firefox_ios,
+                Application.firefox_desktop,
+            ],
+            metrics=[
+                DualLabeledCounter("expected_failures"),
+            ],
+        ),
+        MetricGroup(
+            ping="metrics",
             category="suggest",
             applications=[
                 Application.firefox_desktop,
@@ -120,6 +132,14 @@ class Metric:
 @dataclass
 class Counter(Metric):
     template_dir = Path("counter")
+
+@dataclass
+class LabeledCounter(Metric):
+    template_dir = Path("labeled-counter")
+
+@dataclass
+class DualLabeledCounter(Metric):
+    template_dir = Path("dual-labeled-counter")
 
 @dataclass
 class Distribution(Metric):

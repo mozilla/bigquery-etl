@@ -1,0 +1,24 @@
+---
+# Counted in AA: en-US 3, de 2, it 1, ja 1, pt-BR 1, so 8 clients with a locale.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a1, country: AA, locale: en-US}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a2, country: AA, locale: en-US}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a3, country: AA, locale: en-US}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a4, country: AA, locale: de}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a5, country: AA, locale: de}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a6, country: AA, locale: it}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a7, country: AA, locale: ja}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: a8, country: AA, locale: pt-BR}
+# No country and an empty country both count under '??'.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: u1, locale: sv}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: u2, country: '', locale: sv}
+# No locale and an empty locale, both left out.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x1, country: AA}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x2, country: AA, locale: ''}
+# Outside the 1% sample, left out.
+- {submission_date: 2026-11-08, sample_id: 2, client_id: x3, country: AA, locale: fr}
+# Not weekly active, and BrowserStack, per baseline_active_users; both left out.
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x4, country: AA, locale: fr}
+- {submission_date: 2026-11-08, sample_id: 1, client_id: x5, country: AA, locale: fr}
+# A Saturday row: top languages are read only on the Sunday, so left out.
+- {submission_date: 2026-11-07, sample_id: 1, client_id: x6, country: AA, locale: ko}
+# No CC clients, so CC, which has MAU, gets an empty top_locales.

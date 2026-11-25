@@ -1,0 +1,54 @@
+---
+# AA: Desktop and mobile, each with MozillaOnline, which counts.
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Firefox Desktop
+  mau: 60
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Firefox Desktop MozillaOnline
+  mau: 10
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Fenix
+  mau: 15
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Fenix MozillaOnline
+  mau: 5
+# Not on the query's app list, so left out.
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Firefox Desktop BrowserStack
+  mau: 7
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Klar
+  mau: 3
+# BB: mobile only, so mau_desktop is 0.
+- submission_date: 2026-11-02
+  country: BB
+  app_name: Firefox iOS
+  mau: 8
+- submission_date: 2026-11-02
+  country: BB
+  app_name: Focus Android
+  mau: 2
+# CC: Desktop only, so mau_mobile is 0.
+- submission_date: 2026-11-02
+  country: CC
+  app_name: Firefox Desktop
+  mau: 9
+# No country and an empty country both count under '??'.
+- submission_date: 2026-11-02
+  app_name: Firefox Desktop
+  mau: 4
+- submission_date: 2026-11-02
+  country: ''
+  app_name: Focus iOS
+  mau: 1
+# A later date: MAU is read only on the Monday, so left out.
+- submission_date: 2026-11-03
+  country: AA
+  app_name: Firefox Desktop
+  mau: 100

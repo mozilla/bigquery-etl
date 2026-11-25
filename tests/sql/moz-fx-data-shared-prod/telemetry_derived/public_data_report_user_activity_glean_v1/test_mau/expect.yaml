@@ -1,0 +1,42 @@
+---
+# mau is mau_desktop plus mau_mobile; MozillaOnline counts, BrowserStack and Klar don't.
+- submission_date: 2026-11-02
+  country_name: Country A
+  mau: 90
+  top_locales: []
+  mau_desktop: 70
+  mau_mobile: 20
+# BB has two names, so two rows with the same figures; mobile only, so mau_desktop is 0.
+- submission_date: 2026-11-02
+  country_name: Country B
+  mau: 10
+  top_locales: []
+  mau_desktop: 0
+  mau_mobile: 10
+- submission_date: 2026-11-02
+  country_name: Country Bee
+  mau: 10
+  top_locales: []
+  mau_desktop: 0
+  mau_mobile: 10
+# Desktop only, so mau_mobile is 0.
+- submission_date: 2026-11-02
+  country_name: Country C
+  mau: 9
+  top_locales: []
+  mau_desktop: 9
+  mau_mobile: 0
+# No country and an empty country together; '??' has no name, so it keeps the code.
+- submission_date: 2026-11-02
+  country_name: '??'
+  mau: 5
+  top_locales: []
+  mau_desktop: 4
+  mau_mobile: 1
+# Summed over codes, so BB counts once: 70 + 0 + 9 + 4 Desktop and 20 + 10 + 0 + 1 mobile.
+- submission_date: 2026-11-02
+  country_name: Worldwide
+  mau: 114
+  top_locales: []
+  mau_desktop: 83
+  mau_mobile: 31

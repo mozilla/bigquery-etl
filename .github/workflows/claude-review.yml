@@ -11,27 +11,15 @@ on:
   issue_comment:
     types: [created]
 
-concurrency:
-  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}-${{ github.event_name }}
-  cancel-in-progress: true
-
 jobs:
   review:
-    if: |
-      (
-        github.event_name == 'pull_request' &&
-        github.event.pull_request.draft == false &&
-        github.event.pull_request.head.repo.fork != true &&
-        github.event.pull_request.user.type != 'Bot'
-      ) || (
-        github.event_name == 'issue_comment' &&
-        github.event.issue.pull_request != null &&
-        contains(github.event.comment.body, '@claude') &&
-        github.event.comment.user.type != 'Bot'
-      )
     permissions:
       contents: read
       pull-requests: write
-    uses: ./.github/workflows/claude-review-job.yml
+    uses: mozilla/mozdata-actions/.github/workflows/claude-review.yml@9e038a4444d3535725d0b7349b268cfb8fe0af39 # v0.2.0
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    with:
+      review-instructions: |-
+        Refer to docs/reference/recommended_practices.md for SQL conventions and best practices.
+        Also consult .github/reviewer_checklist.md and address items applicable to this PR.

@@ -1,0 +1,19 @@
+# A run on the first native day: the legacy table must not write anything from
+# the cutover onward, even if someone backfills past the end date.
+- runId: 0
+  status:
+    taskId: taskP
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2024-07-24 12:30:00 UTC"
+      runId: 0
+      scheduled: "2024-07-24 12:00:00 UTC"
+      started: "2024-07-24 12:05:00 UTC"
+      state: completed
+      workerGroup: gw
+      workerId: worker-1
+  time: "2024-07-24 12:05:00 UTC"
+  workerGroup: gw
+  workerId: worker-1

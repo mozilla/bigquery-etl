@@ -1,0 +1,6 @@
+- task_id: taskN
+  run_id: 0
+  resolved: "2024-07-24 00:10:00 UTC"
+  scheduled: "2024-07-23 23:50:00 UTC"
+  state: completed
+  submission_date: "2024-07-24"

@@ -1,0 +1,37 @@
+# taskM: resolved on the last legacy day, not ingested natively -> kept.
+- runId: 0
+  status:
+    taskId: taskM
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2024-07-23 12:30:00 UTC"
+      runId: 0
+      scheduled: "2024-07-23 12:00:00 UTC"
+      started: "2024-07-23 12:05:00 UTC"
+      state: completed
+      workerGroup: gw
+      workerId: worker-1
+  time: "2024-07-23 12:05:00 UTC"
+  workerGroup: gw
+  workerId: worker-1
+# taskN: started on the last legacy day but also ingested natively on the first
+# native day -> dropped, so the union of both tables has it once.
+- runId: 0
+  status:
+    taskId: taskN
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2024-07-24 00:10:00 UTC"
+      runId: 0
+      scheduled: "2024-07-23 23:50:00 UTC"
+      started: "2024-07-23 23:55:00 UTC"
+      state: completed
+      workerGroup: gw
+      workerId: worker-2
+  time: "2024-07-23 23:55:00 UTC"
+  workerGroup: gw
+  workerId: worker-2

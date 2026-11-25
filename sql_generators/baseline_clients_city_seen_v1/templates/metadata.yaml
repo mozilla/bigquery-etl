@@ -11,7 +11,7 @@ description: |-
 
   JIRA ticket: https://mozilla-hub.atlassian.net/browse/DENG-9468
 owners:
-  - wichan@mozilla.com
+  - data-marketing-wg@mozilla.com
 labels:
   sql_generator: baseline_clients_city_seen_v1
   incremental: true

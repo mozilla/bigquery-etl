@@ -3,4 +3,4 @@ description: |-
   Aggregate table for firefox desktop background default agent pings,
   grouped by major version, release channel, default browser, etc.
 owners:
-- wichan@mozilla.com
+- kik@mozilla.com

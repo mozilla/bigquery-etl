@@ -1,0 +1,29 @@
+friendly_name: Android Installs by Country
+description: |-
+  Daily Firefox for Android (org.mozilla.firefox) installs by country, from
+  two sources side by side. One row per date x country_code.
+
+  - uac_installs: app installs that Google Ads attributes to Google App
+    Campaigns (UAC), from Google's biddable app-install conversions. This is
+    the paid install number. Do not use the "Conversions" column in the
+    Google Ads UI as installs; it counts other conversion actions too and
+    runs well above this number.
+  - uac_spend / uac_impressions / uac_clicks: UAC delivery for the same
+    campaigns (spend in account currency). CPI = uac_spend / uac_installs.
+  - play_store_user_installs: total Play Store installs from all sources
+    (organic + paid), counting unique users (Play Console Daily User
+    Installs). play_store_device_installs counts devices and runs higher.
+
+  uac_installs is a subset of play_store_user_installs, but the two come
+  from different systems, so treat the share as approximate. These are
+  installs, not new profiles. For new profiles use telemetry-based tables.
+  Play Store data lags about 5 days; Google Ads about 1 day. Rows for
+  recent days may have NULL play_store_* columns. Excludes iOS campaigns,
+  Focus, Beta, and Nightly. country_code ZZ is the Play Store's
+  unknown-country bucket and has no country_name. country_code UNKNOWN
+  holds UAC campaigns whose name has no parseable country.
+
+  Always filter on date.
+owners:
+- akommasani@mozilla.com
+- data-marketing-wg@mozilla.com

@@ -238,7 +238,7 @@ fields:
 - name: sponsored_topsite_impression_count
   type: INTEGER
   description: Count of sponsored topsite impressions with newtab opened in default ui
-- name: sponsored_topsites_inventory_count
+- name: sponsored_topsite_inventory_count
   type: INTEGER
   mode: NULLABLE
   description: >-

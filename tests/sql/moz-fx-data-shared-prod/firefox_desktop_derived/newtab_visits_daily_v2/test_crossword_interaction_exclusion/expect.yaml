@@ -2,9 +2,15 @@
 - submission_date: 2026-05-04
   client_id: client_id_1
   newtab_visit_id: visit_id_1
+  first_submission_timestamp: "2026-05-04T12:00:00+00:00"
+  last_submission_timestamp: "2026-05-04T12:00:00+00:00"
   app_version: 138
   os: Windows
+  os_version: "10.0"
+  windows_build_number: 22631
+  windows_version: Windows 11
   channel: release
+  newtab_addon_version: "150.2.20260501.123456"
   locale: en-US
   country: US
   homepage_category: enabled

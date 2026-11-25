@@ -19,6 +19,7 @@ syndication:
     - app_crash_daily
     - app_session_detailed_daily
     - app_session_standard_daily
+    - app_store_app_version_review
   administer_views: true
 workgroup_access:
   - role: roles/bigquery.dataViewer

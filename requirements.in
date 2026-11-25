@@ -63,7 +63,7 @@ questionary==2.1.1
 rich-click==1.9.9
 smart_open==6.4.0
 sqlglot==28.5.0
-sqlparse==0.5.3
+sqlparse==0.6.0
 stripe==6.4.0
 symbolic==12.16.3
 siggen==2.2.20241029

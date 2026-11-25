@@ -150,7 +150,7 @@ aggregate_mau AS (
 -- a day with no clients counts as 0
 aggregate_dau AS (
   SELECT
-    @submission_date AS week_start,
+    DATE_TRUNC(@submission_date, WEEK(MONDAY)) AS week_start,
     COALESCE(cn.name, country_group) AS country_name,
     CAST(ROUND(SUM(dau) / 28) AS INT64) AS dau
   FROM
@@ -440,7 +440,7 @@ SELECT
   top_locales.top_locales,
   aggregate_mau.mau_desktop,
   aggregate_mau.mau - aggregate_mau.mau_desktop AS mau_mobile,
-  IFNULL(aggregate_dau.dau, 0) AS dau
+  aggregate_dau.dau
 FROM
   aggregate_mau
 LEFT JOIN

@@ -1,5 +1,5 @@
 ---
-# dau is 0: this test's fixture has no dau values; test_dau covers it.
+# dau is left out: this test's fixture has no dau values, so it's NULL; test_dau covers it.
 # mau is the five apps' sum; mau_mobile is mau minus mau_desktop.
 - submission_date: 2026-11-02
   country_name: Country A
@@ -17,7 +17,6 @@
     ratio: 1.0
   mau_desktop: 70
   mau_mobile: 20
-  dau: 0
 # No Desktop row, so mau_desktop is 0 and mau_mobile is all of mau.
 - submission_date: 2026-11-02
   country_name: Country B
@@ -35,7 +34,6 @@
     ratio: 1.0
   mau_desktop: 0
   mau_mobile: 6
-  dau: 0
 # Both countries added together.
 - submission_date: 2026-11-02
   country_name: Worldwide
@@ -53,4 +51,3 @@
     ratio: 1.0
   mau_desktop: 70
   mau_mobile: 26
-  dau: 0

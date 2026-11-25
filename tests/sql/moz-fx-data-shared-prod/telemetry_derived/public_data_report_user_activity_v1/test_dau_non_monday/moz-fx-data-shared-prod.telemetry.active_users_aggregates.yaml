@@ -1,0 +1,17 @@
+---
+# The run's day, a Wednesday: MAU and that day's DAU.
+- submission_date: 2026-11-04
+  country: AA
+  app_name: Firefox Desktop
+  mau: 70
+  dau: 56
+# The window's first day, 27 days before: counted, so the sum is 56 + 504 = 560.
+- submission_date: 2026-10-08
+  country: AA
+  app_name: Firefox Desktop
+  dau: 504
+# The day before the window, so left out.
+- submission_date: 2026-10-07
+  country: AA
+  app_name: Firefox Desktop
+  dau: 1000

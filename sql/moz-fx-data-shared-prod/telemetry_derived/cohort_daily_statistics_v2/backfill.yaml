@@ -1,3 +1,20 @@
+2026-11-25:
+  start_date: 2026-08-28
+  end_date: 2026-11-23
+  reason: DENG-12035 - fill the new is_automated grouping column (https://github.com/mozilla/bigquery-etl/pull/10248)
+    for activity dates from 2026-08-28 (the first with a cohort from 2026-08-27) to 2026-11-23.
+    Runs after the rolling_cohorts_v2 backfill (https://github.com/mozilla/bigquery-etl/pull/10258),
+    which this table reads. Partition 2026-11-23 is included because it ran before that swap.
+  watchers:
+  - phlee@mozilla.com
+  - rbaffourawuah@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_partition_offset: false
+
 2026-07-06:
   start_date: 2025-01-01
   end_date: 2026-07-06
@@ -8,4 +25,6 @@
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
   ignore_partition_offset: false

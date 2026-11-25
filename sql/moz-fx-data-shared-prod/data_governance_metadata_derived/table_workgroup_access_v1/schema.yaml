@@ -1,0 +1,39 @@
+fields:
+- name: source_project
+  type: STRING
+  mode: REQUIRED
+  description: GCP project of the inventoried table (moz-fx-data-shared-prod).
+- name: source_dataset
+  type: STRING
+  mode: REQUIRED
+  description: BigQuery dataset of the inventoried table.
+- name: source_table
+  type: STRING
+  mode: REQUIRED
+  description: Table or view name (without project or dataset).
+- name: table_type
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    INFORMATION_SCHEMA.TABLES table_type, e.g. BASE TABLE, VIEW,
+    MATERIALIZED VIEW, or EXTERNAL.
+- name: google_groups
+  type: STRING
+  mode: REPEATED
+  description: >-
+    Raw Google group emails (group: IAM members, user and service-account
+    members excluded) that hold roles/bigquery.dataViewer directly on this
+    table, excluding any its dataset already grants. Empty when there is no
+    table-specific access; see dataset_workgroup_access_v1 for the
+    dataset-level grants that also apply.
+- name: workgroups
+  type: STRING
+  mode: REPEATED
+  description: >-
+    google_groups parsed to workgroup names, e.g.
+    gcp-wg-ads--data-viewers@firefox.gcp.mozilla.com -> ads/data-viewers.
+    Groups that are not gcp-wg workgroup groups are omitted.
+- name: collected_at
+  type: DATE
+  mode: REQUIRED
+  description: Run date of the access-inventory job. This is the table's partition column.

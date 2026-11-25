@@ -1,0 +1,18 @@
+friendly_name: Table Workgroup Access
+description: |-
+  Per-table inventory of table-specific BigQuery Data Viewer
+  (roles/bigquery.dataViewer) group grants for every table and view in
+  moz-fx-data-shared-prod, restricted to the most recent collected_at (the
+  latest partition of the underlying table). One row per table, listing the
+  Google groups (and workgroups, enriched with sponsor/managers/owners) granted
+  read access directly on the table beyond what its dataset already grants.
+
+  Tables with nothing table-specific still appear, with empty
+  google_groups/workgroups. See dataset_workgroup_access for the dataset-level
+  grants that also apply — including whether the mozilla-confidential
+  data-viewers workgroup is among them; effective read access is the union of
+  the two.
+owners:
+- cmorales@mozilla.com
+labels:
+  authorized: true

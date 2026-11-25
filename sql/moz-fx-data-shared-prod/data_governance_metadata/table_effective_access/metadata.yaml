@@ -1,0 +1,19 @@
+friendly_name: Table Effective Access
+description: |-
+  Per-table effective BigQuery Data Viewer (roles/bigquery.dataViewer) group
+  access for every table and view in moz-fx-data-shared-prod, as of the most
+  recent collected_at. One row per table, combining the grants its dataset
+  gives (dataset_workgroup_access) with those set directly on the table
+  (table_workgroup_access).
+
+  dataset_workgroups and table_workgroups record where each grant comes from;
+  workgroups is their union, enriched with each workgroup's sponsor, managers
+  and owners. mozilla_confidential is true when the mozilla-confidential
+  data-viewers workgroup can read the table at either level. qualified_name
+  (project.dataset.table) is the key for joining other table-level metadata.
+
+  Project- and org-level grants are not included.
+owners:
+- cmorales@mozilla.com
+labels:
+  authorized: true

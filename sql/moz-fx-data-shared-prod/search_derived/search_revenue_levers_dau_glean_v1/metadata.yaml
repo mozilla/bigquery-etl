@@ -19,7 +19,7 @@ description: |-
     has no operating system, so `normalized_os` is NULL on them.
 owners:
 - mozilla/revenue_forecasting_data_reviewers
-- lmcfall@mozilla.com
+- data-search-wg@mozilla.com
 labels:
   incremental: true
   schedule: daily

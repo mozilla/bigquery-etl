@@ -1,3 +1,6 @@
+-- `country` comes from Glean's metadata.geo.country, which holds ISO 3166-1
+-- alpha-2 codes - unlike the legacy firefox_accounts_derived tables this was
+-- adapted from, whose country column holds full names.
 CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ( --
   EXISTS (
     SELECT
@@ -6,11 +9,11 @@ CREATE TEMP FUNCTION udf_contains_tier1_country(x ANY TYPE) AS ( --
       UNNEST(x) AS country
     WHERE
       country IN ( --
-        'United States',
-        'France',
-        'Germany',
-        'United Kingdom',
-        'Canada'
+        'US',
+        'FR',
+        'DE',
+        'GB',
+        'CA'
       )
   )
 );

@@ -1,0 +1,18 @@
+- taskId: taskM
+  created: "2025-02-25 11:00:00 UTC"
+  schedulerId: gecko-level-3
+  taskGroupId: groupM
+  provisionerId: gecko-3
+  workerType: b-linux
+  tags:
+  - key: kind
+    value: build
+- taskId: taskN
+  created: "2025-02-25 23:00:00 UTC"
+  schedulerId: gecko-level-3
+  taskGroupId: groupN
+  provisionerId: gecko-3
+  workerType: b-linux
+  tags:
+  - key: kind
+    value: build

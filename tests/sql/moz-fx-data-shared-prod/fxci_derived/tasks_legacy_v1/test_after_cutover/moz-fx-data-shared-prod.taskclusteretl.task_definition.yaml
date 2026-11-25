@@ -1,0 +1,9 @@
+- taskId: taskP
+  created: "2025-02-26 11:00:00 UTC"
+  schedulerId: gecko-level-3
+  taskGroupId: groupP
+  provisionerId: gecko-3
+  workerType: b-linux
+  tags:
+  - key: kind
+    value: build

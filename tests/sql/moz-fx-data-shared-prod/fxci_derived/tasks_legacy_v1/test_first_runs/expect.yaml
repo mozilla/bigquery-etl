@@ -1,0 +1,17 @@
+- scheduler_id: gecko-level-3
+  submission_date: "2021-03-02"
+  task_group_id: group1
+  task_id: taskT1
+  task_queue_id: gecko-t/t-linux
+  tags:
+    created_for_user: user@example.com
+    kind: build
+    owned_by: someone
+    test_suite: xpcshell
+    worker_implementation: docker-worker
+- scheduler_id: gecko-level-1
+  submission_date: "2021-03-02"
+  task_group_id: group5
+  task_id: taskT5
+  task_queue_id: gecko-1/b-linux
+  tags: {}

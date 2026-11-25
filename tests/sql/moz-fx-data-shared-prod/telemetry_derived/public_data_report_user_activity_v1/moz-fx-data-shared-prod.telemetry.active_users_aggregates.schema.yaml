@@ -14,3 +14,6 @@ fields:
 - name: wau
   type: INTEGER
   mode: NULLABLE
+- name: dau
+  type: INTEGER
+  mode: NULLABLE

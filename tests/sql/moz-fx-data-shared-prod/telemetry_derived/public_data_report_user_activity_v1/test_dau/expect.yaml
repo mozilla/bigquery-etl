@@ -1,0 +1,56 @@
+---
+# dau is the 28 days' summed DAU / 28, rounded; days without rows count as 0.
+# AA: (30 + 280 + 250) / 28 = 20; Klar and the days outside the window are left out.
+- submission_date: 2026-11-02
+  country_name: Country A
+  mau: 70
+  avg_hours_usage_daily: 2.0
+  intensity: 1.0
+  new_profile_rate: 0.0
+  latest_version_ratio: 1.0
+  top_addons:
+  - addon_name: Addon A
+    ratio: 1.0
+  has_addon_ratio: 1.0
+  top_locales:
+  - locale: en-US
+    ratio: 1.0
+  mau_desktop: 70
+  mau_mobile: 0
+  dau: 20
+# BB: (2 + 12) / 28 = 0.5, rounded to 1; averaging only its 2 days with rows would give 7.
+- submission_date: 2026-11-02
+  country_name: Country B
+  mau: 6
+  avg_hours_usage_daily: 2.0
+  intensity: 1.0
+  new_profile_rate: 0.0
+  latest_version_ratio: 1.0
+  top_addons:
+  - addon_name: Addon A
+    ratio: 1.0
+  has_addon_ratio: 1.0
+  top_locales:
+  - locale: en-US
+    ratio: 1.0
+  mau_desktop: 0
+  mau_mobile: 6
+  dau: 1
+# Worldwide: (560 + 14) / 28 = 20.5, rounded to 21.
+- submission_date: 2026-11-02
+  country_name: Worldwide
+  mau: 76
+  avg_hours_usage_daily: 2.0
+  intensity: 1.0
+  new_profile_rate: 0.0
+  latest_version_ratio: 1.0
+  top_addons:
+  - addon_name: Addon A
+    ratio: 1.0
+  has_addon_ratio: 1.0
+  top_locales:
+  - locale: en-US
+    ratio: 1.0
+  mau_desktop: 70
+  mau_mobile: 6
+  dau: 21

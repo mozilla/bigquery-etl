@@ -146,6 +146,28 @@ aggregate_mau AS (
     week_start,
     country_name
 ),
+-- average daily active users over the 28 days ending the week's Monday, the same days as MAU;
+-- a day with no clients counts as 0
+aggregate_dau AS (
+  SELECT
+    @submission_date AS week_start,
+    COALESCE(cn.name, country_group) AS country_name,
+    CAST(ROUND(SUM(dau) / 28) AS INT64) AS dau
+  FROM
+    `moz-fx-data-shared-prod.telemetry.active_users_aggregates`
+  CROSS JOIN
+    UNNEST([country, 'Worldwide']) AS country_group
+  LEFT JOIN
+    countries AS cn
+    ON cn.code = country_group
+  WHERE
+    submission_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND @submission_date
+    AND app_name IN ('Firefox Desktop', 'Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
+  GROUP BY
+    country_name
+),
 -- used to calculate ratios
 legacy_wau AS (
   SELECT
@@ -417,9 +439,13 @@ SELECT
   has_addon.has_addon_ratio,
   top_locales.top_locales,
   aggregate_mau.mau_desktop,
-  aggregate_mau.mau - aggregate_mau.mau_desktop AS mau_mobile
+  aggregate_mau.mau - aggregate_mau.mau_desktop AS mau_mobile,
+  IFNULL(aggregate_dau.dau, 0) AS dau
 FROM
   aggregate_mau
+LEFT JOIN
+  aggregate_dau
+  USING (week_start, country_name)
 JOIN
   daily_usage
   USING (week_start, country_name)

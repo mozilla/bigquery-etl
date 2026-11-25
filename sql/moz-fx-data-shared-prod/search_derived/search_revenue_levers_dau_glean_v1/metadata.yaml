@@ -1,0 +1,48 @@
+friendly_name: Search Revenue Levers DAU Glean
+description: |-
+  Daily active users per partner, device, operating system and country: eligible DAU, DAU with the
+  partner as default engine, and DAU engaged with SAP.
+
+  The DAU measures of the Glean levers table. They are kept apart from the search measures in
+  `search_revenue_levers_daily_glean_v1`, which are split by access point: a client counts once in
+  DAU but can use several access points in a day, so DAU cannot be split by access point. Join the
+  two tables on submission_date, partner, device and country, and on normalized_os for desktop
+  only, since mobile DAU has no operating system. Do not sum the DAU columns across access points.
+
+  Things to know when reading it:
+  * Glean-keyed desktop DAU runs higher than the legacy table's, as copied profiles give several
+    Glean ids for one legacy id.
+  * `dau_engaged_w_sap` only covers Firefox 138 and later on desktop, the versions that send the
+    SAP event.
+  * Mobile rows come from the legacy `search_dau_aggregates` table, which is already Glean-keyed but
+    has no operating system, so `normalized_os` is NULL on them.
+owners:
+- mozilla/revenue_forecasting_data_reviewers
+- data-search-wg@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  change_controlled: true
+  dag: bqetl_search_dashboard
+  owner1: data-search-wg
+scheduling:
+  dag_name: bqetl_search_dashboard
+  partition_offset: -1d
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
+  - moz-fx-data-shared-prod.search.search_dau_aggregates
+  - moz-fx-data-shared-prod.search.search_dau_aggregates_glean
+  - moz-fx-data-shared-prod.telemetry.mobile_active_users

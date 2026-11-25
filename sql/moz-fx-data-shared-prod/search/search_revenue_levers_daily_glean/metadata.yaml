@@ -1,0 +1,17 @@
+friendly_name: Search Revenue Levers Daily Glean
+description: |
+  Daily search measures per partner, device, operating system, search access point and country,
+  without DAU. Built on Glean, and runs alongside `search_revenue_levers_daily_v1` rather than
+  replacing it. The DAU measures are in `search_revenue_levers_dau_glean`.
+owners:
+- mozilla/revenue_forecasting_data_reviewers
+- data-search-wg@mozilla.com
+labels:
+  owner1: data-search-wg
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.search_derived.search_revenue_levers_daily_glean_v1

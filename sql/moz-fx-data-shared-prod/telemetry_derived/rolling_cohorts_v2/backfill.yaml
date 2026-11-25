@@ -1,3 +1,20 @@
+2026-11-25:
+  start_date: 2026-08-27
+  end_date: 2026-11-22
+  reason: DENG-12035 - fill the new is_automated column (https://github.com/mozilla/bigquery-etl/pull/10248)
+    for cohorts from 2026-08-27, the onset of the first confirmed bot fleet, to 2026-11-22. The
+    scheduled run for 2026-11-23 already used the new code. cohort_daily_statistics_v2 reads this
+    table, so its backfill follows in a separate PR after this one is complete.
+  watchers:
+  - phlee@mozilla.com
+  - rbaffourawuah@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_partition_offset: false
+
 2026-07-06:
   start_date: 2025-01-01
   end_date: 2026-07-06
@@ -8,6 +25,8 @@
   status: Complete
   shredder_mitigation: false
   override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
   ignore_partition_offset: false
 
 2026-06-08:
@@ -21,4 +40,5 @@
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
   ignore_partition_offset: false

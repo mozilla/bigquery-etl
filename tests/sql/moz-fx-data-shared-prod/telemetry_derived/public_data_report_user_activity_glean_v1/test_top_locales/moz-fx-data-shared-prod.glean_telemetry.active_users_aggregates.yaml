@@ -1,0 +1,15 @@
+---
+# One MAU row per country, so each gets an output row for its top languages.
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Firefox Desktop
+  mau: 50
+# CC has MAU but no locale clients, so it keeps its row with an empty list.
+- submission_date: 2026-11-02
+  country: CC
+  app_name: Firefox Desktop
+  mau: 7
+# No country, so '??', where the two clients with no country count.
+- submission_date: 2026-11-02
+  app_name: Firefox Desktop
+  mau: 5

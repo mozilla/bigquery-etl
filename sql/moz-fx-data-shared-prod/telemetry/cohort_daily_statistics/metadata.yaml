@@ -8,6 +8,11 @@ description: 'Cohort Daily Statistics tracks retention for a cohort with
 
   attributes at the time the cohort started (rather than the
 
-  values at activity time)'
+  values at activity time)
+
+
+  is_automated flags confirmed automated (bot) desktop clients (DENG-11925, DENG-12035).
+
+  Filter on NOT is_automated to exclude them.'
 owners:
 - kwindau@mozilla.com

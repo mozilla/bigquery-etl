@@ -1,11 +1,19 @@
 WITH events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
+    submission_timestamp,
     client_info.client_id AS client_id,
     SAFE_CAST(
       mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS INT64
     ) AS app_version,
     normalized_os AS os,
+    client_info.os_version AS os_version,
+    client_info.windows_build_number AS windows_build_number,
+    mozfun.norm.glean_windows_version_info(
+      normalized_os,
+      client_info.os_version,
+      client_info.windows_build_number
+    ) AS windows_version,
     normalized_channel AS channel,
     client_info.locale AS locale,
     normalized_country_code AS country,
@@ -106,9 +114,14 @@ core_visit_metrics AS (
     submission_date,
     client_id,
     mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
+    MIN(submission_timestamp) AS first_submission_timestamp,
+    MAX(submission_timestamp) AS last_submission_timestamp,
       -- ANY_VALUE: because we do not expect those fields to differ within a visit
     ANY_VALUE(app_version) AS app_version,
     ANY_VALUE(os) AS os,
+    ANY_VALUE(os_version) AS os_version,
+    ANY_VALUE(windows_build_number) AS windows_build_number,
+    ANY_VALUE(windows_version) AS windows_version,
     ANY_VALUE(channel) AS channel,
     ANY_VALUE(locale) AS locale,
     ANY_VALUE(country) AS country,
@@ -201,6 +214,20 @@ core_visit_metrics AS (
       ),
       0
     ) AS sponsored_content_impression_count,
+    -- is_ad_eligible_position is only reported from Firefox 157; NULL for earlier versions
+    IF(
+      MAX(app_version) >= 157,
+      IF(
+        LOGICAL_OR(is_default_ui),
+        COUNTIF(
+          event_category = 'pocket'
+          AND event_name IN ('impression')
+          AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_ad_eligible_position') AS BOOLEAN)
+        ),
+        0
+      ),
+      NULL
+    ) AS sponsored_content_inventory_count,
     LOGICAL_OR(event_category = 'topsites' AND event_name IN ('click', 'dismiss'))
     AND LOGICAL_OR(is_default_ui) AS is_topsite_interaction,
     LOGICAL_OR(event_category = 'topsites' AND event_name IN ('click'))
@@ -244,6 +271,36 @@ core_visit_metrics AS (
       ),
       0
     ) AS organic_topsite_click_count,
+    -- is_pinned is only reported from Firefox 144; NULL for earlier versions
+    IF(
+      MAX(app_version) >= 144,
+      IF(
+        LOGICAL_OR(is_default_ui),
+        COUNTIF(
+          event_category = 'topsites'
+          AND event_name IN ('click')
+          AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+          AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_pinned') AS BOOLEAN)
+        ),
+        0
+      ),
+      NULL
+    ) AS organic_pinned_topsite_click_count,
+    -- is_pinned is only reported from Firefox 144; NULL for earlier versions
+    IF(
+      MAX(app_version) >= 144,
+      IF(
+        LOGICAL_OR(is_default_ui),
+        COUNTIF(
+          event_category = 'topsites'
+          AND event_name IN ('click')
+          AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+          AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_pinned') AS BOOLEAN)
+        ),
+        0
+      ),
+      NULL
+    ) AS organic_unpinned_topsite_click_count,
     IF(
       LOGICAL_OR(is_default_ui),
       COUNTIF(
@@ -253,6 +310,36 @@ core_visit_metrics AS (
       ),
       0
     ) AS organic_topsite_impression_count,
+    -- is_pinned is only reported from Firefox 144; NULL for earlier versions
+    IF(
+      MAX(app_version) >= 144,
+      IF(
+        LOGICAL_OR(is_default_ui),
+        COUNTIF(
+          event_category = 'topsites'
+          AND event_name IN ('impression')
+          AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+          AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_pinned') AS BOOLEAN)
+        ),
+        0
+      ),
+      NULL
+    ) AS organic_pinned_topsite_impression_count,
+    -- is_pinned is only reported from Firefox 144; NULL for earlier versions
+    IF(
+      MAX(app_version) >= 144,
+      IF(
+        LOGICAL_OR(is_default_ui),
+        COUNTIF(
+          event_category = 'topsites'
+          AND event_name IN ('impression')
+          AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+          AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_pinned') AS BOOLEAN)
+        ),
+        0
+      ),
+      NULL
+    ) AS organic_unpinned_topsite_impression_count,
     IF(
       LOGICAL_OR(is_default_ui),
       COUNTIF(
@@ -271,6 +358,20 @@ core_visit_metrics AS (
       ),
       0
     ) AS sponsored_topsite_impression_count,
+    -- is_ad_eligible_position is only reported from Firefox 157; NULL for earlier versions
+    IF(
+      MAX(app_version) >= 157,
+      IF(
+        LOGICAL_OR(is_default_ui),
+        COUNTIF(
+          event_category = 'topsites'
+          AND event_name IN ('impression')
+          AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_ad_eligible_position') AS BOOLEAN)
+        ),
+        0
+      ),
+      NULL
+    ) AS sponsored_topsite_inventory_count,
     LOGICAL_OR(
       event_category = 'newtab'
       AND event_name IN (
@@ -657,6 +758,20 @@ topsites_components AS (
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS position,
     SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
+    -- FX only sends is_ad_eligible_position on impressions, when true and only from version 157
+    IF(
+      MAX(app_version) >= 157
+      AND COUNTIF(event_name = 'impression') > 0,
+      COALESCE(
+        LOGICAL_OR(
+          SAFE_CAST(mozfun.map.get_key(event_details, 'is_ad_eligible_position') AS BOOLEAN)
+        ),
+        FALSE
+      ),
+      NULL
+    ) AS is_ad_eligible_position,
+    -- is_pinned isn't sent on dismiss, pin or unpin: take it from the tile's other events in the visit
+    LOGICAL_OR(SAFE_CAST(mozfun.map.get_key(event_details, 'is_pinned') AS BOOLEAN)) AS is_pinned,
     COUNTIF(event_name = 'impression') AS impression_count,
     COUNTIF(event_name = 'click') AS click_count,
     COUNTIF(event_name = 'dismiss') AS dismissal_count,
@@ -683,6 +798,8 @@ topsites_component_summary AS (
       STRUCT(
         position,
         is_sponsored,
+        is_ad_eligible_position,
+        is_pinned,
         impression_count,
         click_count,
         dismissal_count,
@@ -704,7 +821,21 @@ content_components AS (
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS position,
     SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
+    IF(
+      MAX(app_version) >= 157
+      AND COUNTIF(event_name = 'impression') > 0,
+      COALESCE(
+        LOGICAL_OR(
+          SAFE_CAST(mozfun.map.get_key(event_details, 'is_ad_eligible_position') AS BOOLEAN)
+        ),
+        FALSE
+      ),
+      NULL
+    ) AS is_ad_eligible_position,
     SAFE_CAST(mozfun.map.get_key(event_details, 'section_position') AS INT) AS section_position,
+    -- layout_name and card_column aren't sent on dismiss, take from card's other events in the visit
+    MIN(mozfun.map.get_key(event_details, 'layout_name')) AS layout_name,
+    MIN(SAFE_CAST(mozfun.map.get_key(event_details, 'card_column') AS INT64)) AS card_column,
     mozfun.map.get_key(event_details, 'format') AS format,
     SAFE_CAST(
       mozfun.map.get_key(event_details, 'is_section_followed') AS BOOLEAN
@@ -744,7 +875,10 @@ content_component_summary AS (
       STRUCT(
         position,
         is_sponsored,
+        is_ad_eligible_position,
         section_position,
+        layout_name,
+        card_column,
         format,
         is_section_followed,
         impression_count,
@@ -760,13 +894,51 @@ content_component_summary AS (
     submission_date,
     client_id,
     newtab_visit_id
+),
+newtab_addon_version AS (
+  SELECT
+    submission_date,
+    client_id,
+    newtab_addon_version,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_addon_versions_daily_v1`
+  WHERE
+    submission_date = @submission_date
+    AND is_last_reported_version
 )
 SELECT
-  core_visit_metrics.*,
+  submission_date,
+  client_id,
+  newtab_visit_id,
+  first_submission_timestamp,
+  last_submission_timestamp,
+  app_version,
+  os,
+  os_version,
+  windows_build_number,
+  windows_version,
+  channel,
+  newtab_addon_version.newtab_addon_version,
+  core_visit_metrics.* EXCEPT (
+    submission_date,
+    client_id,
+    newtab_visit_id,
+    first_submission_timestamp,
+    last_submission_timestamp,
+    app_version,
+    os,
+    os_version,
+    windows_build_number,
+    windows_version,
+    channel
+  ),
   topsites_component_summary.topsite_tile_components,
   content_component_summary.content_position_components
 FROM
   core_visit_metrics
+LEFT JOIN
+  newtab_addon_version
+  USING (submission_date, client_id)
 LEFT JOIN
   topsites_component_summary
   USING (submission_date, client_id, newtab_visit_id)

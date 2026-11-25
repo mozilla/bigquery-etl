@@ -11,6 +11,20 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Unique identifier for the newtab visit
+- name: first_submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Earliest submission_timestamp of the newtab pings carrying this visit's
+    events on this submission_date. Equal to last_submission_timestamp when the visit
+    arrived in a single ping on the day. A visit's pings can land on more than one
+    submission_date; take the MIN across its rows for when events about the visit
+    were first received.
+- name: last_submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Latest submission_timestamp of the newtab pings carrying this visit's
+    events on this submission_date. A visit's pings can land on more than one submission_date;
+    take the MAX across its rows for when events about the visit were last received.
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -19,10 +33,41 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Operating system of the host system
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: The operating system version running at the client prior to normalization
+    (e.g. "4.18.0-553.97.1.el8_10.aarch64" or "6.11+parrot-amd64" for Linux; "10.0"
+    for Windows, "25.3.0" for macOS, "26.3.1" for iOS, "16" for Android). Windows
+    10 and Windows 11 both show "10.0". Use `windows_build_number >= 22000` to identify
+    Windows 11.
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: The Windows build number reported by the operating system (e.g., 19045
+    for Windows 10, 22000+ for Windows 11); only populated on Windows clients and
+    null on all other platforms.
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows version name derived from os, os_version and windows_build_number
+    with mozfun.norm.glean_windows_version_info (e.g. 'Windows 10', 'Windows 11').
+    Builds 22000 and above on os_version 10.0 are Windows 11. 'build unknown - likely
+    Windows 10 or 11' when the build number is missing. NULL for non-Windows clients.
 - name: channel
   type: STRING
   mode: NULLABLE
   description: Firefox Desktop deployment channel (e.g. release, beta)
+- name: newtab_addon_version
+  type: STRING
+  mode: NULLABLE
+  description: 'Version of the newtab@mozilla.org addon reported by the client (`$.version`
+    in metrics.object.addons_active_addons).
+
+    Selects the version on the client''s last addons ping for the day and makes it
+    the same for all of the client''s visits that day. NULL when the client sent no
+    addons ping reporting the newtab addon that day, and for dates before newtab_addon_versions_daily_v1
+    has data.'
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -34,11 +79,11 @@ fields:
 - name: homepage_category
   type: STRING
   mode: NULLABLE
-  description: User’s chosen homepage/new window appearance
+  description: "User\u2019s chosen homepage/new window appearance"
 - name: newtab_category
   type: STRING
   mode: NULLABLE
-  description: User’s chosen newtab appearance
+  description: "User\u2019s chosen newtab appearance"
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -74,73 +119,100 @@ fields:
 - name: is_search_ad_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked a search Ad with newtab opened in default ui
+  description: TRUE if the user clicked a search Ad with newtab opened in default
+    ui
 - name: is_content_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted upon any content with newtab opened in default ui
+  description: TRUE if the user interacted upon any content with newtab opened in
+    default ui
 - name: is_content_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked on any content with newtab opened in default ui
+  description: TRUE if the user clicked on any content with newtab opened in default
+    ui
 - name: is_content_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if any content was impressed on a newtab with newtab opened in default ui
+  description: TRUE if any content was impressed on a newtab with newtab opened in
+    default ui
 - name: is_sponsored_content_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if sponsored content was interacted upon with newtab opened in default ui
+  description: TRUE if sponsored content was interacted upon with newtab opened in
+    default ui
 - name: is_sponsored_content_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if sponsored content was clicked with newtab opened in default ui
+  description: TRUE if sponsored content was clicked with newtab opened in default
+    ui
 - name: is_sponsored_content_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if sponsored content was impressed with newtab opened in default ui
+  description: TRUE if sponsored content was impressed with newtab opened in default
+    ui
 - name: any_content_click_count
   type: INTEGER
-  description: Count of clicks on any newtab content with newtab opened in default ui
+  description: Count of clicks on any newtab content with newtab opened in default
+    ui
 - name: any_content_impression_count
   type: INTEGER
-  description: Count of impression on any newtab content with newtab opened in default ui
+  description: Count of impression on any newtab content with newtab opened in default
+    ui
 - name: organic_content_click_count
   type: INTEGER
   description: Count of clicks on Organic content with newtab opened in default ui
 - name: organic_content_impression_count
   type: INTEGER
-  description: Count of Organic content impressions with newtab opened in default ui
+  description: Count of Organic content impressions with newtab opened in default
+    ui
 - name: sponsored_content_click_count
   type: INTEGER
-  description: Count of clicks on sponsored content with newtab opened in default ui
+  description: Count of clicks on sponsored content with newtab opened in default
+    ui
 - name: sponsored_content_impression_count
   type: INTEGER
-  description: Count of sponsored content impressions with newtab opened in default ui
+  description: Count of sponsored content impressions with newtab opened in default
+    ui
+- name: sponsored_content_inventory_count
+  type: INTEGER
+  mode: NULLABLE
+  description: How many times a story slot that can hold a sponsored story was shown.
+    It counts the slot whether it showed a sponsored story or an organic one, so it
+    measures sponsored story inventory; compare with sponsored_content_impression_count
+    for how much of it was filled. 0 when newtab wasn't opened in the default UI,
+    or when the user has sponsored stories turned off. NULL for Firefox versions before
+    157, which don't report ad-eligible slots.
 - name: is_topsite_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted on any topsite with newtab opened in default ui
+  description: TRUE if the user interacted on any topsite with newtab opened in default
+    ui
 - name: is_topsite_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked on any topsite with newtab opened in default ui
+  description: TRUE if the user clicked on any topsite with newtab opened in default
+    ui
 - name: is_topsite_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if any topsite was impressed upon with newtab opened in default ui
+  description: TRUE if any topsite was impressed upon with newtab opened in default
+    ui
 - name: is_sponsored_topsite_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted on a sponsored topsite with newtab opened in default ui
+  description: TRUE if the user interacted on a sponsored topsite with newtab opened
+    in default ui
 - name: is_sponsored_topsite_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked a sponsored topsite with newtab opened in default ui
+  description: TRUE if the user clicked a sponsored topsite with newtab opened in
+    default ui
 - name: is_sponsored_topsite_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if a sponsored topsite was impressed upon with newtab opened in default ui
+  description: TRUE if a sponsored topsite was impressed upon with newtab opened in
+    default ui
 - name: any_topsite_click_count
   type: INTEGER
   description: Count of clicks on topsite with newtab opened in default ui
@@ -150,29 +222,66 @@ fields:
 - name: organic_topsite_click_count
   type: INTEGER
   description: Count of clicks on organic topsite with newtab opened in default ui
+- name: organic_pinned_topsite_click_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of clicks on pinned organic topsites with newtab opened in default
+    ui. NULL for clients on Firefox versions before 144, which don't report whether
+    a tile is pinned.
+- name: organic_unpinned_topsite_click_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of clicks on unpinned organic topsites with newtab opened in
+    default ui. NULL for clients on Firefox versions before 144, which don't report
+    whether a tile is pinned.
 - name: organic_topsite_impression_count
   type: INTEGER
-  description: Count of organic topsite impressions with newtab opened in default ui
+  description: Count of organic topsite impressions with newtab opened in default
+    ui
+- name: organic_pinned_topsite_impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of pinned organic topsite impressions with newtab opened in default
+    ui. NULL for clients on Firefox versions before 144, which don't report whether
+    a tile is pinned.
+- name: organic_unpinned_topsite_impression_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unpinned organic topsite impressions with newtab opened in
+    default ui. NULL for clients on Firefox versions before 144, which don't report
+    whether a tile is pinned.
 - name: sponsored_topsite_click_count
   type: INTEGER
-  description: Count of clicks on sponsored topsite with newtab opened in default ui
+  description: Count of clicks on sponsored topsite with newtab opened in default
+    ui
 - name: sponsored_topsite_impression_count
   type: INTEGER
-  description: Count of sponsored topsite impressions with newtab opened in default ui
+  description: Count of sponsored topsite impressions with newtab opened in default
+    ui
+- name: sponsored_topsite_inventory_count
+  type: INTEGER
+  mode: NULLABLE
+  description: How many times a shortcut slot that can hold a sponsored shortcut was
+    shown. It counts the slot whether it showed a sponsored shortcut or an organic
+    one, so it measures sponsored shortcut inventory; compare with sponsored_topsite_impression_count
+    for how much of it was filled. 0 when newtab wasn't opened in the default UI,
+    or when the user has sponsored shortcuts turned off. NULL for Firefox versions
+    before 157, which don't report ad-eligible slots.
 - name: is_widget_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted on any widget with newtab opened in default ui
+  description: TRUE if the user interacted on any widget with newtab opened in default
+    ui
 - name: is_wallpaper_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted with wallpaper with newtab opened in default ui
+  description: TRUE if the user interacted with wallpaper with newtab opened in default
+    ui
 - name: is_other_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted with wallpaper, topic_selection or sections with newtab opened in default ui
-
-  # Phase 4 Fields
+  description: TRUE if the user interacted with wallpaper, topic_selection or sections
+    with newtab opened in default ui
 - name: sample_id
   type: INTEGER
   description: Hashed version of client_id (0-99). Useful for distribution analysis
@@ -184,7 +293,8 @@ fields:
   description: First major country subdivision, typically a state, province, or county
 - name: is_section
   type: BOOLEAN
-  description: Whether a visit had an impression that belonged to a section with default UI
+  description: Whether a visit had an impression that belonged to a section with default
+    UI
 - name: experiments
   type: RECORD
   mode: REPEATED
@@ -216,9 +326,9 @@ fields:
 - name: newtab_scroll
   type: BOOLEAN
   description: Whether the user scrolled more than the scroll telemetry threshold
-    during this newtab visit. NULL if no qualifying scroll occurred (the Glean
-    metric is only set when the threshold is crossed). Sourced from the
-    `newtab.scroll` Glean metric.
+    during this newtab visit. NULL if no qualifying scroll occurred (the Glean metric
+    is only set when the threshold is crossed). Sourced from the `newtab.scroll` Glean
+    metric.
 - name: default_search_engine
   type: STRING
   description: Engine_id of the default search engine
@@ -227,7 +337,8 @@ fields:
   description: Engine_id of the default private search engine
 - name: topsite_rows
   type: INTEGER
-  description: The number of topsite tile rows configured to be shown on the newtab page
+  description: The number of topsite tile rows configured to be shown on the newtab
+    page
 - name: topsite_sponsored_tiles_configured
   type: INTEGER
   description: The number of topsite tiles configured to be shown on newtab
@@ -238,7 +349,8 @@ fields:
 - name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
-  description: Scheduled surface identifier based on locale and region, with fallback to computed value from country and locale
+  description: Scheduled surface identifier based on locale and region, with fallback
+    to computed value from country and locale
 - name: organic_content_dismissal_count
   type: INTEGER
   description: Count of organic content dismissals
@@ -304,7 +416,8 @@ fields:
   description: Count of other misc impressions
 - name: newtab_visit_duration
   type: INTEGER
-  description: Visit duration in milliseconds (timestamp diff between close and open event)
+  description: Visit duration in milliseconds (timestamp diff between close and open
+    event)
 - name: newtab_window_inner_height
   type: INTEGER
   description: The height of the browser window in pixels
@@ -324,6 +437,23 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Whether the tile is a sponsored topsite
+  - name: is_ad_eligible_position
+    type: BOOLEAN
+    mode: NULLABLE
+    description: 'Whether the tile was in a position that can hold a sponsored tile:
+      TRUE if any of the tile''s impressions in the visit reported it. FALSE otherwise
+      on Firefox 157 and later, where Firefox only sends it on impressions and only
+      when true. NULL when the entry has no impression in this row (e.g. a click whose
+      impression arrived on another day), and for clients on Firefox versions before
+      157, which don''t report ad-eligible positions.'
+  - name: is_pinned
+    type: BOOLEAN
+    mode: NULLABLE
+    description: 'Whether the organic tile is pinned: TRUE if any of the tile''s events
+      in the visit reported it as pinned. NULL for sponsored tiles, which can''t be
+      pinned, and for clients on Firefox versions before 144, which don''t report
+      it, and when the entry has no impression or click in this row (e.g. a dismissal
+      whose impression arrived on another day).'
   - name: impression_count
     type: INTEGER
     mode: NULLABLE
@@ -347,7 +477,8 @@ fields:
 - name: content_position_components
   type: RECORD
   mode: REPEATED
-  description: Detailed metrics for Pocket content at specific positions during this visit
+  description: Detailed metrics for Pocket content at specific positions during this
+    visit
   fields:
   - name: position
     type: INTEGER
@@ -357,10 +488,36 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Whether the content is sponsored
+  - name: is_ad_eligible_position
+    type: BOOLEAN
+    mode: NULLABLE
+    description: 'Whether the card was in a position that can hold a sponsored story:
+      TRUE if any of the card''s impressions in the visit reported it. FALSE otherwise
+      on Firefox 157 and later, where Firefox only sends it on impressions and only
+      when true. NULL when the entry has no impression in this row (e.g. a click whose
+      impression arrived on another day), and for clients on Firefox versions before
+      157, which don''t report ad-eligible positions.'
   - name: section_position
     type: INTEGER
     mode: NULLABLE
     description: Position of the section containing this content
+  - name: layout_name
+    type: STRING
+    mode: NULLABLE
+    description: Layout of the section containing this content (e.g. '7-double-row-2-ad').
+      NULL for clients on Firefox versions before 144, for cards not shown in a section,
+      and when the entry has no impression or click in this row (e.g. a dismissal
+      whose impression arrived on another day). If the card reported two layouts in
+      the visit, one of them is kept.
+  - name: card_column
+    type: INTEGER
+    mode: NULLABLE
+    description: The 1-based grid column (1-4) the card occupied; a card spanning
+      several columns reports its leftmost one. Several cards in a section can share
+      a column. NULL for clients on Firefox versions before 157, for cards not shown
+      in a section, and when the entry has no impression or click in this row (e.g.
+      a dismissal whose impression arrived on another day). If the card reported two
+      columns in the visit (for example after a window resize), the lower one is kept.
   - name: format
     type: STRING
     mode: NULLABLE

@@ -1,0 +1,23 @@
+---
+friendly_name: Mozilla VPN Proxy Entitlements
+description: >
+  A mirror of the proxy_entitlements table from the Mozilla VPN (Guardian)
+  CloudSQL database. Each row is a Firefox VPN (FPN) entitlement.
+  The table has no updated_at column, and limited_bandwidth can change for
+  every row at once, so the whole table is copied every day rather than
+  incrementally.
+owners:
+  - jozhou@mozilla.com
+  - phlee@mozilla.com
+  - srose@mozilla.com
+labels:
+  application: mozilla_vpn
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # destination is the whole table, not a single partition,
+  # so don't use partition_parameter
+  partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering: null

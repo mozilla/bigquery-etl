@@ -1,0 +1,17 @@
+friendly_name: FxA Delete Events from Accounts DB
+description: |-
+  One row per account deleted on the submission date, read from the FxA accounts database mirror. Used as a signal to delete data linked to the user.
+owners:
+  - akomarzewski@mozilla.com
+labels:
+  application: fxa
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_accounts_derived
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false

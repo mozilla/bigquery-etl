@@ -10,8 +10,10 @@ labels:
   incremental: true
   schedule: daily
   table_type: client_level
-scheduling:
-  dag_name: bqetl_fxa_events
+# descheduled: deletions from 2026-11-17 on come from
+# accounts_backend_derived.delete_events_accounts_db_v1.
+# scheduling:
+#   dag_name: bqetl_fxa_events
 bigquery:
   time_partitioning:
     type: day

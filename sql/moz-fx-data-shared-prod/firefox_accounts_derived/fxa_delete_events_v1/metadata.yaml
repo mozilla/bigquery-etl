@@ -10,8 +10,9 @@ labels:
   dag: bqetl_fxa_events
   owner1: kik
   table_type: client_level
-scheduling:
-  dag_name: bqetl_fxa_events
+# descheduled: the source has had no new data since 2023-09-11.
+# scheduling:
+#   dag_name: bqetl_fxa_events
 bigquery:
   time_partitioning:
     type: day

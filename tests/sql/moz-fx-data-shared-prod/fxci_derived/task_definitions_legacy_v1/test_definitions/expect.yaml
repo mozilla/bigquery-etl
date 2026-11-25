@@ -1,0 +1,75 @@
+- taskId: defA
+  submission_date: "2021-03-02"
+  created: "2021-03-02T08:00:00+00:00"
+  deadline: "2021-03-03T08:00:00+00:00"
+  dependencies: ["defX"]
+  expires: "2022-03-02T08:00:00+00:00"
+  extra: {"treeherder": {"symbol": "B"}}
+  metadata:
+    description: build
+    name: build-linux
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: {"command": ["echo"]}
+  priority: low
+  projectId: none
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["index.a"]
+  schedulerId: gecko-level-3
+  scopes: ["scope:one"]
+  tags: {"kind": "build", "worker-implementation": "docker-worker"}
+  taskGroupId: group1
+  taskQueueId: gecko-3/b-linux
+  workerType: b-linux
+- taskId: defB
+  submission_date: "2021-03-02"
+  created: "2021-03-02T09:00:00+00:00"
+  deadline: "2021-03-03T09:00:00+00:00"
+  dependencies: []
+  expires: "2022-03-02T09:00:00+00:00"
+  extra: "{not json"
+  metadata:
+    description: test
+    name: test-linux
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: {}
+  priority: normal
+  projectId: none
+  provisionerId: gecko-t
+  requires: all-resolved
+  retries: 0
+  routes: []
+  schedulerId: gecko-level-1
+  scopes: []
+  tags: {}
+  taskGroupId: group2
+  taskQueueId: gecko-t/t-linux
+  workerType: t-linux
+- taskId: defC
+  submission_date: "2021-03-02"
+  created: "2021-03-02T10:00:00+00:00"
+  deadline: "2021-03-03T10:00:00+00:00"
+  dependencies: []
+  expires: "2022-03-02T10:00:00+00:00"
+  extra: {}
+  metadata:
+    description: lint
+    name: source-test-lint
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: {}
+  priority: low
+  projectId: none
+  provisionerId: gecko-1
+  requires: all-completed
+  retries: 5
+  routes: []
+  schedulerId: gecko-level-3
+  scopes: []
+  tags: {"kind": "lint"}
+  taskGroupId: group3
+  taskQueueId: gecko-1/b-linux
+  workerType: b-linux

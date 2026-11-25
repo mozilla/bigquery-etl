@@ -1,0 +1,21 @@
+- taskId: stub
+  submission_date: "2025-10-20"
+  created: "2025-10-20 00:00:00 UTC"
+  deadline: "2025-10-21 00:00:00 UTC"
+  dependencies: ["dep"]
+  expires: "2026-10-20 00:00:00 UTC"
+  extra: "{}"
+  metadata: "{}"
+  payload: "{}"
+  priority: low
+  projectId: none
+  provisionerId: p
+  requires: all-completed
+  retries: 5
+  routes: ["route"]
+  schedulerId: s
+  scopes: ["scope"]
+  tags: "{}"
+  taskGroupId: g
+  taskQueueId: p/w
+  workerType: w

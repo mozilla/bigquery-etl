@@ -1,0 +1,29 @@
+friendly_name: Firefox-CI Task definitions (legacy history)
+description: |-
+  Firefox-CI task definitions before fxci_derived.task_definitions_v1 starts
+  (2025-10-07), rebuilt from the legacy taskclusteretl.task_definition table.
+  One row per task.
+
+  The legacy table only has definitions of tasks that finished a run, so tasks
+  that never finished are missing. submission_date is the date the task was
+  created, not the ingestion date used by task_definitions_v1. projectId is
+  always none and taskQueueId is built from the provisioner and the worker type,
+  because the legacy data has neither. Loaded once by backfill, so it does not
+  change over time.
+owners:
+- jcristau@mozilla.com
+- jlorenzo@mozilla.com
+labels:
+  incremental: true
+  owner1: jcristau
+  owner2: jlorenzo
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - taskId

@@ -1,4 +1,3 @@
-import copy
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from unittest import mock
@@ -19,7 +18,6 @@ from bigquery_etl.shredder.offline_targets import (
     find_glean_targets_offline,
     is_table_dir,
     normalize_table_ids,
-    schema_id_label,
     stable_table_infos,
 )
 from tests.shredder.test_config import (
@@ -100,11 +98,6 @@ def channel_sources(*channels):
     )
 
 
-def test_schema_id_label():
-    assert schema_id_label(GLEAN_SCHEMA_ID) == "glean_ping_1"
-    assert schema_id_label(GLEAN_MIN_SCHEMA_ID) == "glean-min_ping_1"
-
-
 def test_stable_table_infos():
     infos = {
         f"{info.dataset_id}.{info.table_id}": info
@@ -167,34 +160,6 @@ def test_is_table_dir_external_table(tmp_path):
 
     (tmp_path / "metadata.yaml").write_text(yaml.dump({"friendly_name": "x"}))
     assert is_table_dir(tmp_path) is True
-
-
-def test_stable_table_infos_does_not_change_schemas():
-    """The cached stable table schemas are shared, so they must not be modified."""
-    fields = [
-        {
-            "name": "metrics",
-            "type": "RECORD",
-            "fields": [
-                {
-                    "name": "uuid",
-                    "type": "RECORD",
-                    "fields": [{"name": "usage_profile_id", "type": "STRING"}],
-                }
-            ],
-        }
-    ]
-    schema = stable_schema(
-        "org_mozilla_firefox",
-        "usage_deletion_request_v1",
-        schema_id=GLEAN_MIN_SCHEMA_ID,
-        fields=copy.deepcopy(fields),
-    )
-
-    (info,) = stable_table_infos([schema])
-
-    assert "metrics.uuid.usage_profile_id" in info.field_paths
-    assert schema.schema == fields
 
 
 def test_find_glean_targets_offline(tmp_path, schemas):

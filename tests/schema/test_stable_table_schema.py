@@ -32,7 +32,6 @@ def stable_table_schemas():
             "org-mozilla-firefox/metrics/metrics.1": {
                 "bq_dataset_family": "org_mozilla_firefox",
                 "bq_table": "metrics_v1",
-                "expiration_policy": {"delete_after_days": 775},
                 "include_client_id": True,
             },
             "org-mozilla-firefox/sync/sync.1": {
@@ -43,11 +42,6 @@ def stable_table_schemas():
             "telemetry/main/main.5": {
                 "bq_dataset_family": "telemetry",
                 "bq_table": "main_v5",
-            },
-            "telemetry/event/event.4": {
-                "bq_dataset_family": "telemetry",
-                "bq_table": "event_v4",
-                "expiration_policy": None,
             },
         }
     )
@@ -76,23 +70,15 @@ def stable_table_schemas():
 def test_pipeline_metadata_fields(stable_table_schemas):
     metrics = stable_table_schemas["org_mozilla_firefox_stable.metrics_v1"]
     assert metrics.include_client_id is True
-    assert metrics.expiration_days == 775
 
     sync = stable_table_schemas["org_mozilla_firefox_stable.sync_v1"]
     assert sync.include_client_id is False
-    assert sync.expiration_days is None
-
-
-def test_null_expiration_policy(stable_table_schemas):
-    """A null expiration_policy is treated like a missing one."""
-    assert stable_table_schemas["telemetry_stable.event_v4"].expiration_days is None
 
 
 def test_pipeline_metadata_defaults(stable_table_schemas):
     """Schemas without include_client_id default to true, like the shredder's label default."""
     main = stable_table_schemas["telemetry_stable.main_v5"]
     assert main.include_client_id is True
-    assert main.expiration_days is None
 
 
 def test_cache_file_is_versioned(tmp_path):

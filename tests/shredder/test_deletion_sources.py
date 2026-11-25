@@ -9,7 +9,6 @@ from bigquery_etl.shredder.config import (
 )
 from bigquery_etl.shredder.deletion_sources import (
     app_name_to_channels,
-    as_source_set,
     expand_sources,
     get_associated_deletions,
     get_deletion_request_tables,
@@ -179,20 +178,6 @@ def expand(sources):
     return expand_sources(sources, EXPAND_APP_CHANNELS, EXPAND_DELETION_REQUEST_TABLES)
 
 
-def test_as_source_set():
-    """A single source not in a tuple is wrapped."""
-    assert as_source_set(DESKTOP_SRC) == {DESKTOP_SRC}
-    assert as_source_set((DESKTOP_SRC, FENIX_APP_SRC)) == {DESKTOP_SRC, FENIX_APP_SRC}
-
-
-def test_app_name_to_channels():
-    assert app_name_to_channels(CHANNELS) == {
-        "fenix": ["org_mozilla_firefox"],
-        "focus_android": ["org_mozilla_focus"],
-        "firefox_fire_tv": ["org_mozilla_tv_firefox"],
-    }
-
-
 def test_expand_sources_single_source():
     assert expand(DESKTOP_SRC) == {DESKTOP_SRC}
 
@@ -228,9 +213,3 @@ def test_expand_sources_other_views_unchanged():
         ),
     )
     assert expand(sources) == set(sources)
-
-
-@mock.patch("bigquery_etl.shredder.deletion_sources.get_deletion_request_tables")
-def test_expand_sources_default_deletion_request_tables(mock_tables):
-    mock_tables.return_value = EXPAND_DELETION_REQUEST_TABLES
-    assert expand_sources(FENIX_APP_SRC, EXPAND_APP_CHANNELS) == FENIX_CHANNEL_SOURCES

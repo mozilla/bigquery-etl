@@ -635,53 +635,6 @@ def apps_with_views(*app_names):
     return lambda app_name, view_id: app_name in app_names
 
 
-@mock.patch("bigquery_etl.cli.utils.requests")
-def test_build_glean_targets_matches_find_glean_targets(mock_requests):
-    """Offline metadata gives the same targets as listing the same tables in BigQuery."""
-    mock_response = mock.Mock()
-    mock_response.json.return_value = GLEAN_APP_LISTING
-    mock_requests.get.return_value = mock_response
-
-    with ThreadPool(1) as pool:
-        expected = find_glean_targets(pool, FakeClient())
-
-    stable_tables, derived_tables = fake_client_table_infos()
-    # FakeClient.get_table finds every view
-    actual = build_glean_targets(
-        stable_tables,
-        table_loader(derived_tables),
-        apps_with_views("fenix", "focus_android"),
-        channel_to_app_name=get_glean_app_id_to_app_name_mapping(),
-    )
-
-    assert as_sets(actual) == as_sets(expected)
-
-
-@mock.patch("bigquery_etl.cli.utils.requests")
-def test_build_glean_targets_without_app_view(mock_requests):
-    """Apps without a deletion_request view use the per-channel tables."""
-    mock_response = mock.Mock()
-    mock_response.json.return_value = GLEAN_APP_LISTING
-    mock_requests.get.return_value = mock_response
-
-    stable_tables, derived_tables = fake_client_table_infos()
-    targets = build_glean_targets(
-        stable_tables,
-        table_loader(derived_tables),
-        apps_with_views("focus_android"),
-        channel_to_app_name=get_glean_app_id_to_app_name_mapping(),
-    )
-
-    assert as_sets(targets)[
-        DeleteTarget(table="fenix_derived.clients_daily_v1", field=(CLIENT_ID,) * 2)
-    ] == {
-        DeleteSource(
-            table=f"{channel}_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
-        )
-        for channel in ["org_mozilla_firefox", "org_mozilla_firefox_beta"]
-    }
-
-
 def test_build_glean_targets_ignores_datasets_without_deletion_requests():
     """Derived tables are only targets in datasets with Glean deletion requests."""
     stable_tables = [

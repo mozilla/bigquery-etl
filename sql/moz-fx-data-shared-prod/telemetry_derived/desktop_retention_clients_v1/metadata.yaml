@@ -2,11 +2,15 @@ friendly_name: Desktop Retention - Client Level
 description: |-
   Desktop Retention data at the client level, including attribution information
 
-  From first_seen_date 2026-08-27 onward, profiles created by the automated segment tracked in
-  DENG-11590 are excluded (see udf.is_desktop_argument_profile_automation). Counts here are
-  therefore not comparable to unfiltered sources such as telemetry.clients_first_seen, which
-  is deliberately left unchanged. The same profiles are flagged rather than removed on
-  telemetry.desktop_new_profiles_clients, via is_desktop_argument_profile_automation.
+  Confirmed automated (bot) profiles are excluded: every client in
+  telemetry.desktop_automated_clients (DENG-11925), which includes the DENG-11590 segment from
+  first_seen_date 2026-08-27. Counts here are therefore not comparable to unfiltered sources such
+  as telemetry.clients_first_seen, which is deliberately left unchanged. The same profiles are
+  flagged rather than removed on telemetry.desktop_new_profiles_clients, via
+  is_desktop_argument_profile_automation.
+
+  Partitions written before DENG-11979 exclude only the DENG-11590 segment. They were not
+  backfilled, so the other fleets (from 2026-09-27) are still in those partitions.
 owners:
 - mhirose@mozilla.com
 labels:

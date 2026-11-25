@@ -7,7 +7,8 @@ WITH new_profiles AS (
     cohort_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 775 DAY)
     AND @submission_date
-    -- DENG-11590 bot profiles stay in the client tables for ad hoc analysis
+    -- Confirmed bot profiles (DENG-11590 and DENG-11925) stay in the client tables for ad hoc
+    -- analysis
     AND NOT is_desktop_argument_profile_automation
 ),
 cohort_counts AS (

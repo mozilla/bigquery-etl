@@ -6,7 +6,7 @@ New-profile churn and early churn-risk counts for Firefox Desktop, one row per c
 
 * **Grain:** `cohort_date` and the 15 audience columns: `country`, `locale`, `distribution_id`, `normalized_channel`, `normalized_os`, `normalized_os_version`, `os_version_major`, `os_version_minor`, `app_display_version`, `app_name`, `first_seen_attribution_campaign`, `first_seen_attribution_content`, `first_seen_attribution_medium`, `first_seen_attribution_source` and `is_default_browser`
 * **Main fields:** `cohort_clients_size`, the precursor counts and the churn counts
-* **Source:** the `glean_telemetry.new_profile_churn_clients` view, which unions `glean_telemetry_derived.new_profile_churn_clients_v2` and `recent_new_profile_churn_clients_v2`. The counts cover only clients with `is_desktop_argument_profile_automation` `FALSE`, leaving out the [DENG-11590](https://mozilla-hub.atlassian.net/browse/DENG-11590) bot profiles.
+* **Source:** the `glean_telemetry.new_profile_churn_clients` view, which unions `glean_telemetry_derived.new_profile_churn_clients_v2` and `recent_new_profile_churn_clients_v2`. The counts cover only clients with `is_desktop_argument_profile_automation` `FALSE`, leaving out confirmed bot profiles: the [DENG-11590](https://mozilla-hub.atlassian.net/browse/DENG-11590) segment and, from DENG-11979, every fleet in `telemetry.desktop_automated_clients` ([DENG-11925](https://mozilla-hub.atlassian.net/browse/DENG-11925)).
 
 ## Metrics
 

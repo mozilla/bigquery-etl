@@ -20,13 +20,18 @@ SELECT
     TRUE,
     FALSE
   ) AS is_desktop,
-  -- Flags the automated segment tracked in DENG-11590. Exposed as a flag rather than filtered
-  -- out here so consumers can choose; dashboard-feeding tables exclude it at the source.
-  `moz-fx-data-shared-prod`.udf.is_desktop_argument_profile_automation(
-    normalized_os,
-    app_version,
-    startup_profile_selection_reason,
-    first_seen_date
+  -- Flags confirmed automated (bot) clients from telemetry.desktop_automated_clients
+  -- (DENG-11925): every fleet, including the DENG-11590 segment that this column first flagged.
+  -- The column name is kept for compatibility. Exposed as a flag rather than filtered out here
+  -- so consumers can choose; dashboard-feeding tables exclude these clients at the source.
+  COALESCE(
+    a.client_id IN (
+      SELECT
+        client_id
+      FROM
+        `moz-fx-data-shared-prod.telemetry.desktop_automated_clients`
+    ),
+    FALSE
   ) AS is_desktop_argument_profile_automation
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` AS a

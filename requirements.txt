@@ -2127,9 +2127,9 @@ pytest-isort==4.0.0 \
     --hash=sha256:00e99642e282b00b849cf9b49d9102a02ab8c4ec549ace57d7868b723713aaa9 \
     --hash=sha256:14bb3281bab587d6beb53129481e8885232249ec5cfeaf5d903a561ff0589620
     # via -r requirements.in
-pytest-mypy==1.0.1 \
-    --hash=sha256:3f5fcaff75c80dccc6b68cf5ecc28e1bbe71e95309469eb7a28bf408ce55c074 \
-    --hash=sha256:ad7133c9b92c802e032f2596590ebede7eea7c418e61d60d5cdd571b55c72056
+pytest-mypy==1.1.0 \
+    --hash=sha256:4f0e3cc7be0825188a427811a8fd0fd83afc010b0ea167a273180b81fbd7d8b5 \
+    --hash=sha256:b9f4237c0311eec507c48986dde2d776f399c98fdb92dae5c93f96c19bcae0e4
     # via -r requirements.in
 pytest-pydocstyle==2.4.0 \
     --hash=sha256:3770689778ad8d0de8cb51264f3d9b807c11d0ecc31f95e7025426eec126c4d2

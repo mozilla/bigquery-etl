@@ -64,6 +64,9 @@ monitoring:
         notification_channels:
         - slack: '#ads-eng'
       - name: Ads Interactions Hourly - No Alerts
+      - name: Sponsored Suggest
+        notification_channels:
+        - slack: '#suggest-ads-alerts'
     509: # Mozilla Revenue - Cat 1
       warehouse: 1977
       collections: []

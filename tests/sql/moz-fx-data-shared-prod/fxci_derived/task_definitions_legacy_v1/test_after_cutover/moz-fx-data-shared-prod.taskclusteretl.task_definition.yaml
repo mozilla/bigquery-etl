@@ -1,0 +1,26 @@
+# A task created on the first native day: the legacy table must not write
+# anything from the cutover onward, even if someone backfills past the end date.
+- taskId: defP
+  created: "2025-10-07 12:00:00 UTC"
+  deadline: "2025-10-08 12:00:00 UTC"
+  dependencies: ["dep"]
+  expires: "2026-10-07 12:00:00 UTC"
+  extra: "{}"
+  metadata:
+    description: d
+    name: build-task
+    owner: owner@example.com
+    source: s
+  payload: "{}"
+  priority: low
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["route"]
+  schedulerId: gecko-level-3
+  scopes: ["scope"]
+  tags:
+  - key: kind
+    value: build
+  taskGroupId: group1
+  workerType: b-linux

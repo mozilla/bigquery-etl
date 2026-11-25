@@ -1,0 +1,7 @@
+- scheduler_id: s
+  submission_date: "2025-03-10"
+  task_group_id: g
+  task_id: stub
+  task_queue_id: p/w
+  tags:
+    kind: build

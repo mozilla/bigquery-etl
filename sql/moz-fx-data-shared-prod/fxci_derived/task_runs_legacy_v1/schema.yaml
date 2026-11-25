@@ -1,0 +1,45 @@
+fields:
+- name: task_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique task identifier.
+- name: run_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Id of the run, starting from 0.
+- name: reason_created
+  type: STRING
+  mode: NULLABLE
+  description: Reason for the creation of the run.
+- name: reason_resolved
+  type: STRING
+  mode: NULLABLE
+  description: Reason the run was resolved.
+- name: resolved
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the run was resolved.
+- name: scheduled
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the run was scheduled.
+- name: started
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time the run was claimed. Null for runs that never started.
+- name: state
+  type: STRING
+  mode: NULLABLE
+  description: Final state of the run (completed, failed or exception).
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the event time of the legacy pulse message, which is the start time of the run, or its scheduled time when it never started.
+- name: worker_group
+  type: STRING
+  mode: NULLABLE
+  description: Worker group that executed the run. Null for runs that never started.
+- name: worker_id
+  type: STRING
+  mode: NULLABLE
+  description: Worker that executed the run. Null for runs that never started.

@@ -1,0 +1,25 @@
+- taskId: defM
+  submission_date: "2025-10-06"
+  created: "2025-10-06T12:00:00+00:00"
+  deadline: "2025-10-07T12:00:00+00:00"
+  dependencies: ["dep"]
+  expires: "2026-10-06T12:00:00+00:00"
+  extra: {}
+  metadata:
+    description: d
+    name: build-task
+    owner: owner@example.com
+    source: s
+  payload: {}
+  priority: low
+  projectId: none
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["route"]
+  schedulerId: gecko-level-3
+  scopes: ["scope"]
+  tags: {"kind": "build"}
+  taskGroupId: group1
+  taskQueueId: gecko-3/b-linux
+  workerType: b-linux

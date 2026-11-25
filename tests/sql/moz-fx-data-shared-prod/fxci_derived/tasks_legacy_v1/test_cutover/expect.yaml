@@ -1,0 +1,7 @@
+- scheduler_id: gecko-level-3
+  submission_date: "2025-02-25"
+  task_group_id: groupM
+  task_id: taskM
+  task_queue_id: gecko-3/b-linux
+  tags:
+    kind: build

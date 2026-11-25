@@ -1,0 +1,59 @@
+fields:
+- name: scheduler_id
+  type: STRING
+  mode: NULLABLE
+  description: Scheduler of the task.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the event time of the first resolved run of the task, not the ingestion date used by tasks_v2.
+- name: task_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Group of tasks scheduled together with this task.
+- name: task_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique task identifier.
+- name: task_queue_id
+  type: STRING
+  mode: NULLABLE
+  description: Task queue of the task, built from the provisioner and the worker type.
+- name: tags
+  type: RECORD
+  mode: NULLABLE
+  description: Known task tags, with their names normalized to snake case.
+  fields:
+  - name: created_for_user
+    type: STRING
+    mode: NULLABLE
+  - name: kind
+    type: STRING
+    mode: NULLABLE
+  - name: label
+    type: STRING
+    mode: NULLABLE
+  - name: os
+    type: STRING
+    mode: NULLABLE
+  - name: owned_by
+    type: STRING
+    mode: NULLABLE
+  - name: project
+    type: STRING
+    mode: NULLABLE
+  - name: trust_domain
+    type: STRING
+    mode: NULLABLE
+  - name: worker_implementation
+    type: STRING
+    mode: NULLABLE
+  - name: test_suite
+    type: STRING
+    mode: NULLABLE
+  - name: test_platform
+    type: STRING
+    mode: NULLABLE
+  - name: test_variant
+    type: STRING
+    mode: NULLABLE

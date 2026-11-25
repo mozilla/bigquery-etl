@@ -1,0 +1,52 @@
+# taskT1: tag keys in the forms seen in the legacy data: camel case, dashes, an
+# unknown key, and OS, which normalizes to o_s (like the fxci export) and is
+# therefore not the os tag.
+- taskId: taskT1
+  created: "2021-03-01 10:00:00 UTC"
+  schedulerId: gecko-level-3
+  taskGroupId: group1
+  provisionerId: gecko-t
+  workerType: t-linux
+  tags:
+  - key: createdForUser
+    value: user@example.com
+  - key: kind
+    value: build
+  - key: test-suite
+    value: xpcshell
+  - key: ownedBy
+    value: someone
+  - key: worker-implementation
+    value: docker-worker
+  - key: foo
+    value: bar
+  - key: OS
+    value: linux
+# taskT1 again: the definition is written once per finished run -> still one row.
+- taskId: taskT1
+  created: "2021-03-01 10:00:00 UTC"
+  schedulerId: gecko-level-3
+  taskGroupId: group1
+  provisionerId: gecko-t
+  workerType: t-linux
+  tags:
+  - key: kind
+    value: build
+# taskT4: the definition is more than 7 days older than the run -> not found.
+- taskId: taskT4
+  created: "2021-02-20 10:00:00 UTC"
+  schedulerId: gecko-level-3
+  taskGroupId: group4
+  provisionerId: gecko-t
+  workerType: t-linux
+  tags:
+  - key: kind
+    value: test
+# taskT5: no tags at all.
+- taskId: taskT5
+  created: "2021-03-02 12:00:00 UTC"
+  schedulerId: gecko-level-1
+  taskGroupId: group5
+  provisionerId: gecko-1
+  workerType: b-linux
+  tags: []

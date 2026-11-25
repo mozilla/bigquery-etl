@@ -1,0 +1,110 @@
+# taskT1 run 0: completed, delivered twice -> one row.
+- runId: 0
+  status:
+    taskId: taskT1
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2021-03-02 08:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 08:00:00 UTC"
+      started: "2021-03-02 08:05:00 UTC"
+      state: completed
+      workerGroup: gw
+      workerId: worker-1
+  time: "2021-03-02 08:05:00 UTC"
+- runId: 0
+  status:
+    taskId: taskT1
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2021-03-02 08:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 08:00:00 UTC"
+      started: "2021-03-02 08:05:00 UTC"
+      state: completed
+      workerGroup: gw
+      workerId: worker-1
+  time: "2021-03-02 08:05:00 UTC"
+# taskT2 run 1: the first run is not this message's run -> dropped.
+- runId: 1
+  status:
+    taskId: taskT2
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: worker-shutdown
+      resolved: "2021-03-02 09:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 09:00:00 UTC"
+      started: "2021-03-02 09:10:00 UTC"
+      state: exception
+    - reasonCreated: retry
+      reasonResolved: completed
+      resolved: "2021-03-02 10:00:00 UTC"
+      runId: 1
+      scheduled: "2021-03-02 09:30:00 UTC"
+      started: "2021-03-02 09:35:00 UTC"
+      state: completed
+  time: "2021-03-02 09:35:00 UTC"
+# taskT3 run 0: still pending -> dropped.
+- runId: 0
+  status:
+    taskId: taskT3
+    state: pending
+    runs:
+    - reasonCreated: scheduled
+      runId: 0
+      scheduled: "2021-03-02 11:00:00 UTC"
+      state: pending
+  time: "2021-03-02 11:00:00 UTC"
+# taskT4 run 0: completed but no definition in the week before -> dropped.
+- runId: 0
+  status:
+    taskId: taskT4
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2021-03-02 12:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 12:00:00 UTC"
+      started: "2021-03-02 12:05:00 UTC"
+      state: completed
+  time: "2021-03-02 12:05:00 UTC"
+# taskT5 run 0: exception of a retried task (the task is pending again) -> kept.
+# The definition has no tags, so every tag is null.
+- runId: 0
+  status:
+    taskId: taskT5
+    state: pending
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: worker-shutdown
+      resolved: "2021-03-02 13:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 13:00:00 UTC"
+      started: "2021-03-02 13:10:00 UTC"
+      state: exception
+    - reasonCreated: retry
+      runId: 1
+      scheduled: "2021-03-02 13:30:00 UTC"
+      state: pending
+  time: "2021-03-02 13:00:00 UTC"
+# taskT6 run 0: completed on the next day -> belongs to another partition.
+- runId: 0
+  status:
+    taskId: taskT6
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2021-03-03 08:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-03 08:00:00 UTC"
+      started: "2021-03-03 08:05:00 UTC"
+      state: completed
+  time: "2021-03-03 08:05:00 UTC"

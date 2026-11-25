@@ -1,0 +1,21 @@
+- taskId: defN
+  submission_date: "2025-10-07"
+  created: "2025-10-06 23:55:00 UTC"
+  deadline: "2025-10-07 23:55:00 UTC"
+  dependencies: ["dep"]
+  expires: "2026-10-06 23:55:00 UTC"
+  extra: "{}"
+  metadata: "{}"
+  payload: "{}"
+  priority: low
+  projectId: none
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["route"]
+  schedulerId: gecko-level-3
+  scopes: ["scope"]
+  tags: "{}"
+  taskGroupId: group1
+  taskQueueId: gecko-3/b-linux
+  workerType: b-linux

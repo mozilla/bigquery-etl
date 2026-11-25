@@ -1,0 +1,85 @@
+fields:
+- name: taskId
+  type: STRING
+  mode: NULLABLE
+  description: Unique task identifier.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the task was created.
+- name: created
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Creation time of the task.
+- name: deadline
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Deadline of the task.
+- name: dependencies
+  type: STRING
+  mode: REPEATED
+  description: Tasks that must be resolved before this task is scheduled.
+- name: expires
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time at which the task definition and status are deleted.
+- name: extra
+  type: JSON
+  mode: NULLABLE
+  description: Extra data attached to the task. Kept as a JSON string when the legacy value was not valid JSON.
+- name: metadata
+  type: JSON
+  mode: NULLABLE
+  description: Task metadata (description, name, owner and source).
+- name: payload
+  type: JSON
+  mode: NULLABLE
+  description: Worker-specific task payload. Kept as a JSON string when the legacy value was not valid JSON.
+- name: priority
+  type: STRING
+  mode: NULLABLE
+  description: Priority of the task.
+- name: projectId
+  type: STRING
+  mode: NULLABLE
+  description: Project of the task. Always none, the legacy data has no project.
+- name: provisionerId
+  type: STRING
+  mode: NULLABLE
+  description: Provisioner of the task.
+- name: requires
+  type: STRING
+  mode: NULLABLE
+  description: How the task depends on its dependencies (all-completed or all-resolved).
+- name: retries
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of times to retry the task after an infrastructure failure.
+- name: routes
+  type: STRING
+  mode: REPEATED
+  description: Routes the task messages are copied to.
+- name: schedulerId
+  type: STRING
+  mode: NULLABLE
+  description: Scheduler of the task.
+- name: scopes
+  type: STRING
+  mode: REPEATED
+  description: Scopes the task is authorized to use.
+- name: tags
+  type: JSON
+  mode: NULLABLE
+  description: Task tags as a JSON object.
+- name: taskGroupId
+  type: STRING
+  mode: NULLABLE
+  description: Group of tasks scheduled together with this task.
+- name: taskQueueId
+  type: STRING
+  mode: NULLABLE
+  description: Task queue of the task, built from the provisioner and the worker type.
+- name: workerType
+  type: STRING
+  mode: NULLABLE
+  description: Worker type of the task.

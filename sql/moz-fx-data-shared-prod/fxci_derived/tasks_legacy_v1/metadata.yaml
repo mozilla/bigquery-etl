@@ -1,0 +1,28 @@
+friendly_name: Firefox-CI Tasks (legacy history)
+description: |-
+  Firefox-CI tasks before fxci_derived.tasks_v2 starts (2025-02-26), rebuilt
+  from the legacy taskclusteretl.pulse_task and task_definition tables. One row
+  per task that has a resolved first run, like tasks_v2.
+
+  This also covers the period of fxci_derived.tasks_v1 (2024-07-24 to
+  2025-02-24), which the fxci.tasks view does not include. submission_date is
+  the date of the event time of the first resolved run, not the ingestion date
+  used by tasks_v2. The tags come from the task definition. Loaded once by
+  backfill, so it does not change over time.
+owners:
+- ahalberstadt@mozilla.com
+- jlorenzo@mozilla.com
+labels:
+  incremental: true
+  owner1: ahalberstadt
+  owner2: jlorenzo
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - task_id

@@ -1,0 +1,51 @@
+# defM: created on the last legacy day, not ingested natively -> kept.
+- taskId: defM
+  created: "2025-10-06 12:00:00 UTC"
+  deadline: "2025-10-07 12:00:00 UTC"
+  dependencies: ["dep"]
+  expires: "2026-10-06 12:00:00 UTC"
+  extra: "{}"
+  metadata:
+    description: d
+    name: build-task
+    owner: owner@example.com
+    source: s
+  payload: "{}"
+  priority: low
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["route"]
+  schedulerId: gecko-level-3
+  scopes: ["scope"]
+  tags:
+  - key: kind
+    value: build
+  taskGroupId: group1
+  workerType: b-linux
+# defN: created just before the cutover but also ingested natively on the first
+# native day -> dropped, so the union of both tables has it once.
+- taskId: defN
+  created: "2025-10-06 23:55:00 UTC"
+  deadline: "2025-10-07 23:55:00 UTC"
+  dependencies: ["dep"]
+  expires: "2026-10-06 23:55:00 UTC"
+  extra: "{}"
+  metadata:
+    description: d
+    name: build-task
+    owner: owner@example.com
+    source: s
+  payload: "{}"
+  priority: low
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["route"]
+  schedulerId: gecko-level-3
+  scopes: ["scope"]
+  tags:
+  - key: kind
+    value: build
+  taskGroupId: group1
+  workerType: b-linux

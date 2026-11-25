@@ -1,0 +1,8 @@
+# Native rows only exist from the cutover. This stub row gives the table its
+# schema and is outside the date range checked by the query.
+- task_id: stub
+  run_id: 0
+  resolved: "2024-07-30 00:10:00 UTC"
+  scheduled: "2024-07-30 00:00:00 UTC"
+  state: completed
+  submission_date: "2024-07-30"

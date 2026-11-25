@@ -1,0 +1,127 @@
+# defA: a retried task, so the legacy table has it twice -> one row.
+- taskId: defA
+  created: "2021-03-02 08:00:00 UTC"
+  deadline: "2021-03-03 08:00:00 UTC"
+  dependencies: ["defX"]
+  expires: "2022-03-02 08:00:00 UTC"
+  extra: '{"treeherder": {"symbol": "B"}}'
+  metadata:
+    description: build
+    name: build-linux
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: '{"command": ["echo"]}'
+  priority: low
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["index.a"]
+  schedulerId: gecko-level-3
+  scopes: ["scope:one"]
+  tags:
+  - key: kind
+    value: build
+  - key: worker-implementation
+    value: docker-worker
+  taskGroupId: group1
+  workerType: b-linux
+- taskId: defA
+  created: "2021-03-02 08:00:00 UTC"
+  deadline: "2021-03-03 08:00:00 UTC"
+  dependencies: ["defX"]
+  expires: "2022-03-02 08:00:00 UTC"
+  extra: '{"treeherder": {"symbol": "B"}}'
+  metadata:
+    description: build
+    name: build-linux
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: '{"command": ["echo"]}'
+  priority: low
+  provisionerId: gecko-3
+  requires: all-completed
+  retries: 5
+  routes: ["index.a"]
+  schedulerId: gecko-level-3
+  scopes: ["scope:one"]
+  tags:
+  - key: kind
+    value: build
+  - key: worker-implementation
+    value: docker-worker
+  taskGroupId: group1
+  workerType: b-linux
+# defB: extra is not valid JSON and there are no tags, routes or scopes.
+# The raw text is kept as a JSON string and the tags become an empty object.
+- taskId: defB
+  created: "2021-03-02 09:00:00 UTC"
+  deadline: "2021-03-03 09:00:00 UTC"
+  dependencies: []
+  expires: "2022-03-02 09:00:00 UTC"
+  extra: "{not json"
+  metadata:
+    description: test
+    name: test-linux
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: "{}"
+  priority: normal
+  provisionerId: gecko-t
+  requires: all-resolved
+  retries: 0
+  routes: []
+  schedulerId: gecko-level-1
+  scopes: []
+  tags: []
+  taskGroupId: group2
+  workerType: t-linux
+# defC: the same tag key twice with the same value -> one key in the object.
+- taskId: defC
+  created: "2021-03-02 10:00:00 UTC"
+  deadline: "2021-03-03 10:00:00 UTC"
+  dependencies: []
+  expires: "2022-03-02 10:00:00 UTC"
+  extra: "{}"
+  metadata:
+    description: lint
+    name: source-test-lint
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: "{}"
+  priority: low
+  provisionerId: gecko-1
+  requires: all-completed
+  retries: 5
+  routes: []
+  schedulerId: gecko-level-3
+  scopes: []
+  tags:
+  - key: kind
+    value: lint
+  - key: kind
+    value: lint
+  taskGroupId: group3
+  workerType: b-linux
+# defD: created on the next day -> belongs to another partition.
+- taskId: defD
+  created: "2021-03-03 08:00:00 UTC"
+  deadline: "2021-03-04 08:00:00 UTC"
+  dependencies: []
+  expires: "2022-03-03 08:00:00 UTC"
+  extra: "{}"
+  metadata:
+    description: other
+    name: other
+    owner: owner@example.com
+    source: https://example.com/source
+  payload: "{}"
+  priority: low
+  provisionerId: gecko-1
+  requires: all-completed
+  retries: 5
+  routes: []
+  schedulerId: gecko-level-3
+  scopes: []
+  tags: []
+  taskGroupId: group4
+  workerType: b-linux

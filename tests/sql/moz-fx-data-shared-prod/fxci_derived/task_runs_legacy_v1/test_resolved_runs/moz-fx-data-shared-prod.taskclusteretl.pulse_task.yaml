@@ -1,0 +1,126 @@
+# taskA run 0: completed, and the same message delivered twice -> one row.
+- runId: 0
+  status:
+    taskId: taskA
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2021-03-02 08:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 08:00:00 UTC"
+      started: "2021-03-02 08:05:00 UTC"
+      state: completed
+      workerGroup: gw
+      workerId: worker-1
+  time: "2021-03-02 08:05:00 UTC"
+  workerGroup: gw
+  workerId: worker-1
+- runId: 0
+  status:
+    taskId: taskA
+    state: completed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: completed
+      resolved: "2021-03-02 08:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 08:00:00 UTC"
+      started: "2021-03-02 08:05:00 UTC"
+      state: completed
+      workerGroup: gw
+      workerId: worker-1
+  time: "2021-03-02 08:05:00 UTC"
+  workerGroup: gw
+  workerId: worker-1
+# taskC run 0: exception of a retried task. The message says the task is pending
+# again, but the run itself is resolved as an exception -> kept, dated from the
+# message time (the scheduled time, because the task state is pending).
+- runId: 0
+  status:
+    taskId: taskC
+    state: pending
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: worker-shutdown
+      resolved: "2021-03-02 09:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 09:00:00 UTC"
+      started: "2021-03-02 09:10:00 UTC"
+      state: exception
+      workerGroup: gw
+      workerId: worker-2
+    - reasonCreated: retry
+      runId: 1
+      scheduled: "2021-03-02 09:30:00 UTC"
+      state: pending
+  time: "2021-03-02 09:00:00 UTC"
+  workerGroup: gw
+  workerId: worker-2
+# taskC run 1: the pending message of the retry -> dropped, the run is not resolved.
+- runId: 1
+  status:
+    taskId: taskC
+    state: pending
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: worker-shutdown
+      resolved: "2021-03-02 09:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 09:00:00 UTC"
+      started: "2021-03-02 09:10:00 UTC"
+      state: exception
+      workerGroup: gw
+      workerId: worker-2
+    - reasonCreated: retry
+      runId: 1
+      scheduled: "2021-03-02 09:30:00 UTC"
+      state: pending
+  time: "2021-03-02 09:30:00 UTC"
+# taskD run 0: exception that never started -> kept, started and worker are null.
+- runId: 0
+  status:
+    taskId: taskD
+    state: exception
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: deadline-exceeded
+      resolved: "2021-03-02 10:00:00 UTC"
+      runId: 0
+      scheduled: "2021-03-02 06:00:00 UTC"
+      state: exception
+  time: "2021-03-02 06:00:00 UTC"
+# taskE run 0: still running -> dropped.
+- runId: 0
+  status:
+    taskId: taskE
+    state: running
+    runs:
+    - reasonCreated: scheduled
+      runId: 0
+      scheduled: "2021-03-02 11:00:00 UTC"
+      started: "2021-03-02 11:05:00 UTC"
+      state: running
+      workerGroup: gw
+      workerId: worker-3
+  time: "2021-03-02 11:05:00 UTC"
+  workerGroup: gw
+  workerId: worker-3
+# taskG run 0: completed on the next day -> belongs to another partition.
+- runId: 0
+  status:
+    taskId: taskG
+    state: failed
+    runs:
+    - reasonCreated: scheduled
+      reasonResolved: failed
+      resolved: "2021-03-03 08:30:00 UTC"
+      runId: 0
+      scheduled: "2021-03-03 08:00:00 UTC"
+      started: "2021-03-03 08:05:00 UTC"
+      state: failed
+      workerGroup: gw
+      workerId: worker-4
+  time: "2021-03-03 08:05:00 UTC"
+  workerGroup: gw
+  workerId: worker-4

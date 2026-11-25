@@ -391,6 +391,41 @@ def test_dry_run_failure(tmp_path, schemas, mock_dry_run, get_schema, expected_r
     assert expected_reason in result.unresolved["org_mozilla_firefox_derived.broken_v1"]
 
 
+def test_dry_run_without_id_token(tmp_path, schemas):
+    """Without a dry run identity, dry run tables are unresolved and the rest resolve."""
+    write_table(tmp_path, "org_mozilla_firefox_derived", "generated_v1")
+    write_table(
+        tmp_path, "org_mozilla_firefox_derived", "resolved_v1", fields=[CLIENT_ID_FIELD]
+    )
+
+    with (
+        mock.patch(
+            "bigquery_etl.shredder.offline_targets.get_id_token",
+            side_effect=Exception("no credentials"),
+        ),
+        mock.patch("bigquery_etl.shredder.offline_targets.DryRun") as dry_run,
+    ):
+        result = find_glean_targets_offline(
+            tmp_path,
+            schemas=schemas,
+            channel_to_app_name=CHANNELS,
+            dry_run_tables={"org_mozilla_firefox_derived.generated_v1"},
+        )
+
+    dry_run.assert_not_called()
+    assert result.unresolved == {
+        "org_mozilla_firefox_derived.generated_v1": (
+            "no schema.yaml, could not get dry run id token: no credentials"
+        )
+    }
+    assert (
+        DeleteTarget(
+            table="org_mozilla_firefox_derived.resolved_v1", field=(CLIENT_ID,)
+        )
+        in result.targets
+    )
+
+
 def test_unresolved_tables(tmp_path, schemas, mock_dry_run):
     """Tables whose columns can't be determined are reported with the reason."""
     write_table(tmp_path, "org_mozilla_firefox_derived", "not_requested_v1")

@@ -888,13 +888,24 @@ class GleanTableInfo:
     field_paths: frozenset[str] = frozenset()
 
 
-def field_paths(schema: Iterable[bigquery.SchemaField], prefix: str = "") -> frozenset:
-    """Return the dotted path of every field in a BigQuery schema."""
+def field_paths(
+    schema: Iterable[bigquery.SchemaField | Mapping], prefix: str = ""
+) -> frozenset[str]:
+    """Return the dotted path of every field in a BigQuery schema.
+
+    Fields can be SchemaField objects or dicts in the JSON schema format, e.g. from
+    schema.yaml or a mozilla-pipeline-schemas .bq file. Dicts aren't changed, which
+    matters because the stable table schemas are cached and shared.
+    """
     paths: set[str] = set()
     for schema_field in schema:
-        path = f"{prefix}{schema_field.name}"
+        if isinstance(schema_field, Mapping):
+            name, fields = schema_field["name"], schema_field.get("fields", ())
+        else:
+            name, fields = schema_field.name, schema_field.fields
+        path = f"{prefix}{name}"
         paths.add(path)
-        paths |= field_paths(schema_field.fields, prefix=f"{path}.")
+        paths |= field_paths(fields, prefix=f"{path}.")
     return frozenset(paths)
 
 

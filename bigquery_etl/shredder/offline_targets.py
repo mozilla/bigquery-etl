@@ -26,6 +26,7 @@ from bigquery_etl.shredder.config import (
     DeleteIndex,
     GleanTableInfo,
     build_glean_targets,
+    field_paths,
 )
 
 SCHEMA_ID_URI_PREFIX = "moz://mozilla.org/schemas/"
@@ -48,33 +49,23 @@ def schema_id_label(schema_id: str) -> str:
     return schema_id.removeprefix(SCHEMA_ID_URI_PREFIX).replace("/", "_")
 
 
-def _schema_field_paths(fields: Iterable[dict], prefix: str = "") -> frozenset[str]:
-    """Return the dotted path of every field in a JSON BigQuery schema.
-
-    The dicts aren't changed, which matters because the stable table schemas are
-    cached and shared.
-    """
-    paths: set[str] = set()
-    for schema_field in fields:
-        path = f"{prefix}{schema_field['name']}"
-        paths.add(path)
-        paths |= _schema_field_paths(schema_field.get("fields", ()), prefix=f"{path}.")
-    return frozenset(paths)
-
-
 def stable_table_infos(schemas: Iterable[SchemaFile]) -> list[GleanTableInfo]:
     """Return metadata for the stable tables defined by mozilla-pipeline-schemas.
 
     Labels are set the way the schema deploy sets them on the tables. Field paths are
     only added for usage_deletion_request_v1, the only stable table that
     build_glean_targets reads columns from.
+
+    get_stable_table_schemas only keeps the newest version of each doctype, so if a
+    Glean doctype gets a v2 schema, its _v1 table (which find_glean_targets still
+    targets) is missing here. No Glean doctype has a newer version than 1 yet.
     """
     infos = []
     for schema in schemas:
         dataset_id, table_id = schema.stable_table.split(".")
         paths: frozenset[str] = frozenset()
         if table_id == USAGE_DELETION_REQUEST_TABLE:
-            paths = _schema_field_paths(schema.schema)
+            paths = field_paths(schema.schema)
         infos.append(
             GleanTableInfo(
                 dataset_id=dataset_id,
@@ -153,10 +144,17 @@ def _dry_run_field_paths(
     """Return the field paths of each query's output from a dry run, and any error.
 
     Queries on the dry run skip list return no schema, which is reported as an error.
+    If there's no dry run identity, every query gets that error so the tables are
+    reported as unresolved instead of failing the whole resolution.
     """
     if not query_files:
         return []
-    id_token = get_id_token(ConfigLoader.get("dry_run", "function"))
+    try:
+        id_token = get_id_token(ConfigLoader.get("dry_run", "function"))
+    except Exception as e:
+        return [(frozenset(), f"could not get dry run id token: {e}")] * len(
+            query_files
+        )
 
     def dry_run(query_file: Path) -> tuple[frozenset[str], Optional[str]]:
         try:
@@ -167,7 +165,7 @@ def _dry_run_field_paths(
             return frozenset(), f"dry run failed: {e}"
         if not schema.get("fields"):
             return frozenset(), "dry run returned no schema (skipped or empty)"
-        return _schema_field_paths(schema["fields"]), None
+        return field_paths(schema["fields"]), None
 
     with ThreadPoolExecutor(DRY_RUN_PARALLELISM) as pool:
         return list(pool.map(dry_run, query_files))
@@ -206,7 +204,7 @@ def derived_table_infos(
                 except Exception as e:
                     reason = f"{SCHEMA_FILE} could not be loaded: {e}"
                 else:
-                    paths = _schema_field_paths(schema.schema.get("fields", []))
+                    paths = field_paths(schema.schema.get("fields", []))
             else:
                 reason = f"no {SCHEMA_FILE}"
 

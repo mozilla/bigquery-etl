@@ -739,7 +739,7 @@ def test_field_paths():
         ),
     ]
 
-    assert field_paths(schema) == {
+    expected = {
         "client_id",
         "client_info",
         "client_info.client_id",
@@ -747,6 +747,9 @@ def test_field_paths():
         "metrics.uuid",
         "metrics.uuid.usage_profile_id",
     }
+    assert field_paths(schema) == expected
+    # the JSON schema format, e.g. from schema.yaml, gives the same paths
+    assert field_paths([f.to_api_repr() for f in schema]) == expected
 
 
 @mock.patch("bigquery_etl.cli.utils.requests")

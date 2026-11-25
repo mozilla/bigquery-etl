@@ -1,0 +1,31 @@
+friendly_name: Search Clients Daily
+description: |
+  A daily aggregate of desktop searches per (client_id, engine, source).
+
+  Exposed to users as view `search.search_clients_engines_sources_daily`.
+owners:
+- ago@mozilla.com
+- akommasani@mozilla.com
+- betling@mozilla.com
+labels:
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_search
+  external_downstream_tasks:
+  - task_id: wait_for_search_clients_daily
+    dag_name: jetstream
+    execution_delta: 1h
+  - task_id: wait_for_search_clients_daily
+    dag_name: operational_monitoring
+    execution_delta: 1h
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+    - sample_id
+references: {}

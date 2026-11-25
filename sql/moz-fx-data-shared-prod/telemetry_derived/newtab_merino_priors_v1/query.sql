@@ -469,7 +469,7 @@ SELECT
 FROM
   per_region_final
 WHERE
-  region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES', 'IT')
+  region IN ('US', 'CA', 'DE', 'CH', 'AT', 'GB', 'IE', 'BE', 'PL', 'FR', 'ES', 'IT', 'IN')
 UNION ALL
 SELECT
   region,

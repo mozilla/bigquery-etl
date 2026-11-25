@@ -16,7 +16,7 @@ RETURNS STRING AS (
             AND country IS NULL
             THEN NULL
           WHEN surface_id = 'NEW_TAB_EN_INTL'
-            THEN NULL
+            THEN 'IN'
           WHEN surface_id LIKE 'NEW_TAB_%'
             THEN RIGHT(surface_id, 2)
           WHEN surface_id IS NULL
@@ -35,7 +35,7 @@ SELECT
   assert.equals('AT', newtab.surface_id_country('NEW_TAB_DE_DE', LOWER('de'), 'AT')),
   -- when country is null
   assert.null(newtab.surface_id_country(NULL, NULL, NULL)),
-  assert.null(newtab.surface_id_country('NEW_TAB_EN_INTL', LOWER('en-US'), NULL)),
+  assert.equals('IN', newtab.surface_id_country('NEW_TAB_EN_INTL', LOWER('en-US'), NULL)),
   assert.equals('FR', newtab.surface_id_country('NEW_TAB_FR_FR', LOWER('fr'), NULL)),
   assert.equals('GB', newtab.surface_id_country('NEW_TAB_EN_GB', LOWER('en-US'), NULL)),
   assert.equals('US', newtab.surface_id_country('NEW_TAB_EN_US', LOWER('en-US'), NULL)),

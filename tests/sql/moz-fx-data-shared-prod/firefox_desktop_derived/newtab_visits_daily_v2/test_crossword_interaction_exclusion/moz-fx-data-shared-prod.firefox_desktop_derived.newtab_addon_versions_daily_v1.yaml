@@ -1,0 +1,11 @@
+---
+# last reported version of the day: joined onto the visit
+- submission_date: 2026-05-04
+  client_id: client_id_1
+  newtab_addon_version: "150.2.20260501.123456"
+  is_last_reported_version: true
+# decoy: earlier version the same day, dropped by the is_last_reported_version filter
+- submission_date: 2026-05-04
+  client_id: client_id_1
+  newtab_addon_version: "150.1.20260420.654321"
+  is_last_reported_version: false

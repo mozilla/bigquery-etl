@@ -2,9 +2,15 @@ fields:
   - mode: NULLABLE
     name: submission_date
     type: DATE
+    description: The date on which the search queries were submitted, derived from the timestamp of terminal
+      queries in each session. Partitions this table and is used to filter results to a single day of aggregated
+      search term data.
   - mode: NULLABLE
     name: query
     type: STRING
+    description: The sanitized search query string (PII removed) that was the final query in a Merino
+      search session, sourced from `merino_log_sanitized_v3`. Only queries that ended more than one session
+      over the trailing 7 days are kept.
   - mode: NULLABLE
     name: search_sessions
     type: INTEGER

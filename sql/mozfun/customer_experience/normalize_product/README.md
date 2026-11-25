@@ -28,7 +28,7 @@ Exact-match only. Each `raw` slug maps to one canonical product; unknown slugs r
 
 Two layers, evaluated in order. **Ordering is load-bearing** — do not reorder without re-reading the test cases at the bottom of [`udf.sql`](./udf.sql).
 
-1. **Exact-match path list.** Preserves every mapping that existed in the static lookup table, so existing GA4 paths keep their historical bucketing.
+1. **Exact-match tag sets.** Preserves the mappings from the static lookup table, so existing GA4 paths keep their historical bucketing. The input path segments are sorted before the comparison (`sorted_raw`), because Kitsune does not keep the tag order in the KB `products` field stable. So `/firefox/thunderbird/firefox-enterprise/` and `/firefox/firefox-enterprise/thunderbird/` match the same entry. Write new entries with their segments in sorted order.
 2. **Substring fallback.** Applied only when no exact-match fires, so newly-coined paths (e.g. `/firefox/firefox-enterprise/mobile/`) map automatically without a code change.
 
 Substring precedence (top wins):
@@ -55,7 +55,7 @@ The most-specific brand markers always fire before broader ones (e.g. `mozilla-v
 When the drift check (see below) surfaces a raw value mapping to `'Other'`:
 
 1. Decide the canonical product the slug belongs to.
-2. For Zendesk/Kitsune, add the slug to the relevant exact-match arm in [`udf.sql`](./udf.sql). For GA4, prefer extending the substring fallback if the slug shares a brand marker with existing paths; otherwise add it to the exact-match list.
+2. For Zendesk/Kitsune, add the slug to the relevant exact-match arm in [`udf.sql`](./udf.sql). For GA4, prefer extending the substring fallback if the slug shares a brand marker with existing paths; otherwise add it to the exact-match list, with its path segments in sorted order.
 3. Add a test case at the bottom of [`udf.sql`](./udf.sql).
 4. If the slug is genuinely a non-product page that should stay `'Other'`, add it to the corresponding `NOT IN` exclusion list in the drift check ([`sql/moz-fx-data-shared-prod/sumo_metrics_derived/ga4_engagement_sessions_daily_v1/checks.sql`](../../../moz-fx-data-shared-prod/sumo_metrics_derived/ga4_engagement_sessions_daily_v1/checks.sql)) so it stops firing.
 

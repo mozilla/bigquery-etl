@@ -3299,6 +3299,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The panel the user is switching from
+    - name: open_location
+      type: STRING
+      mode: NULLABLE
+      description: Where the page opened, either "full" for a standalone tab or "split"
+        for Split View.
     - name: open_type
       type: STRING
       mode: NULLABLE

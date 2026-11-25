@@ -558,6 +558,7 @@ SELECT
       JSON_VALUE(event_extra.old_region) AS `old_region`,
       JSON_VALUE(event_extra.oldpanel) AS `oldpanel`,
       JSON_VALUE(event_extra.onboarding_reason) AS `onboarding_reason`,
+      JSON_VALUE(event_extra.open_location) AS `open_location`,
       JSON_VALUE(event_extra.open_type) AS `open_type`,
       JSON_VALUE(event_extra.opened_from) AS `opened_from`,
       JSON_VALUE(event_extra.openingReason) AS `openingReason`,

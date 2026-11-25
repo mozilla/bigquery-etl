@@ -88,7 +88,12 @@ WITH thunderbird_excluded AS (
       'Thunderbird',
       'Thunderbird Android'
     )
-    AND d.products NOT IN (
+    -- Kitsune does not keep the tag order in `products` stable, so compare the
+    -- tags as a set: sort the path segments, and keep this list in sorted form.
+    AND '/' || ARRAY_TO_STRING(
+      ARRAY(SELECT s FROM UNNEST(SPLIT(d.products, '/')) AS s WHERE s != '' ORDER BY s),
+      '/'
+    ) || '/' NOT IN (
       '/thunderbird/',
       '/thunderbird-android/',
       '/thunderbird/thunderbird-android/',

@@ -42,6 +42,7 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_desktop_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.firefox_enterprise_crashreporter_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_enterprise_desktop_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_installer_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_launcher_process_stable.INFORMATION_SCHEMA.PARTITIONS

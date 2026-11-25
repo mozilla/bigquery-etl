@@ -1,0 +1,28 @@
+friendly_name: Firefox iOS App Store Funnel
+description: |
+  Derived dataset for supporting (Apple) app store funnel analysis (iOS).
+
+  Only mozilla.org web_referrer has campaigns linked to it.
+  This allows us to combine the campaign and web_referrer datasets together.
+
+  Running a full refresh each time as the source dataset is small and
+  the data can be late arriving. This way we ensure that the resulting table contains
+  the complete dataset.
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+  clustering:
+    fields:
+    - app_id
+    - territory
+    - web_referrer

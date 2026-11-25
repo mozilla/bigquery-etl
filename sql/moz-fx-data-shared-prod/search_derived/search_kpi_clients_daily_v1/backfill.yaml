@@ -1,0 +1,11 @@
+2026-11-09:
+  start_date: 2025-04-02
+  end_date: 2026-11-04
+  reason: Initial backfill of the search KPI client table (PR 10118, DENG-11872), from 2025-04-01, where the KPI's history starts. Offset -1, so this fills partitions 2025-04-01 to 2026-11-03.
+  watchers:
+    - ctroy@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

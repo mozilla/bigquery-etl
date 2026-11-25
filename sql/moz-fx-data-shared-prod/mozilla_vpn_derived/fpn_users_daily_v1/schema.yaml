@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the snapshot was taken for.
+- name: total_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Firefox VPN entitlements.
+- name: limited_bandwidth_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Firefox VPN entitlements that are bandwidth limited.

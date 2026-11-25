@@ -1,0 +1,13 @@
+fields:
+- name: uid
+  type: INTEGER
+  mode: NULLABLE
+  description: Guardian users.id of the entitled account.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the entitlement was created.
+- name: limited_bandwidth
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the entitlement is bandwidth limited.

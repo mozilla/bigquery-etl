@@ -47,6 +47,11 @@ def missing_deletions(delete_targets, associated_deletions):
         mock.patch.object(
             query_mod, "get_glean_app_id_to_app_name_mapping", return_value=CHANNELS
         ),
+        mock.patch.object(
+            query_mod,
+            "get_deletion_request_tables",
+            return_value={source.table for source in FENIX_SOURCES},
+        ),
         mock.patch.object(query_mod.bigquery, "Client"),
     ):
         return query_mod.get_missing_deletions(associated_deletions)

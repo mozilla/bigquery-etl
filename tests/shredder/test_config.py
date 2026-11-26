@@ -14,7 +14,10 @@ from bigquery_etl.shredder.config import (
     NOT_SHREDDED,
     DeleteSource,
     DeleteTarget,
+    GleanTableInfo,
     _list_tables,
+    build_glean_targets,
+    field_paths,
     find_glean_targets,
 )
 
@@ -544,6 +547,164 @@ def test_glean_targets_single_channel_usage_reporting(mock_requests):
     )
 
 
+FAKE_CLIENT_CHANNELS = [
+    "org_mozilla_firefox",
+    "org_mozilla_firefox_beta",
+    "org_mozilla_focus",
+    "org_mozilla_focus_beta",
+]
+
+
+def fake_client_table_infos():
+    """Return the tables in FakeClient as offline metadata for build_glean_targets."""
+    usage_profile_id = frozenset(
+        {"metrics", "metrics.uuid", "metrics.uuid.usage_profile_id"}
+    )
+    stable_tables = [
+        GleanTableInfo(
+            dataset_id=f"{channel}_stable",
+            table_id=table_id,
+            labels={"schema_id": schema_id},
+            field_paths=paths,
+        )
+        for channel in FAKE_CLIENT_CHANNELS
+        for table_id, schema_id, paths in [
+            ("metrics_v1", "glean_ping_1", frozenset()),
+            ("deletion_request_v1", "glean_ping_1", frozenset()),
+            ("migration_v1", "glean_ping_1", frozenset()),
+            ("usage_reporting_v1", "glean-min_ping_1", frozenset()),
+            ("usage_deletion_request_v1", "glean-min_ping_1", usage_profile_id),
+        ]
+    ]
+    derived_tables = [
+        GleanTableInfo(
+            dataset_id=dataset_id,
+            table_id="clients_daily_v1",
+            field_paths=frozenset({"client_id"}),
+        )
+        for dataset_id in [
+            "org_mozilla_firefox_derived",
+            "org_mozilla_firefox_beta_derived",
+            "fenix_derived",
+            "focus_android_derived",
+        ]
+    ] + [
+        GleanTableInfo(
+            dataset_id=dataset_id,
+            table_id=table_id,
+            field_paths=frozenset({column}),
+        )
+        for dataset_id in [
+            "org_mozilla_focus_derived",
+            "org_mozilla_focus_beta_derived",
+        ]
+        for table_id, column in [
+            ("additional_deletion_requests_v1", "client_id"),
+            ("clients_daily_v1", "client_id"),
+            ("dau_v1", "document_id"),
+            ("usage_reporting_clients_daily_v1", "usage_profile_id"),
+        ]
+    ]
+    return stable_tables, derived_tables
+
+
+def as_sets(targets):
+    """Convert source tuples to sets because their order depends on listing order."""
+    return {
+        target: set(sources) if isinstance(sources, tuple) else sources
+        for target, sources in targets.items()
+    }
+
+
+def table_loader(tables, requested=None):
+    """Return a load_derived_tables callable for build_glean_targets.
+
+    The requested dataset ids are appended to requested, if given.
+    """
+
+    def load(dataset_ids):
+        if requested is not None:
+            requested.extend(dataset_ids)
+        return [table for table in tables if table.dataset_id in dataset_ids]
+
+    return load
+
+
+def apps_with_views(*app_names):
+    """Return a has_view callable where the given apps have every view."""
+    return lambda app_name, view_id: app_name in app_names
+
+
+def test_build_glean_targets_ignores_datasets_without_deletion_requests():
+    """Derived tables are only targets in datasets with Glean deletion requests."""
+    stable_tables = [
+        GleanTableInfo(
+            dataset_id="org_mozilla_firefox_stable",
+            table_id=table_id,
+            labels={"schema_id": "glean_ping_1"},
+        )
+        for table_id in ["metrics_v1", "deletion_request_v1"]
+    ]
+    derived_tables = [
+        GleanTableInfo(
+            dataset_id=dataset_id,
+            table_id="clients_daily_v1",
+            field_paths=frozenset({"client_id"}),
+        )
+        for dataset_id in ["org_mozilla_firefox_derived", "telemetry_derived"]
+    ]
+
+    requested: list[str] = []
+    targets = build_glean_targets(
+        stable_tables,
+        table_loader(derived_tables, requested),
+        apps_with_views(),
+        channel_to_app_name={"org_mozilla_firefox": "fenix"},
+    )
+
+    # only datasets with deletion requests are loaded
+    assert "telemetry_derived" not in requested
+    assert "org_mozilla_firefox_derived" in requested
+    assert {target.table for target in targets} == {
+        "org_mozilla_firefox_stable.metrics_v1",
+        "org_mozilla_firefox_derived.clients_daily_v1",
+    }
+
+
+def test_field_paths():
+    schema = [
+        bigquery.SchemaField("client_id", "STRING"),
+        bigquery.SchemaField(
+            "client_info",
+            "RECORD",
+            fields=[bigquery.SchemaField("client_id", "STRING")],
+        ),
+        bigquery.SchemaField(
+            "metrics",
+            "RECORD",
+            fields=[
+                bigquery.SchemaField(
+                    "uuid",
+                    "RECORD",
+                    fields=[bigquery.SchemaField("usage_profile_id", "STRING")],
+                )
+            ],
+        ),
+    ]
+
+    expected = {
+        "client_id",
+        "client_info",
+        "client_info.client_id",
+        "metrics",
+        "metrics.uuid",
+        "metrics.uuid.usage_profile_id",
+    }
+    assert field_paths(schema) == expected
+    # the JSON schema format, e.g. from schema.yaml, gives the same paths
+    assert field_paths([f.to_api_repr() for f in schema]) == expected
+
+
 @mock.patch("bigquery_etl.cli.utils.requests")
 def test_glean_targets_schema_version_and_v1_suffix(mock_requests):
     """Match any glean_ping_ schema version but only include _v1 tables.
@@ -735,6 +896,29 @@ def test_list_tables_wrapper_empty():
     tables = _list_tables(DatasetReference("project", "dataset"), EmptyFakeClient())
 
     assert tables == []
+
+
+@mock.patch("bigquery_etl.cli.utils.requests")
+def test_glean_targets_stable_dataset_deleted(mock_requests):
+    """A stable dataset deleted after it was listed is skipped instead of failing."""
+    mock_response = mock.Mock()
+    mock_response.json.return_value = GLEAN_APP_LISTING
+    mock_requests.get.return_value = mock_response
+
+    class DeletedDatasetClient(FakeClient):
+        def list_tables(self, dataset_ref):
+            if dataset_ref.dataset_id == "org_mozilla_firefox_beta_stable":
+                raise NotFound("dataset deleted")
+            return super().list_tables(dataset_ref)
+
+    with ThreadPool(1) as pool:
+        targets = find_glean_targets(pool, DeletedDatasetClient())
+
+    target_tables = {target.table for target in targets}
+    assert "org_mozilla_firefox_stable.metrics_v1" in target_tables
+    assert not any(
+        table.startswith("org_mozilla_firefox_beta_") for table in target_tables
+    )
 
 
 def test_delete_target_fields_match_sources():

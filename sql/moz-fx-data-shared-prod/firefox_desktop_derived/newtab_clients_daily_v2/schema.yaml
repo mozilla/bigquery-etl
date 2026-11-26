@@ -15,10 +15,38 @@ fields:
   type: STRING
   mode: NULLABLE
   description: OS name of the host system
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    file: bigquery_etl/schema/global.yaml
+    field: os_version
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/firefox_desktop_derived/firefox_desktop_derived.yaml
+    field: windows_build_number
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: >-
+    Windows version name derived from os, os_version and windows_build_number with
+    mozfun.norm.glean_windows_version_info (e.g. 'Windows 10', 'Windows 11'). Builds 22000
+    and above on os_version 10.0 are Windows 11. 'build unknown - likely Windows 10 or 11'
+    when the build number is missing. NULL for non-Windows clients. In this table os_version,
+    windows_build_number and windows_version are each picked separately as the client's most
+    common value, so they can disagree for clients whose OS changed during the day.
 - name: channel
   type: STRING
   mode: NULLABLE
   description: Firefox Desktop deployment channel
+- name: newtab_addon_version
+  type: STRING
+  mode: NULLABLE
+  description: !include-field-description
+    table: moz-fx-data-shared-prod.firefox_desktop_derived.newtab_visits_daily_v2
+    field: newtab_addon_version
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -98,6 +126,19 @@ fields:
 - name: sponsored_content_impression_count
   type: INTEGER
   description: Count of sponsored content impressions with newtab opened in default ui
+- name: sponsored_content_inventory_count
+  type: INTEGER
+  description: >-
+    Count of times a story slot that can hold a sponsored story was shown, whether it showed a
+    sponsored or an organic story, with newtab opened in default ui, summed across the client's
+    newtab visits that day. Covers visits on Firefox 157 and later. NULL if all of the client's
+    visits that day were on versions before 157.
+- name: sponsored_content_inventory_visits
+  type: INTEGER
+  description: >-
+    Number of the client's newtab visits that day that showed at least one story slot that can
+    hold a sponsored story. NULL if all of the client's visits that day were on versions before
+    157.
 - name: any_topsite_engagement_visits
   type: INTEGER
   description: Count of any topsite engagement visits with newtab opened in default ui
@@ -116,6 +157,30 @@ fields:
 - name: organic_topsite_impression_count
   type: INTEGER
   description: Count of organic topsite impressions with newtab opened in default ui
+- name: organic_pinned_topsite_click_count
+  type: INTEGER
+  description: >-
+    Count of clicks on pinned organic topsites with newtab opened in default ui, summed across
+    the client's newtab visits that day. Covers visits on Firefox 144 and later. NULL if all of
+    the client's visits that day were on versions before 144.
+- name: organic_unpinned_topsite_click_count
+  type: INTEGER
+  description: >-
+    Count of clicks on unpinned organic topsites with newtab opened in default ui, summed across
+    the client's newtab visits that day. Covers visits on Firefox 144 and later. NULL if all of
+    the client's visits that day were on versions before 144.
+- name: organic_pinned_topsite_impression_count
+  type: INTEGER
+  description: >-
+    Count of pinned organic topsite impressions with newtab opened in default ui, summed across
+    the client's newtab visits that day. Covers visits on Firefox 144 and later. NULL if all of
+    the client's visits that day were on versions before 144.
+- name: organic_unpinned_topsite_impression_count
+  type: INTEGER
+  description: >-
+    Count of unpinned organic topsite impressions with newtab opened in default ui, summed
+    across the client's newtab visits that day. Covers visits on Firefox 144 and later. NULL if
+    all of the client's visits that day were on versions before 144.
 - name: sponsored_topsite_engagement_visits
   type: INTEGER
   description: Count of sponsored topsite engagement visits with newtab opened in default ui
@@ -125,6 +190,19 @@ fields:
 - name: sponsored_topsite_impression_count
   type: INTEGER
   description: Count of sponsored topsite impressions with newtab opened in default ui
+- name: sponsored_topsite_inventory_count
+  type: INTEGER
+  description: >-
+    Count of times a shortcut slot that can hold a sponsored shortcut was shown, whether it
+    showed a sponsored or an organic shortcut, with newtab opened in default ui, summed across
+    the client's newtab visits that day. Covers visits on Firefox 157 and later. NULL if all of
+    the client's visits that day were on versions before 157.
+- name: sponsored_topsite_inventory_visits
+  type: INTEGER
+  description: >-
+    Number of the client's newtab visits that day that showed at least one shortcut slot that
+    can hold a sponsored shortcut. NULL if all of the client's visits that day were on versions
+    before 157.
 - name: widget_engagement_visits
   type: INTEGER
   description: Count of widget engagement visits with newtab opened in default ui

@@ -1,14 +1,34 @@
-2026-11-25:
+2026-11-26:
   start_date: 2026-08-28
   end_date: 2026-11-23
-  reason: DENG-12035 - fill the new is_automated grouping column (https://github.com/mozilla/bigquery-etl/pull/10248)
-    for activity dates from 2026-08-28 (the first with a cohort from 2026-08-27) to 2026-11-23.
-    Runs after the rolling_cohorts_v2 backfill (https://github.com/mozilla/bigquery-etl/pull/10258),
-    which this table reads. Partition 2026-11-23 is included because it ran before that swap.
+  reason: DENG-12035 - fill is_automated (https://github.com/mozilla/bigquery-etl/pull/10248) with a custom
+    query that keeps expired cohorts. Replaces the cancelled 2026-11-25 entry, whose plain
+    re-run dropped cohorts that rolling_cohorts_v2 no longer keeps (775-day expiry), up to 91.6M
+    cohort clients per activity date. Cohorts before 2026-08-27 are copied from production with
+    is_automated = FALSE. Cohorts from 2026-08-27 are recomputed from the backfilled rolling_cohorts_v2.
   watchers:
   - phlee@mozilla.com
   - rbaffourawuah@mozilla.com
   status: Initiate
+  custom_query_path: sql/moz-fx-data-shared-prod/telemetry_derived/cohort_daily_statistics_v2/backfill_deng12035.sql
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  override_depends_on_past_null_partition: false
+  ignore_partition_offset: false
+
+2026-11-25:
+  start_date: 2026-08-28
+  end_date: 2026-11-23
+  reason: DENG-12035 - fill the new is_automated grouping column (https://github.com/mozilla/bigquery-etl/pull/10248)
+    for activity dates from 2026-08-28 (the first with a cohort from 2026-08-27) to
+    2026-11-23. Runs after the rolling_cohorts_v2 backfill (https://github.com/mozilla/bigquery-etl/pull/10258),
+    which this table reads. Partition 2026-11-23 is included because it ran before
+    that swap.
+  watchers:
+  - phlee@mozilla.com
+  - rbaffourawuah@mozilla.com
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

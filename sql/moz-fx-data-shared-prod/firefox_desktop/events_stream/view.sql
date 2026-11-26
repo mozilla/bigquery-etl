@@ -58,6 +58,7 @@ SELECT
       LAX_BOOL(event_extra.form_data) AS `form_data`,
       LAX_BOOL(event_extra.fxa) AS `fxa`,
       LAX_BOOL(event_extra.generation_triggered) AS `generation_triggered`,
+      LAX_BOOL(event_extra.granted) AS `granted`,
       LAX_BOOL(event_extra.had_errors) AS `had_errors`,
       LAX_BOOL(event_extra.had_saved_cvv) AS `had_saved_cvv`,
       LAX_BOOL(event_extra.hadPreviousJwt) AS `hadPreviousJwt`,

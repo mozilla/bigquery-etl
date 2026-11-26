@@ -556,6 +556,20 @@ fields:
         \ the last baseline ping)\n\nNote: Previously this also recorded the number\
         \ of submitted custom pings.\nNow it only records counts for the Glean built-in\
         \ pings.\n"
+    - name: glean_health_backup_client_id_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of different states that happened when using the external
+        backup client_id value.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

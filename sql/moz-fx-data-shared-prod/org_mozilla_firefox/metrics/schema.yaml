@@ -3645,6 +3645,13 @@ fields:
         the same part of the session as session_max_thermal_status.
 
         '
+    - name: network_ssl_token_cache_wrapped_not_persisted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts session resumption tokens that would have been persisted
+        to disk if their resumption secret had been exported in plaintext.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -20090,8 +20097,8 @@ fields:
         mode: NULLABLE
       description: 'Failures touching the persisted TLS token database: ''open'' (unopenable,
         so removed), ''schema'' (no usable table), ''read'' (unreadable row), ''write''
-        (snapshot not written). Routine removal when persistence is disabled is not
-        counted.
+        (snapshot not written), ''delete'' (removed tokens not deleted). Routine removal
+        when persistence is disabled is not counted.
 
         '
     - name: quotamanager_storage_sqlite_corruption_unrecovered
@@ -54623,6 +54630,29 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'Counts expected failures for Rust components
+
+        '
+    - name: network_ssl_token_resumption
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The session resumption outcome of a connection that had at least
+        one cached token to try, by transport and by where the last token tried came
+        from. Recorded at most once per connection; attempts necko abandons before
+        a handshake outcome, other than on a handshake timeout, are not counted.
 
         '
   - name: text2

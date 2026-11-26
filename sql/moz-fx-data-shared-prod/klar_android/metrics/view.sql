@@ -332,7 +332,8 @@ SELECT
       metrics.counter.devtools_styleeditor_stylesheets_stylesheets_opened_count,
       metrics.counter.background_notification_helper_wake,
       metrics.counter.ipprotection_exclusions_rule_applied,
-      metrics.counter.ipprotection_inclusions_rule_applied
+      metrics.counter.ipprotection_inclusions_rule_applied,
+      metrics.counter.network_ssl_token_cache_wrapped_not_persisted
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2047,7 +2048,8 @@ SELECT
       metrics.dual_labeled_counter.dns_negative_eviction,
       metrics.dual_labeled_counter.browser_utils_category_consumer_result,
       metrics.dual_labeled_counter.dom_register_protocol_handler_calls,
-      metrics.dual_labeled_counter.quotamanager_storage_init_corruption_error
+      metrics.dual_labeled_counter.quotamanager_storage_init_corruption_error,
+      metrics.dual_labeled_counter.network_ssl_token_resumption
     ) AS `dual_labeled_counter`,
     STRUCT(
       metrics.text2.xpi_database_late_load,

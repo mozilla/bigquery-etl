@@ -564,6 +564,8 @@ fields:
 
         * True if IP Protection was turned on.
 
+        * Whether the tracker count was enabled by this toggle.
+
         * Whether the action was turned on or off.
 
         * Boolean indicating if that type of memory was enabled or disabled
@@ -575,8 +577,6 @@ fields:
         * Whether the sidebar is now set to open by default
 
         * whether the preference was enabled or disabled in any way
-
-        * Whether the tracker count was enabled by this toggle.
 
         * The new state, true when saving security codes is on.'
     - name: encrypted
@@ -692,6 +692,11 @@ fields:
       mode: NULLABLE
       description: True when the scheduler found enough new evidence to generate memories.
         False when it found none; every other extra is then absent.
+    - name: granted
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True if access was granted. False if the user cancelled the file
+        picker.
     - name: had_errors
       type: BOOLEAN
       mode: NULLABLE
@@ -1520,7 +1525,12 @@ fields:
     - name: attempts
       type: INTEGER
       mode: NULLABLE
-      description: The number of recovery attempts made in this recovery sequence
+      description: 'Depending on the type of event:
+
+        * The number of times a file picker was shown. The file picker is shown again
+        as long as the selected folder doesn''t give access.
+
+        * The number of recovery attempts made in this recovery sequence'
     - name: auto_adjustments_prior
       type: INTEGER
       mode: NULLABLE
@@ -5927,6 +5937,8 @@ fields:
 
         * The key of the browser that was selected.
 
+        * The key of the migrator that access was requested for.
+
         * The key of the browser that had a profile selected for it.
 
         * The key of the migrator that performed the migration, for example "chrome"
@@ -6740,8 +6752,6 @@ fields:
       mode: NULLABLE
       description: 'Depending on the type of event:
 
-        * Selected provider id.
-
         * The name of the `UrlbarProvider` that provided the selected result. The
         possible values are: `AboutPages`, `AliasEngines`, `Autofill`, `BookmarkKeywords`,
         `calculator`, `UrlbarProviderContextualSearch`, `HeuristicFallback`, `HistoryUrlHeuristic`,
@@ -6753,6 +6763,8 @@ fields:
         And also, if selected_result is `experimental_addon`, it means that the user
         selected a result from an add-on using the urlbar experimental API. In this
         case, this will be the provider name specified by the add-on.
+
+        * Selected provider id.
 
         * The name of the provider.
 
@@ -6830,8 +6842,6 @@ fields:
 
         * An error code describing the failure.
 
-        * Why panel is toggling.
-
         * The reason for the unenrollment
 
         * A code describing the reason the unenroll failed.
@@ -6843,6 +6853,8 @@ fields:
         was closed or asleep).
 
         * What triggered the history display: ask or restore
+
+        * Why panel is toggling.
 
         * The reason the client is in the noted status
 

@@ -564,6 +564,20 @@ fields:
         the configured limits are sufficient to survive connectivity outages.
 
         '
+    - name: glean_health_backup_client_id_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of different states that happened when using the external
+        backup client_id value.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

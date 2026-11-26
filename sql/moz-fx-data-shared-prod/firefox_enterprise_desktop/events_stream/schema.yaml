@@ -528,6 +528,8 @@ fields:
 
         * New/current state is enabled
 
+        * Whether the tracker count was enabled by this toggle.
+
         * Whether the action was turned on or off.
 
         * True if the feature is enabled.
@@ -541,8 +543,6 @@ fields:
         * Whether the sidebar is now set to open by default
 
         * whether the preference was enabled or disabled in any way
-
-        * Whether the tracker count was enabled by this toggle.
 
         * The new state, true when saving security codes is on.'
     - name: encrypted

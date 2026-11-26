@@ -38,7 +38,8 @@ SELECT
       metrics.labeled_counter.glean_validation_pings_submitted,
       metrics.labeled_counter.glean_health_file_read_error,
       metrics.labeled_counter.glean_health_file_write_error,
-      metrics.labeled_counter.glean_upload_pending_pings_deleted
+      metrics.labeled_counter.glean_upload_pending_pings_deleted,
+      metrics.labeled_counter.glean_health_backup_client_id_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -116,7 +117,8 @@ SELECT
       metrics.labeled_counter.glean_validation_pings_submitted,
       metrics.labeled_counter.glean_health_file_read_error,
       metrics.labeled_counter.glean_health_file_write_error,
-      metrics.labeled_counter.glean_upload_pending_pings_deleted
+      metrics.labeled_counter.glean_upload_pending_pings_deleted,
+      metrics.labeled_counter.glean_health_backup_client_id_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -194,7 +196,8 @@ SELECT
       metrics.labeled_counter.glean_validation_pings_submitted,
       metrics.labeled_counter.glean_health_file_read_error,
       metrics.labeled_counter.glean_health_file_write_error,
-      metrics.labeled_counter.glean_upload_pending_pings_deleted
+      metrics.labeled_counter.glean_upload_pending_pings_deleted,
+      metrics.labeled_counter.glean_health_backup_client_id_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -272,7 +275,8 @@ SELECT
       metrics.labeled_counter.glean_validation_pings_submitted,
       metrics.labeled_counter.glean_health_file_read_error,
       metrics.labeled_counter.glean_health_file_write_error,
-      metrics.labeled_counter.glean_upload_pending_pings_deleted
+      metrics.labeled_counter.glean_upload_pending_pings_deleted,
+      metrics.labeled_counter.glean_health_backup_client_id_status
     ) AS `labeled_counter`,
     STRUCT(
       STRUCT(
@@ -422,7 +426,8 @@ SELECT
       metrics.labeled_counter.glean_validation_pings_submitted,
       metrics.labeled_counter.glean_health_file_read_error,
       metrics.labeled_counter.glean_health_file_write_error,
-      metrics.labeled_counter.glean_upload_pending_pings_deleted
+      metrics.labeled_counter.glean_upload_pending_pings_deleted,
+      metrics.labeled_counter.glean_health_backup_client_id_status
     ) AS `labeled_counter`,
     STRUCT(
       STRUCT(

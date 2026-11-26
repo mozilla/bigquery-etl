@@ -3533,6 +3533,13 @@ fields:
         page load is proxied.
 
         '
+    - name: network_ssl_token_cache_wrapped_not_persisted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts session resumption tokens that would have been persisted
+        to disk if their resumption secret had been exported in plaintext.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -13006,6 +13013,29 @@ fields:
         errors (NS_ERROR_STORAGE_IOERR), which are often transient. See bug 2090041.
 
         '
+    - name: network_ssl_token_resumption
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The session resumption outcome of a connection that had at least
+        one cached token to try, by transport and by where the last token tried came
+        from. Recorded at most once per connection; attempts necko abandons before
+        a handshake outcome, other than on a handshake timeout, are not counted.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -21022,8 +21052,8 @@ fields:
         mode: NULLABLE
       description: 'Failures touching the persisted TLS token database: ''open'' (unopenable,
         so removed), ''schema'' (no usable table), ''read'' (unreadable row), ''write''
-        (snapshot not written). Routine removal when persistence is disabled is not
-        counted.
+        (snapshot not written), ''delete'' (removed tokens not deleted). Routine removal
+        when persistence is disabled is not counted.
 
         '
     - name: os_environment_invoked_to_handle
@@ -22521,6 +22551,47 @@ fields:
         mode: NULLABLE
       description: 'Whether the gray marking state was valid at the start of a major
         GC
+
+        '
+    - name: session_restore_tab_group_integrity_checked
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Recorded once per startup, when the session file has been read.
+        Counts the tab groups, and the tabs with a group id, that were checked for
+        broken references, by where they were found in the session state. Use it as
+        the denominator for tab_group_integrity_problems.
+
+        '
+    - name: session_restore_tab_group_integrity_problems
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Recorded once per startup, when the session file has been read.
+        Counts broken tab group references in the session state, by kind: a group
+        in a window that no tab in that window points to (*_group_without_tabs), a
+        tab whose group id has no matching group in its window (*_tab_missing_group),
+        a closed or saved group with no tabs, a saved group entry that is not an object,
+        and a saved group flagged removeAfterRestore that the last session to be restored
+        would not reopen (saved_group_stale_restore_flag), which restoring that session
+        would delete. Not counted when there is no last session to restore. Malformed
+        session data is counted as *_check_failed: once per open or closed window
+        that could not be checked (which adds no other counts), once if the list of
+        windows isn''t a list, or once if the saved groups or the last session''s
+        windows could not be checked. The counts from everything else in the session
+        are still recorded.
 
         '
   - name: labeled_custom_distribution

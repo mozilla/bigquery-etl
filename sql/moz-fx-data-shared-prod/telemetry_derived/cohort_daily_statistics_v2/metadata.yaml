@@ -41,6 +41,10 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
+  backfill_deng12035.sql:
+  - moz-fx-data-shared-prod.telemetry.active_users
+  - moz-fx-data-shared-prod.telemetry_derived.cohort_daily_statistics_v2
+  - moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2
   query.sql:
   - moz-fx-data-shared-prod.telemetry.active_users
   - moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2

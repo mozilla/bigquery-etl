@@ -31,7 +31,7 @@ class SchemaFile:
     document_type: str
     document_version: int
     # include_client_id from mozPipelineMetadata. Schemas without it, like legacy
-    # telemetry, default to true, the same default the shredder uses for the label.
+    # telemetry, default to true, the same default that shredder uses for the label.
     include_client_id: bool = True
     # expiration_policy.delete_after_days from mozPipelineMetadata
     expiration_days: Optional[int] = None

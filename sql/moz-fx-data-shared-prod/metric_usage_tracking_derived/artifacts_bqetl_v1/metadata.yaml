@@ -1,0 +1,13 @@
+friendly_name: Metric Usage Artifacts bigquery-etl
+description: |-
+  One row per bigquery-etl table or view. Replaced on each run by the docker-
+  etl metric-usage job, metric_usage/lineage.py, from the generated-sql
+  branch. The job creates the table, and this schema has to match the one the
+  job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - artifact_id
+require_column_descriptions: true

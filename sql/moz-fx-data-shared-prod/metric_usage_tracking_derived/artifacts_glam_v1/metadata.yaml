@@ -1,0 +1,13 @@
+friendly_name: Metric Usage Artifacts GLAM
+description: |-
+  GLAM metric pages with a fetch by a person (crawlers removed) over 365 days.
+  Replaced on each run by the docker-etl metric-usage job,
+  metric_usage/glam.py. The job creates the table, and this schema has to
+  match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - artifact_id
+require_column_descriptions: true

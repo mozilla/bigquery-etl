@@ -1,0 +1,8 @@
+friendly_name: Metric Definition Usage
+description: |-
+  Per (window, metric definition) use, for the metric usage page's list of
+  metrics with little or no use. A definition is (origin, metric), so a gecko
+  metric's copies in several apps are one row. Filter on window_days. Data
+  from the metric usage page, https://benwu-metric-usage.quick.mozilla.cloud/.
+owners:
+- bewu@mozilla.com

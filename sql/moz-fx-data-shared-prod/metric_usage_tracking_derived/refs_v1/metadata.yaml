@@ -1,0 +1,6 @@
+friendly_name: Metric Usage Refs
+description: |-
+  Every source's refs_<source>_v1 table: a metric used by an artifact (a
+  table, query, dashboard, experiment or account), with how and how often.
+owners:
+- bewu@mozilla.com

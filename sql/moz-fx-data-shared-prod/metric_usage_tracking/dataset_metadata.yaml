@@ -1,0 +1,11 @@
+friendly_name: Metric Usage Tracking
+description: |-
+  Where each Glean metric and legacy telemetry probe is used. Views on
+  metric_usage_tracking_derived, read by the metric usage page.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

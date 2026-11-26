@@ -1,0 +1,9 @@
+friendly_name: Metrics
+description: |-
+  Every Glean metric and legacy telemetry probe, one row per (app, metric),
+  from probeinfo, with the stable-table fields that hold each one resolved
+  against INFORMATION_SCHEMA.COLUMN_FIELD_PATHS. Library metrics are listed
+  under every app that depends on the library. Data from the metric usage
+  page, https://benwu-metric-usage.quick.mozilla.cloud/.
+owners:
+- bewu@mozilla.com

@@ -1,0 +1,15 @@
+friendly_name: Metric Definition Usage
+description: |-
+  Per (window, metric definition) use, for the metric usage page's list of
+  metrics with little or no use. A definition is (origin, metric), so a gecko
+  metric's copies in several apps are one row. Filter on window_days. Replaced
+  on each run by the docker-etl metric-usage job, metric_usage/summary.py. The
+  job creates the table, and this schema has to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - window_days
+    - origin
+require_column_descriptions: true

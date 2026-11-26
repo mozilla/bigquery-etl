@@ -1,0 +1,7 @@
+friendly_name: Metric Usage Summary
+description: |-
+  Per (window, app, metric) reference counts for the metric usage page's
+  search and verdict line. Filter on window_days. Data from the metric usage
+  page, https://benwu-metric-usage.quick.mozilla.cloud/.
+owners:
+- bewu@mozilla.com

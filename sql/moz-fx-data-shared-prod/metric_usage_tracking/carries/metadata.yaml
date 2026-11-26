@@ -1,0 +1,7 @@
+friendly_name: Metric Carries
+description: |-
+  Which columns of which warehouse tables carry each metric, with hops from
+  the stable table. Data from the metric usage page, https://benwu-metric-
+  usage.quick.mozilla.cloud/.
+owners:
+- bewu@mozilla.com

@@ -1,0 +1,99 @@
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.summary_v1
+  field: window_days
+- name: origin
+  type: STRING
+  mode: NULLABLE
+  description: App or library that defines the metric; telemetry for legacy probes
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: metric
+- name: app
+  type: STRING
+  mode: NULLABLE
+  description: 'The copy the list links to: the defining app''s, else firefox_desktop''s,
+    else any'
+- name: apps
+  type: STRING
+  mode: REPEATED
+  description: Apps with a live copy of it
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: source
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: type
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: owners
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: expires
+- name: first_seen
+  type: DATE
+  mode: NULLABLE
+  description: Earliest first_seen of its copies
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: telemetry_mirror
+- name: bytes_per_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Bytes per day of every live copy; see summary.bytes_per_day
+- name: expired
+  type: BOOLEAN
+  mode: NULLABLE
+  description: expires is a date before today
+- name: is_new
+  type: BOOLEAN
+  mode: NULLABLE
+  description: First seen within the window
+- name: is_library
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Defined by a Glean SDK library (glean-core, glean-js, glean-android)
+- name: n_consumers
+  type: INTEGER
+  mode: NULLABLE
+  description: People, service accounts, experiments, OpMon projects, Looker content,
+    Redash queries and GLAM pages that used it in the window, through any copy or
+    its legacy mirror
+- name: consumers
+  type: STRING
+  mode: REPEATED
+  description: 'Up to five consumers, most days first, each tab-separated: kind, artifact
+    id, name, days in the window, and m when the use is through the legacy mirror'
+- name: last_used
+  type: DATE
+  mode: NULLABLE
+  description: Last day of use in the 365 days
+- name: n_tables
+  type: INTEGER
+  mode: NULLABLE
+  description: bigquery-etl tables naming it, which would need fixing if it were removed
+- name: n_views
+  type: INTEGER
+  mode: NULLABLE
+  description: Hand-written bigquery-etl views naming it
+- name: n_redash
+  type: INTEGER
+  mode: NULLABLE
+  description: Saved Redash queries naming it
+- name: n_looker
+  type: INTEGER
+  mode: NULLABLE
+  description: Looker dashboards and Looks naming it
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.summary_v1
+  field: n_metric_hub
+- name: size_top_percent
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of the origin's definitions with data that are at least as
+    large; 1 is the top 1%
+- name: size_percent
+  type: FLOAT
+  mode: NULLABLE
+  description: Its share of the combined size of the origin's definitions with data,
+    in percent

@@ -1,0 +1,6 @@
+friendly_name: Metric Usage Artifacts
+description: |-
+  Every source's artifacts_<source>_v1 table: an artifact that uses metrics,
+  with its owners and use per window.
+owners:
+- bewu@mozilla.com

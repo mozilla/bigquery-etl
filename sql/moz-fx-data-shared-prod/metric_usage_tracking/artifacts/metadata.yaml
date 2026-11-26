@@ -1,0 +1,7 @@
+friendly_name: Metric Usage Artifacts
+description: |-
+  Artifacts that use metrics, with their owners and use per window
+  (views_<n>d, users_<n>d). Join to refs on artifact_id. Data from the metric
+  usage page, https://benwu-metric-usage.quick.mozilla.cloud/.
+owners:
+- bewu@mozilla.com

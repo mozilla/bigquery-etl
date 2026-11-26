@@ -1,0 +1,14 @@
+friendly_name: Metric Refs Looker
+description: |-
+  Metrics named by Looker dashboards, Looks and ad hoc explore queries, from
+  the SQL Looker generates for them. Replaced on each run by the docker-etl
+  metric-usage job, metric_usage/looker.py. The job creates the table, and
+  this schema has to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - app
+    - metric
+require_column_descriptions: true

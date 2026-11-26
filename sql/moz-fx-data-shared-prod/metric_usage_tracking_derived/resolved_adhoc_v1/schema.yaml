@@ -1,0 +1,62 @@
+fields:
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: 'Query key (adhoc.KEY_SQL): BigQuery''s literal-normalized hash for
+    a service account''s query, else a fingerprint of the query text'
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: lineage.resolver_digest() it was resolved with
+- name: resolved_on
+  type: DATE
+  mode: NULLABLE
+  description: Day the query was last resolved
+- name: deps
+  type: RECORD
+  mode: REPEATED
+  description: Each table the query names, the columns of it the query mentions, and
+    their digest then
+  fields:
+  - name: table
+    type: STRING
+    mode: NULLABLE
+    description: A known table the query names, project.dataset.table
+  - name: names
+    type: STRING
+    mode: REPEATED
+    description: Columns of the table the query mentions
+  - name: digest
+    type: STRING
+    mode: NULLABLE
+    description: Digest of those columns' lineage when the query was resolved
+- name: refs
+  type: RECORD
+  mode: REPEATED
+  description: The metrics the query names
+  fields:
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: app
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: metric
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: role
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: hops
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: via
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: transformed
+- !include-field
+  file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/artifacts_schema.yaml
+  field: star_tables
+  new_name: stars
+- !include-field
+  file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/artifacts_schema.yaml
+  field: note

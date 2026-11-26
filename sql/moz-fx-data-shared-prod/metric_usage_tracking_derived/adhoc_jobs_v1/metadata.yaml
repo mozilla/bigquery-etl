@@ -1,0 +1,17 @@
+friendly_name: Ad Hoc BigQuery Jobs
+description: |-
+  Ad hoc BigQuery jobs per (day, project, query key, account), from
+  INFORMATION_SCHEMA.JOBS_BY_PROJECT, which keeps 180 days. Each run appends
+  the days it does not have yet, so ad hoc use can be counted over a year. No
+  query text. Written by the docker-etl metric-usage job,
+  metric_usage/adhoc.py. The job creates the table, and this schema has to
+  match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: day
+    require_partition_filter: false
+    expiration_days: 366
+require_column_descriptions: true

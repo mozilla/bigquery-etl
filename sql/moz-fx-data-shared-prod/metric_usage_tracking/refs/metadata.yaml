@@ -1,0 +1,9 @@
+friendly_name: Metric Refs
+description: |-
+  Each metric used by an artifact (a bigquery-etl table or view, Redash query,
+  Looker content, metric-hub metric, Jetstream experiment, OpMon project, GLAM
+  page or BigQuery account), with how and how often. A ref with seen_within
+  set counts only in windows of at least that many days. Data from the metric
+  usage page, https://benwu-metric-usage.quick.mozilla.cloud/.
+owners:
+- bewu@mozilla.com

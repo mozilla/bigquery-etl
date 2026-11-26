@@ -1,0 +1,2 @@
+fields: !include-fields
+  file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/artifacts_schema.yaml

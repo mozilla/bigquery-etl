@@ -1,0 +1,27 @@
+fields:
+- name: day
+  type: DATE
+  mode: NULLABLE
+  description: Day the jobs ran, UTC
+- name: project
+  type: STRING
+  mode: NULLABLE
+  description: Project whose JOBS_BY_PROJECT listed them
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: Query key (KEY_SQL); null marks a day captured with no jobs, so it
+    is not fetched again
+- name: account
+  type: STRING
+  mode: NULLABLE
+  description: Account that ran them, lowercased
+- name: wrote
+  type: STRING
+  mode: NULLABLE
+  description: Destination table, project.dataset.table, unless it was an anonymous
+    results table
+- name: jobs
+  type: INTEGER
+  mode: NULLABLE
+  description: Jobs with this key, account and destination that day

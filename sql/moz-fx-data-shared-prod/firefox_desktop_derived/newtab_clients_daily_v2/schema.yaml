@@ -15,10 +15,44 @@ fields:
   type: STRING
   mode: NULLABLE
   description: OS name of the host system
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: The operating system version running at the client prior to normalization
+    (e.g. "4.18.0-553.97.1.el8_10.aarch64" or "6.11+parrot-amd64" for Linux; "10.0"
+    for Windows, "25.3.0" for macOS, "26.3.1" for iOS, "16" for Android). Windows
+    10 and Windows 11 both show "10.0". Use `windows_build_number >= 22000` to identify
+    Windows 11.
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: The Windows build number reported by the operating system (e.g., 19045
+    for Windows 10, 22000+ for Windows 11); only populated on Windows clients and
+    null on all other platforms.
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows version name derived from os, os_version and windows_build_number
+    with mozfun.norm.glean_windows_version_info (e.g. 'Windows 10', 'Windows 11').
+    Builds 22000 and above on os_version 10.0 are Windows 11. 'build unknown - likely
+    Windows 10 or 11' when the build number is missing. NULL for non-Windows clients.
+    In this table os_version, windows_build_number and windows_version are each picked
+    separately as the client's most common value, so they can disagree for clients
+    whose OS changed during the day.
 - name: channel
   type: STRING
   mode: NULLABLE
   description: Firefox Desktop deployment channel
+- name: newtab_addon_version
+  type: STRING
+  mode: NULLABLE
+  description: 'Version of the newtab@mozilla.org addon reported by the client (`$.version`
+    in metrics.object.addons_active_addons).
+
+    Selects the version on the client''s last addons ping for the day and makes it
+    the same for all of the client''s visits that day. NULL when the client sent no
+    addons ping reporting the newtab addon that day, and for dates before newtab_addon_versions_daily_v1
+    has data.'
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -58,7 +92,8 @@ fields:
 - name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
-  description: Scheduled surface identifier based on locale and region, with fallback to computed value from country and locale
+  description: Scheduled surface identifier based on locale and region, with fallback
+    to computed value from country and locale
 - name: all_visits
   type: INTEGER
   description: Count of newtab open visits
@@ -70,37 +105,59 @@ fields:
   description: Count of any engagement visits with newtab opened in default ui
 - name: nonsearch_engagement_visits
   type: INTEGER
-  description: Count of nonsearch engagement visits with newtab opened in default ui
+  description: Count of nonsearch engagement visits with newtab opened in default
+    ui
 - name: any_content_engagement_visits
   type: INTEGER
-  description: Count of any content engagement visits with newtab opened in default ui
+  description: Count of any content engagement visits with newtab opened in default
+    ui
 - name: any_content_click_count
   type: INTEGER
-  description: Count of clicks on any newtab content with newtab opened in default ui
+  description: Count of clicks on any newtab content with newtab opened in default
+    ui
 - name: any_content_impression_count
   type: INTEGER
-  description: Count of impression on any newtab content with newtab opened in default ui
+  description: Count of impression on any newtab content with newtab opened in default
+    ui
 - name: organic_content_engagement_visits
   type: INTEGER
-  description: Count of newtab visits with the default UI that have exclusively organic (an no sponsored) content engagement
+  description: Count of newtab visits with the default UI that have exclusively organic
+    (an no sponsored) content engagement
 - name: organic_content_click_count
   type: INTEGER
   description: Count of clicks on Organic content with newtab opened in default ui
 - name: organic_content_impression_count
   type: INTEGER
-  description: Count of Organic content impressions with newtab opened in default ui
+  description: Count of Organic content impressions with newtab opened in default
+    ui
 - name: sponsored_content_engagement_visits
   type: INTEGER
-  description: Count of sponsored content engagement visits with newtab opened in default ui
+  description: Count of sponsored content engagement visits with newtab opened in
+    default ui
 - name: sponsored_content_click_count
   type: INTEGER
-  description: Count of clicks on sponsored content with newtab opened in default ui
+  description: Count of clicks on sponsored content with newtab opened in default
+    ui
 - name: sponsored_content_impression_count
   type: INTEGER
-  description: Count of sponsored content impressions with newtab opened in default ui
+  description: Count of sponsored content impressions with newtab opened in default
+    ui
+- name: sponsored_content_inventory_count
+  type: INTEGER
+  description: Count of times a story slot that can hold a sponsored story was shown,
+    whether it showed a sponsored or an organic story, with newtab opened in default
+    ui, summed across the client's newtab visits that day. Covers visits on Firefox
+    157 and later. NULL if all of the client's visits that day were on versions before
+    157.
+- name: sponsored_content_inventory_visits
+  type: INTEGER
+  description: Number of the client's newtab visits that day that showed at least
+    one story slot that can hold a sponsored story. NULL if all of the client's visits
+    that day were on versions before 157.
 - name: any_topsite_engagement_visits
   type: INTEGER
-  description: Count of any topsite engagement visits with newtab opened in default ui
+  description: Count of any topsite engagement visits with newtab opened in default
+    ui
 - name: any_topsite_click_count
   type: INTEGER
   description: Count of clicks on topsite with newtab opened in default ui
@@ -109,33 +166,73 @@ fields:
   description: Count of topsite impressions with newtab opened in default ui
 - name: organic_topsite_engagement_visits
   type: INTEGER
-  description: Count of newtab visits with the default UI that have exclusively organic (an no sponsored) topsites engagement
+  description: Count of newtab visits with the default UI that have exclusively organic
+    (an no sponsored) topsites engagement
 - name: organic_topsite_click_count
   type: INTEGER
   description: Count of clicks on organic topsite with newtab opened in default ui
 - name: organic_topsite_impression_count
   type: INTEGER
-  description: Count of organic topsite impressions with newtab opened in default ui
+  description: Count of organic topsite impressions with newtab opened in default
+    ui
+- name: organic_pinned_topsite_click_count
+  type: INTEGER
+  description: Count of clicks on pinned organic topsites with newtab opened in default
+    ui, summed across the client's newtab visits that day. Covers visits on Firefox
+    144 and later. NULL if all of the client's visits that day were on versions before
+    144.
+- name: organic_unpinned_topsite_click_count
+  type: INTEGER
+  description: Count of clicks on unpinned organic topsites with newtab opened in
+    default ui, summed across the client's newtab visits that day. Covers visits on
+    Firefox 144 and later. NULL if all of the client's visits that day were on versions
+    before 144.
+- name: organic_pinned_topsite_impression_count
+  type: INTEGER
+  description: Count of pinned organic topsite impressions with newtab opened in default
+    ui, summed across the client's newtab visits that day. Covers visits on Firefox
+    144 and later. NULL if all of the client's visits that day were on versions before
+    144.
+- name: organic_unpinned_topsite_impression_count
+  type: INTEGER
+  description: Count of unpinned organic topsite impressions with newtab opened in
+    default ui, summed across the client's newtab visits that day. Covers visits on
+    Firefox 144 and later. NULL if all of the client's visits that day were on versions
+    before 144.
 - name: sponsored_topsite_engagement_visits
   type: INTEGER
-  description: Count of sponsored topsite engagement visits with newtab opened in default ui
+  description: Count of sponsored topsite engagement visits with newtab opened in
+    default ui
 - name: sponsored_topsite_click_count
   type: INTEGER
-  description: Count of clicks on sponsored topsite with newtab opened in default ui
+  description: Count of clicks on sponsored topsite with newtab opened in default
+    ui
 - name: sponsored_topsite_impression_count
   type: INTEGER
-  description: Count of sponsored topsite impressions with newtab opened in default ui
+  description: Count of sponsored topsite impressions with newtab opened in default
+    ui
+- name: sponsored_topsite_inventory_count
+  type: INTEGER
+  description: Count of times a shortcut slot that can hold a sponsored shortcut was
+    shown, whether it showed a sponsored or an organic shortcut, with newtab opened
+    in default ui, summed across the client's newtab visits that day. Covers visits
+    on Firefox 157 and later. NULL if all of the client's visits that day were on
+    versions before 157.
+- name: sponsored_topsite_inventory_visits
+  type: INTEGER
+  description: Number of the client's newtab visits that day that showed at least
+    one shortcut slot that can hold a sponsored shortcut. NULL if all of the client's
+    visits that day were on versions before 157.
 - name: widget_engagement_visits
   type: INTEGER
   description: Count of widget engagement visits with newtab opened in default ui
 - name: others_engagement_visits
   type: INTEGER
-  description: Count of visits associated with wallpaper, topic_selection, sections with newtab opened in default ui
-
-  # Phase 4 Fields
+  description: Count of visits associated with wallpaper, topic_selection, sections
+    with newtab opened in default ui
 - name: sample_id
   type: INTEGER
-  description: Hashed client ID for sampling (0–99)
+  description: "Hashed client ID for sampling (0\u201399)"
 - name: profile_group_id
   type: STRING
   description: Legacy telemetry identifier for profile grouping
@@ -173,9 +270,9 @@ fields:
 - name: newtab_scroll
   type: BOOLEAN
   description: Whether the user scrolled more than the scroll telemetry threshold
-    during any newtab visit that day. NULL if no visit that day recorded a
-    qualifying scroll (the Glean metric is only set when the threshold is
-    crossed). Sourced from the `newtab.scroll` Glean metric.
+    during any newtab visit that day. NULL if no visit that day recorded a qualifying
+    scroll (the Glean metric is only set when the threshold is crossed). Sourced from
+    the `newtab.scroll` Glean metric.
 - name: default_search_engine
   type: STRING
   description: Engine ID of the default search engine

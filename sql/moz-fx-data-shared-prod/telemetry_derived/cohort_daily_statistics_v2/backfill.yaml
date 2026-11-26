@@ -9,7 +9,7 @@
   watchers:
   - phlee@mozilla.com
   - rbaffourawuah@mozilla.com
-  status: Initiate
+  status: Complete
   custom_query_path: sql/moz-fx-data-shared-prod/telemetry_derived/cohort_daily_statistics_v2/backfill_deng12035.sql
   shredder_mitigation: false
   override_retention_limit: false

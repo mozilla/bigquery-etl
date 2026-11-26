@@ -4,7 +4,11 @@ SELECT
   -- mode_last: to pick the most frequent occurring value
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(app_version)) AS app_version,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os)) AS os,
+  `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os_version)) AS os_version,
+  `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(windows_build_number)) AS windows_build_number,
+  `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(windows_version)) AS windows_version,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(channel)) AS channel,
+  ANY_VALUE(newtab_addon_version) AS newtab_addon_version,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country)) AS country,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(homepage_category)) AS homepage_category,
@@ -48,6 +52,12 @@ SELECT
   ) AS sponsored_content_engagement_visits,
   SUM(sponsored_content_click_count) AS sponsored_content_click_count,
   SUM(sponsored_content_impression_count) AS sponsored_content_impression_count,
+  SUM(sponsored_content_inventory_count) AS sponsored_content_inventory_count,
+  IF(
+    COUNT(sponsored_content_inventory_count) = 0,
+    NULL,
+    COUNT(DISTINCT IF(sponsored_content_inventory_count > 0, newtab_visit_id, NULL))
+  ) AS sponsored_content_inventory_visits,
   COUNT(
     DISTINCT IF(any_topsite_interaction_count > 0, newtab_visit_id, NULL)
   ) AS any_topsite_engagement_visits,
@@ -58,11 +68,21 @@ SELECT
   ) AS organic_topsite_engagement_visits,
   SUM(organic_topsite_click_count) AS organic_topsite_click_count,
   SUM(organic_topsite_impression_count) AS organic_topsite_impression_count,
+  SUM(organic_pinned_topsite_click_count) AS organic_pinned_topsite_click_count,
+  SUM(organic_unpinned_topsite_click_count) AS organic_unpinned_topsite_click_count,
+  SUM(organic_pinned_topsite_impression_count) AS organic_pinned_topsite_impression_count,
+  SUM(organic_unpinned_topsite_impression_count) AS organic_unpinned_topsite_impression_count,
   COUNT(
     DISTINCT IF(sponsored_topsite_interaction_count > 0, newtab_visit_id, NULL)
   ) AS sponsored_topsite_engagement_visits,
   SUM(sponsored_topsite_click_count) AS sponsored_topsite_click_count,
   SUM(sponsored_topsite_impression_count) AS sponsored_topsite_impression_count,
+  SUM(sponsored_topsite_inventory_count) AS sponsored_topsite_inventory_count,
+  IF(
+    COUNT(sponsored_topsite_inventory_count) = 0,
+    NULL,
+    COUNT(DISTINCT IF(sponsored_topsite_inventory_count > 0, newtab_visit_id, NULL))
+  ) AS sponsored_topsite_inventory_visits,
   COUNT(
     DISTINCT IF(widget_interaction_count > 0, newtab_visit_id, NULL)
   ) AS widget_engagement_visits,

@@ -1,0 +1,14 @@
+friendly_name: Metric Refs metric-hub
+description: |-
+  Metrics metric-hub definitions, Jetstream experiments and OpMon projects are
+  built from. Replaced on each run by the docker-etl metric-usage job,
+  metric_usage/metric_hub.py. The job creates the table, and this schema has
+  to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - app
+    - metric
+require_column_descriptions: true

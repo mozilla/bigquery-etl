@@ -1,0 +1,69 @@
+fields:
+- name: key
+  type: STRING
+  mode: NULLABLE
+  description: 'Query key (adhoc.KEY_SQL): BigQuery''s literal-normalized hash for
+    a service account''s query, else a fingerprint of the query text'
+- name: version
+  type: STRING
+  mode: NULLABLE
+  description: lineage.resolver_digest() it was resolved with
+- name: resolved_on
+  type: DATE
+  mode: NULLABLE
+  description: Day the query was last resolved
+- name: deps
+  type: RECORD
+  mode: REPEATED
+  description: Each table the query names, the columns of it the query mentions, and
+    their digest then
+  fields:
+  - name: table
+    type: STRING
+    mode: NULLABLE
+    description: A known table the query names, project.dataset.table
+  - name: names
+    type: STRING
+    mode: REPEATED
+    description: Columns of the table the query mentions
+  - name: digest
+    type: STRING
+    mode: NULLABLE
+    description: Digest of those columns' lineage when the query was resolved
+- name: refs
+  type: RECORD
+  mode: REPEATED
+  description: The metrics the query names
+  fields:
+  - name: app
+    type: STRING
+    mode: NULLABLE
+    description: App of a metric the query names
+  - name: metric
+    type: STRING
+    mode: NULLABLE
+    description: Metric name
+  - name: role
+    type: STRING
+    mode: NULLABLE
+    description: As refs.role
+  - name: hops
+    type: INTEGER
+    mode: NULLABLE
+    description: As refs.hops
+  - name: via
+    type: STRING
+    mode: NULLABLE
+    description: table:column the query read it from
+  - name: transformed
+    type: BOOLEAN
+    mode: NULLABLE
+    description: As refs.transformed
+- name: stars
+  type: STRING
+  mode: REPEATED
+  description: Tables the query reads with SELECT *
+- name: note
+  type: STRING
+  mode: NULLABLE
+  description: How the query was read, as artifacts.note

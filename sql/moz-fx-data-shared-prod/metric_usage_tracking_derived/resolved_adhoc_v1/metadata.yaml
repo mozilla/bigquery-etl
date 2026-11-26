@@ -1,0 +1,14 @@
+friendly_name: Resolved Ad Hoc Queries
+description: |-
+  Ad hoc queries resolved to the metrics they name, by query key, kept between
+  runs so a run resolves only new or changed queries. Holds the bigquery-etl
+  tables and columns each query mentions, never query text. Replaced on each
+  run by the docker-etl metric-usage job, metric_usage/adhoc.py. The job
+  creates the table, and this schema has to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - key
+require_column_descriptions: true

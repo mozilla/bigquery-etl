@@ -1,0 +1,14 @@
+friendly_name: Metric Refs bigquery-etl
+description: |-
+  bigquery-etl queries and views that read each metric, as output or filter,
+  named or carried in bulk. Replaced on each run by the docker-etl metric-
+  usage job, metric_usage/lineage.py, from the generated-sql branch. The job
+  creates the table, and this schema has to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - app
+    - metric
+require_column_descriptions: true

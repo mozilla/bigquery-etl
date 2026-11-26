@@ -1,0 +1,117 @@
+fields:
+- name: app
+  type: STRING
+  mode: NULLABLE
+  description: Glean Dictionary app name, or 'telemetry' for legacy probes and environment
+    fields
+- name: app_label
+  type: STRING
+  mode: NULLABLE
+  description: App name for display, from probeinfo
+- name: app_deprecated
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Every channel of the app is deprecated
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: glean or legacy
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: 'Metric name as defined: browser.engagement.tab_open, GC_MS'
+- name: origin
+  type: STRING
+  mode: NULLABLE
+  description: App or library that defines the metric
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Glean metric type, legacy probe kind (histogram, scalar, event, with
+    _keyed when keyed), or environment
+- name: description
+  type: STRING
+  mode: NULLABLE
+  description: The definition's description
+- name: owners
+  type: STRING
+  mode: REPEATED
+  description: Notification emails from the definition
+- name: expires
+  type: STRING
+  mode: NULLABLE
+  description: 'Expiry as defined: a date, a version, never, expired, or null'
+- name: in_source
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Still in the code; null for environment fields, where it is not known
+- name: first_seen
+  type: DATE
+  mode: NULLABLE
+  description: First day probeinfo saw the definition; for a legacy probe, when it
+    was added to Nightly
+- name: last_change
+  type: DATE
+  mode: NULLABLE
+  description: Last day the Glean definition changed; null for legacy
+- name: send_in_pings
+  type: STRING
+  mode: REPEATED
+  description: Pings a Glean metric is sent in
+- name: tags
+  type: STRING
+  mode: REPEATED
+  description: Glean metadata tags
+- name: data_sensitivity
+  type: STRING
+  mode: REPEATED
+  description: Glean data sensitivity categories
+- name: column_leaf
+  type: STRING
+  mode: NULLABLE
+  description: Last segment of the column path; what a bare token would match
+- name: column_status
+  type: STRING
+  mode: NULLABLE
+  description: column, event, or missing
+- name: columns
+  type: RECORD
+  mode: REPEATED
+  description: Stable-table fields holding the metric, table as dataset.table in moz-fx-data-shared-prod
+  fields:
+  - name: table
+    type: STRING
+    mode: NULLABLE
+    description: dataset.table of a stable table
+  - name: path
+    type: STRING
+    mode: NULLABLE
+    description: Dotted path of the field in that table
+- name: event_category
+  type: STRING
+  mode: NULLABLE
+  description: For an event, its category
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+  description: For an event, its name within the category
+- name: event_methods
+  type: STRING
+  mode: REPEATED
+  description: 'Legacy events: the methods it can be recorded with'
+- name: event_objects
+  type: STRING
+  mode: REPEATED
+  description: 'Legacy events: the objects it can be recorded with'
+- name: telemetry_mirror
+  type: STRING
+  mode: NULLABLE
+  description: For a Glean metric, the legacy probe it mirrors
+- name: glean_mirrors
+  type: STRING
+  mode: REPEATED
+  description: For a legacy probe, app:metric of its Glean mirrors
+- name: dictionary_url
+  type: STRING
+  mode: NULLABLE
+  description: The metric's Glean Dictionary page

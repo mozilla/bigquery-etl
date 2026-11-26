@@ -1,0 +1,16 @@
+friendly_name: Metrics
+description: |-
+  Every Glean metric and legacy telemetry probe, one row per (app, metric),
+  from probeinfo, with the stable-table fields that hold each one resolved
+  against INFORMATION_SCHEMA.COLUMN_FIELD_PATHS. Library metrics are listed
+  under every app that depends on the library. Replaced on each run by the
+  docker-etl metric-usage job, metric_usage/inventory.py. The job creates the
+  table, and this schema has to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - app
+    - metric
+require_column_descriptions: true

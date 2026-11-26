@@ -1,0 +1,15 @@
+friendly_name: Metric Usage Summary
+description: |-
+  Per (window, app, metric) reference counts for the metric usage page's
+  search and verdict line. Filter on window_days. Replaced on each run by the
+  docker-etl metric-usage job, metric_usage/summary.py. The job creates the
+  table, and this schema has to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - window_days
+    - app
+    - metric
+require_column_descriptions: true

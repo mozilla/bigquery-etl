@@ -1,0 +1,8 @@
+friendly_name: Metric Usage Windows
+description: |-
+  The windows of use the metric usage page offers, in days, each ending on
+  end_date. adhoc_start_date is the first day of BigQuery job history kept, so
+  ad hoc use in a window starting before it covers only the days since. Data
+  from the metric usage page, https://benwu-metric-usage.quick.mozilla.cloud/.
+owners:
+- bewu@mozilla.com

@@ -1,0 +1,13 @@
+friendly_name: Metric Usage Artifacts Redash
+description: |-
+  Redash queries and dashboards, with owners, schedule, last run and human
+  views per window. Replaced on each run by the docker-etl metric-usage job,
+  metric_usage/redash.py. The job creates the table, and this schema has to
+  match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - artifact_id
+require_column_descriptions: true

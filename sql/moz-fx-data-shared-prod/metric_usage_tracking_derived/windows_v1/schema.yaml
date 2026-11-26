@@ -1,0 +1,18 @@
+fields:
+- name: days
+  type: INTEGER
+  mode: NULLABLE
+  description: Length of the window in days
+- name: start_date
+  type: DATE
+  mode: NULLABLE
+  description: First day of the window
+- name: end_date
+  type: DATE
+  mode: NULLABLE
+  description: Last day of the window, the day before the job ran
+- name: adhoc_start_date
+  type: DATE
+  mode: NULLABLE
+  description: First day of BigQuery job history kept; ad hoc use before it is not
+    counted

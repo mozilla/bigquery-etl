@@ -1,0 +1,35 @@
+fields:
+- name: table
+  type: STRING
+  mode: NULLABLE
+  description: bigquery-etl table or view, project.dataset.table
+- name: path
+  type: STRING
+  mode: NULLABLE
+  description: Dotted path of the column carrying the metric
+- name: app
+  type: STRING
+  mode: NULLABLE
+  description: App of the metric, as in metrics
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: Metric name, as in metrics
+- name: hops
+  type: INTEGER
+  mode: NULLABLE
+  description: Tables between the stable table and this one, plus one
+- name: transformed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: The value was computed from, cast or aggregated on the way here rather
+    than copied as it is
+- name: named
+  type: BOOLEAN
+  mode: NULLABLE
+  description: The SQL names the metric, rather than carrying it through a star or
+    a whole struct
+- name: via
+  type: STRING
+  mode: NULLABLE
+  description: table:column it was read from at the previous hop

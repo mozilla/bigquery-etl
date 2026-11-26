@@ -1,0 +1,11 @@
+friendly_name: Metric Usage Windows
+description: |-
+  The windows of use the metric usage page offers, in days, each ending on
+  end_date. adhoc_start_date is the first day of BigQuery job history kept, so
+  ad hoc use in a window starting before it covers only the days since.
+  Replaced on each run by the docker-etl metric-usage job,
+  metric_usage/summary.py. The job creates the table, and this schema has to
+  match the one the job writes.
+owners:
+- bewu@mozilla.com
+require_column_descriptions: true

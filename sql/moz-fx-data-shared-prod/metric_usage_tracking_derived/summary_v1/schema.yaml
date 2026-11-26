@@ -1,0 +1,110 @@
+fields:
+- name: window_days
+  type: INTEGER
+  mode: NULLABLE
+  description: The window in days, ending on windows.end_date; a ref counts when it
+    holds in every window or was seen within this one. Filter on it.
+- name: app
+  type: STRING
+  mode: NULLABLE
+  description: Glean Dictionary app name, or 'telemetry' for legacy probes and environment
+    fields
+- name: metric
+  type: STRING
+  mode: NULLABLE
+  description: 'Metric name as defined: browser.engagement.tab_open, GC_MS'
+- name: type
+  type: STRING
+  mode: NULLABLE
+  description: Glean metric type, legacy probe kind (histogram, scalar, event, with
+    _keyed when keyed), or environment
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: glean or legacy
+- name: column_status
+  type: STRING
+  mode: NULLABLE
+  description: column, event, or missing
+- name: in_source
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Still in the code; null for environment fields, where it is not known
+- name: app_deprecated
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Every channel of the app is deprecated
+- name: n_tables
+  type: INTEGER
+  mode: NULLABLE
+  description: bigquery-etl tables whose SQL names it
+- name: n_views
+  type: INTEGER
+  mode: NULLABLE
+  description: bigquery-etl views naming it, other than the generated ping views
+- name: n_bulk
+  type: INTEGER
+  mode: NULLABLE
+  description: bigquery-etl tables and views carrying it without naming it, through
+    a star or a whole struct
+- name: n_dashboards
+  type: INTEGER
+  mode: NULLABLE
+  description: Redash dashboards, not drafts, with a query using it
+- name: n_redash_kept
+  type: INTEGER
+  mode: NULLABLE
+  description: Saved Redash queries using it that are on a dashboard or refreshed
+    on a schedule
+- name: n_redash_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Saved Redash queries using it
+- name: last_redash_run
+  type: DATE
+  mode: NULLABLE
+  description: Last run of any of those Redash queries
+- name: n_looker
+  type: INTEGER
+  mode: NULLABLE
+  description: Looker dashboards, Looks and explores naming it
+- name: n_people
+  type: INTEGER
+  mode: NULLABLE
+  description: People whose ad hoc BigQuery queries used it
+- name: n_service_accounts
+  type: INTEGER
+  mode: NULLABLE
+  description: Service accounts whose BigQuery queries used it
+- name: n_experiments
+  type: INTEGER
+  mode: NULLABLE
+  description: Jetstream experiments whose metric-hub config chose it
+- name: n_experiments_default
+  type: INTEGER
+  mode: NULLABLE
+  description: Jetstream experiments computing it only through the platform's default
+    metrics
+- name: n_metric_hub
+  type: INTEGER
+  mode: NULLABLE
+  description: metric-hub metric definitions naming it
+- name: n_opmon
+  type: INTEGER
+  mode: NULLABLE
+  description: OpMon projects naming it
+- name: bytes_per_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Bytes its columns hold in a day, summed over the tables that have them
+    and averaged over the last 7 days, from monitoring_derived.column_size_v1; null
+    for events and metrics with no data
+- name: size_top_percent
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of the app's metrics with data that are at least as large;
+    1 is the top 1%
+- name: size_percent
+  type: FLOAT
+  mode: NULLABLE
+  description: Its share of the combined size of the app's metrics with data, in percent

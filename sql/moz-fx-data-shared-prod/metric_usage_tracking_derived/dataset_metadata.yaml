@@ -1,0 +1,13 @@
+friendly_name: Metric Usage Tracking Derived
+description: |-
+  Where each Glean metric and legacy telemetry probe is used: bigquery-etl
+  tables and views, Redash, Looker, GLAM, metric-hub with Jetstream and OpMon,
+  and ad hoc BigQuery jobs. Written by the docker-etl metric-usage job,
+  scheduled by telemetry-airflow's metric_usage_tracking DAG.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

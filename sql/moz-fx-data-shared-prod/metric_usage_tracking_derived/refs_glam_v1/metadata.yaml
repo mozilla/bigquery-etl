@@ -1,0 +1,14 @@
+friendly_name: Metric Refs GLAM
+description: |-
+  Glean metrics opened in GLAM over 365 days, with days used and a percent
+  rank among the product's metrics. Replaced on each run by the docker-etl
+  metric-usage job, metric_usage/glam.py. The job creates the table, and this
+  schema has to match the one the job writes.
+owners:
+- bewu@mozilla.com
+bigquery:
+  clustering:
+    fields:
+    - app
+    - metric
+require_column_descriptions: true

@@ -1,0 +1,11 @@
+friendly_name: LLM Proxy Fastly Logs
+description: |-
+  Fastly CDN logs for llm-proxy (MLPA edge). Contains views over the prod and
+  stage Fastly logs in the llm-proxy GCP projects.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential/data-viewers

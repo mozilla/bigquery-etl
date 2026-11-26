@@ -5,6 +5,9 @@ description: |-
   The following columns are aggregated to pick the most common value for the given client using moz-fx-data-shared-prod.udf.mode_last
       app_version
       os
+      os_version
+      windows_build_number
+      windows_version
       channel
       locale
       browser_version
@@ -17,7 +20,7 @@ description: |-
       organic_topsites_enabled
       newtab_search_enabled
 owners:
-  - gkatre@mozilla.com
+  - data-newtab-wg@mozilla.com
 labels:
   application: newtab
   incremental: true

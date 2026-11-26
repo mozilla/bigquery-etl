@@ -7,7 +7,7 @@ import pytest
 
 from bigquery_etl.util.common import render
 
-_repo_root = Path(__file__).resolve().parents[5]
+_repo_root = Path(__file__).resolve().parents[2]
 _query_dir = (
     _repo_root
     / "sql/moz-fx-data-shared-prod/customer_experience_derived"

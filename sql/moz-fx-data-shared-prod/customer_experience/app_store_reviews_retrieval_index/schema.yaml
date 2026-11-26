@@ -16,6 +16,14 @@ fields: !flatten-lists
   type: INTEGER
   mode: NULLABLE
   description: Star rating given by the reviewer.
+- name: reviewer_nickname
+  type: STRING
+  mode: NULLABLE
+  description: Nickname of the reviewer, as shown on the App Store.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the app that the review was written for, from the App Store version string. NULL when the review has no linked app version.
 - name: title
   type: STRING
   mode: NULLABLE

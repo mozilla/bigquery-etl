@@ -34,8 +34,10 @@ schema:
   allow_field_addition: true
 scheduling:
   dag_name: bqetl_customer_experience
-  # Data is updated 3 days before the run to process reviews that arrive late. README for details.
-  partition_offset: -3d
+  partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'app_store_v2_syndicate', 'app_store_review']
 bigquery:
   time_partitioning:
     type: day
@@ -46,5 +48,5 @@ require_column_descriptions: true
 monitoring:
   enabled: true
 references:
-  query.sql:
+  script.sql:
   - moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review

@@ -35,35 +35,28 @@ fields:
   mode: REPEATED
   description: The metrics the query names
   fields:
-  - name: app
-    type: STRING
-    mode: NULLABLE
-    description: App of a metric the query names
-  - name: metric
-    type: STRING
-    mode: NULLABLE
-    description: Metric name
-  - name: role
-    type: STRING
-    mode: NULLABLE
-    description: As refs.role
-  - name: hops
-    type: INTEGER
-    mode: NULLABLE
-    description: As refs.hops
-  - name: via
-    type: STRING
-    mode: NULLABLE
-    description: table:column the query read it from
-  - name: transformed
-    type: BOOLEAN
-    mode: NULLABLE
-    description: As refs.transformed
-- name: stars
-  type: STRING
-  mode: REPEATED
-  description: Tables the query reads with SELECT *
-- name: note
-  type: STRING
-  mode: NULLABLE
-  description: How the query was read, as artifacts.note
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: app
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: metric
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: role
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: hops
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: via
+  - !include-field
+    file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/refs_schema.yaml
+    field: transformed
+- !include-field
+  file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/artifacts_schema.yaml
+  field: star_tables
+  new_name: stars
+- !include-field
+  file: /sql/moz-fx-data-shared-prod/metric_usage_tracking_derived/artifacts_schema.yaml
+  field: note

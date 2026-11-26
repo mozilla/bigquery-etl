@@ -1,0 +1,87 @@
+fields:
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: app
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: metric
+- name: artifact_id
+  type: STRING
+  mode: NULLABLE
+  description: The artifact using the metric; joins to artifacts
+- name: artifact_kind
+  type: STRING
+  mode: NULLABLE
+  description: The artifact's kind, as artifacts.kind
+- name: role
+  type: STRING
+  mode: NULLABLE
+  description: 'output: reaches an output column; filter: named but only used in WHERE,
+    JOIN, GROUP BY, ORDER BY, a window or an aggregate that drops it; viewed: opened
+    in a tool such as GLAM'
+- name: hops
+  type: INTEGER
+  mode: NULLABLE
+  description: Tables between the stable table and this artifact, plus one
+- name: named
+  type: BOOLEAN
+  mode: NULLABLE
+  description: The SQL names the metric, rather than carrying it through a star or
+    a whole struct
+- name: transformed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: The value was computed from, cast or aggregated on the way here rather
+    than copied as it is
+- name: via
+  type: STRING
+  mode: NULLABLE
+  description: table:column the artifact read it from
+- name: output_columns
+  type: STRING
+  mode: REPEATED
+  description: Up to 20 of the artifact's output columns carrying the metric
+- name: n_output_columns
+  type: INTEGER
+  mode: NULLABLE
+  description: How many of its output columns carry the metric
+- name: evidence
+  type: STRING
+  mode: NULLABLE
+  description: parsed, regex, or observed (from use, not code)
+- name: observed_days
+  type: INTEGER
+  mode: NULLABLE
+  description: Days in the source's own window with a use, for GLAM, whose window
+    is a year; windowed sources use observed_days_<n>d
+- name: observed_days_30d
+  type: INTEGER
+  mode: NULLABLE
+  description: Days in the 30 days ending on the window end with a use
+- name: observed_days_90d
+  type: INTEGER
+  mode: NULLABLE
+  description: Days in the 90 days ending on the window end with a use
+- name: observed_days_180d
+  type: INTEGER
+  mode: NULLABLE
+  description: Days in the 180 days ending on the window end with a use
+- name: observed_days_365d
+  type: INTEGER
+  mode: NULLABLE
+  description: Days in the 365 days ending on the window end with a use
+- name: seen_within
+  type: INTEGER
+  mode: NULLABLE
+  description: For a ref that exists only because of use (an ad hoc query, an experiment,
+    a Looker query, an OpMon project), the shortest window of 30, 90, 180, 365 days
+    that has it; null for refs from code or saved content, which hold in every window
+- name: last_observed
+  type: DATE
+  mode: NULLABLE
+  description: Last day with a use, for refs from use
+- name: top_percent
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of the metrics used in the same place (a GLAM product) that
+    were used on at least as many days; 1 is the top 1%

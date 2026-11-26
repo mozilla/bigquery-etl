@@ -1,17 +1,14 @@
 fields:
-- name: window_days
-  type: INTEGER
-  mode: NULLABLE
-  description: The window in days, ending on windows.end_date; a ref counts when it
-    holds in every window or was seen within this one. Filter on it.
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.summary_v1
+  field: window_days
 - name: origin
   type: STRING
   mode: NULLABLE
   description: App or library that defines the metric; telemetry for legacy probes
-- name: metric
-  type: STRING
-  mode: NULLABLE
-  description: Metric name as defined
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: metric
 - name: app
   type: STRING
   mode: NULLABLE
@@ -21,31 +18,25 @@ fields:
   type: STRING
   mode: REPEATED
   description: Apps with a live copy of it
-- name: source
-  type: STRING
-  mode: NULLABLE
-  description: glean or legacy
-- name: type
-  type: STRING
-  mode: NULLABLE
-  description: Glean metric type, legacy probe kind (histogram, scalar, event, with
-    _keyed when keyed), or environment
-- name: owners
-  type: STRING
-  mode: REPEATED
-  description: Notification emails from the definition
-- name: expires
-  type: STRING
-  mode: NULLABLE
-  description: 'Expiry as defined: a date, a version, never, expired, or null'
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: source
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: type
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: owners
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: expires
 - name: first_seen
   type: DATE
   mode: NULLABLE
   description: Earliest first_seen of its copies
-- name: telemetry_mirror
-  type: STRING
-  mode: NULLABLE
-  description: For a Glean metric, the legacy probe it mirrors
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: telemetry_mirror
 - name: bytes_per_day
   type: INTEGER
   mode: NULLABLE
@@ -93,10 +84,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Looker dashboards and Looks naming it
-- name: n_metric_hub
-  type: INTEGER
-  mode: NULLABLE
-  description: metric-hub metric definitions naming it
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.summary_v1
+  field: n_metric_hub
 - name: size_top_percent
   type: FLOAT
   mode: NULLABLE

@@ -4,36 +4,27 @@ fields:
   mode: NULLABLE
   description: The window in days, ending on windows.end_date; a ref counts when it
     holds in every window or was seen within this one. Filter on it.
-- name: app
-  type: STRING
-  mode: NULLABLE
-  description: Glean Dictionary app name, or 'telemetry' for legacy probes and environment
-    fields
-- name: metric
-  type: STRING
-  mode: NULLABLE
-  description: 'Metric name as defined: browser.engagement.tab_open, GC_MS'
-- name: type
-  type: STRING
-  mode: NULLABLE
-  description: Glean metric type, legacy probe kind (histogram, scalar, event, with
-    _keyed when keyed), or environment
-- name: source
-  type: STRING
-  mode: NULLABLE
-  description: glean or legacy
-- name: column_status
-  type: STRING
-  mode: NULLABLE
-  description: column, event, or missing
-- name: in_source
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Still in the code; null for environment fields, where it is not known
-- name: app_deprecated
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Every channel of the app is deprecated
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: app
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: metric
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: type
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: source
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: column_status
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: in_source
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: app_deprecated
 - name: n_tables
   type: INTEGER
   mode: NULLABLE

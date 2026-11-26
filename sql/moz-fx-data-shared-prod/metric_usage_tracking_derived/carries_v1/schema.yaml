@@ -7,14 +7,12 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Dotted path of the column carrying the metric
-- name: app
-  type: STRING
-  mode: NULLABLE
-  description: App of the metric, as in metrics
-- name: metric
-  type: STRING
-  mode: NULLABLE
-  description: Metric name, as in metrics
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: app
+- !include-field
+  table: moz-fx-data-shared-prod.metric_usage_tracking_derived.metrics_v1
+  field: metric
 - name: hops
   type: INTEGER
   mode: NULLABLE

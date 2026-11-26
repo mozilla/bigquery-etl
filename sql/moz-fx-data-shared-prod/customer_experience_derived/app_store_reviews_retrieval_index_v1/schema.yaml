@@ -18,27 +18,27 @@ fields:
 - name: review_summary_llm
   type: STRING
   mode: NULLABLE
-  description: AI-generated summary of the review in english, limited to a maximum of 8 words.
+  description: AI-generated summary of the review in english, limited to a maximum of 8 words. NULL when empty.
 - name: review_category_llm
   type: STRING
   mode: NULLABLE
   description: AI-generated category of the review, requested as exactly one of complaint, bug, request, praise,
     question. Any other value is tagged `review_category_llm_not_allowed` in `metadata.failure_reasons`.
-    Stored lowercase.
+    Stored lowercase. NULL when empty.
 - name: review_language_llm
   type: STRING
   mode: NULLABLE
-  description: AI-detected BCP 47 language tag (e.g., en-US, es-MX) for the review text.
+  description: AI-detected BCP 47 language tag (e.g., en-US, es-MX) for the review text. NULL when empty.
 - name: review_entities_llm
   type: STRING
   mode: REPEATED
   description: Array of up to three AI-extracted normalized entities from the review (e.g. product names, features,
-    error codes, companies, websites). Stored lowercase.
+    error codes, companies, websites). Stored lowercase. Empty array when none.
 - name: review_topics_llm
   type: STRING
   mode: REPEATED
   description: Array of up to three AI-generated broad product areas for the review (e.g. ui, updates, privacy,
-    tabs, performance). Stored lowercase.
+    tabs, performance). Stored lowercase. Empty array when none.
 - name: review_sentiment_score
   type: FLOAT
   mode: NULLABLE

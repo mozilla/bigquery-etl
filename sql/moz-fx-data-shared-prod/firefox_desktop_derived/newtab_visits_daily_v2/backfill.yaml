@@ -1,3 +1,12 @@
+2026-11-26:
+  start_date: 2024-10-13
+  end_date: 2026-11-24
+  reason: 'DENG-12046: backfill the DENG-11856 columns added in DENG-12033.'
+  watchers:
+  - gkaberere@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+
 2026-01-23:
   start_date: 2024-01-01
   end_date: 2026-01-22

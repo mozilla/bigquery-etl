@@ -24,11 +24,11 @@ AI-enriched retrieval table derived from Apple App Store reviews of Mozilla apps
 
 ## ⚠️ Analysis Caveats
 
-- **Query the view, not this table.** `customer_experience.app_store_reviews_retrieval_index` joins this table to the source reviews on `id` and adds `app_id`, `territory` and `rating`. This table stores only the fields the LLM needs (`id`, `creation_date`, `title`, `body`) plus the AI fields.
-- **`title` and `body` here are the text the LLM saw.** The view reads the current text from the source table, which Fivetran can update after the partition was written.
-- **Each partition is written once.** Later edits to a review are not re-analysed unless the partition is re-run.
+- **Query the view, not this table.** `customer_experience.app_store_reviews_retrieval_index` joins this table to the source reviews on `id` and adds `app_id`, `territory`, `rating`, `reviewer_nickname` and `app_version`. This table stores only the fields the LLM needs (`id`, `creation_date`, `title`, `body`) plus the AI fields.
+- **`title` and `body` here are the text the LLM saw.** The view reads the current text from the source table, which Fivetran can update after the row was written.
+- **Each run merges the reviews created in the 7 days up to `@submission_date`.** It adds reviews with no row yet and re-analyses reviews whose `title` or `body` changed. Reviews created before that window are not re-analysed unless the script is run for their dates with `bqetl query run`.
 - **The view includes reviews not yet indexed.** It LEFT JOINs this table onto the source, so LLM fields and `embedding` are NULL for reviews this table has not processed. The view does not expose `metadata`.
-- **Filter on individual LLM columns when you need clean values.** Each LLM column can be NULL or empty independently; filter `WHERE <col> IS NOT NULL` (and `ARRAY_LENGTH(<col>) > 0` for arrays).
+- **No-value LLM fields are NULL or an empty array.** Empty text and "null" in any case are stored as NULL; the view also treats "llm-unidentified" as NULL. Filter with `WHERE <col> IS NOT NULL`, or `ARRAY_LENGTH(<col>) > 0` for arrays.
 - **`review_category_llm` is constrained to five values** (`complaint`, `bug`, `request`, `praise`, `question`). Any other value the model returns is kept and tagged `review_category_llm_not_allowed` in `metadata.failure_reasons`.
 - **`review_sentiment_score` is NULLed at write time when out of range.** `metadata.failure_reasons` distinguishes `review_sentiment_score_missing` from `review_sentiment_score_out_of_range`.
 - **For vector search, filter `embedding IS NOT NULL`.** The view does not filter rows without an embedding.
@@ -40,7 +40,7 @@ AI-enriched retrieval table derived from Apple App Store reviews of Mozilla apps
 
 ```mermaid
 flowchart TD
-  A[App Store reviews<br/>`moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review`] -->|"DATE(created_date) = @submission_date<br/>+ Gemini AI enrichment"| B[**This query**]
+  A[App Store reviews<br/>`moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review`] -->|"created in the 7 days up to @submission_date<br/>+ Gemini AI enrichment of new or edited reviews"| B[**This script** MERGE]
   B --> C[Partitioned table<br/>time: `creation_date`]
   A --> D[View<br/>`customer_experience.app_store_reviews_retrieval_index`]
   C -->|LEFT JOIN on id| D
@@ -50,18 +50,18 @@ flowchart TD
 
 ## 🧠 How It Works
 
-1. **Input** — reviews created on `@submission_date`; `IFNULL(title, '')` and `IFNULL(body, '')` are used as LLM input.
+1. **Input** — reviews created in the 7 days up to `@submission_date` that have no row yet or whose `title` or `body` changed; `IFNULL(title, '')` and `IFNULL(body, '')` are used as LLM input.
 2. **AI generation** — `AI.GENERATE` with `gemini-3.8-flash` produces summary, category, language, entities, topics and sentiment score per review. The prompt puts the review text first and the instructions last.
 3. **Embedding** — `AI.EMBED` with `gemini-embedding-001` generates a dense vector from the concatenated `title` and `body`.
 4. **Metadata** — a struct captures input fields, model versions, prompt version, analysis timestamp, embedding status and `failure_reasons`.
 
 ---
 
-## ⏱️ Date Partition Offset
+## ⏱️ Lookback Window
 
-Data is updated to 3 days before the run (`partition_offset: -3d`) in order to process most of the reviews that arrive late.
-The query below returns the ranges and excludes Fivetran backfill sync dates 2024-11-05, 2025-08-08 and 2025-09-29.
-Reviews that take longer than 72 hours (about 2% of reviews) may be missed.
+Each run sets `@submission_date` to the run's logical date (`submission_date:DATE:{{ds}}`) and reads the reviews created in the 7 days up to that date, in order to process the reviews that arrive late.
+Reviews that arrive more than 7 days after creation are not processed.
+The query below returns the arrival delay ranges and excludes Fivetran backfill sync dates 2024-11-05, 2025-08-08 and 2025-09-29.
 
 ```sql
 WITH delay_ranges AS (SELECT range_index FROM UNNEST(GENERATE_ARRAY(0, 6)) AS range_index), review_delays AS (SELECT LEAST(DIV(TIMESTAMP_DIFF(_fivetran_synced, created_date, HOUR), 24), 6) AS review_range_index FROM `moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review` WHERE DATE(_fivetran_synced) NOT IN ("2025-08-08", "2024-11-05", "2025-09-29")) SELECT IF(range_index = 6, "more than 144 hours", FORMAT("%d-%d hours", range_index * 24, (range_index + 1) * 24)) AS sync_delay_range, ROUND(100 * COUNT(review_range_index) / (SELECT COUNT(*) FROM review_delays), 2) AS review_percentage FROM delay_ranges LEFT JOIN review_delays ON review_range_index = range_index GROUP BY range_index ORDER BY range_index
@@ -141,7 +141,7 @@ ORDER BY row_count DESC;
 
 ### When to update
 
-| What changed | Field to update in `query.sql` |
+| What changed | Field to update in `script.sql` |
 |---|---|
 | Prompt text or `output_schema` in `AI.GENERATE` | `prompt_version` — increment to `v2`, `v3`, … |
 | Generative model (currently `gemini-3.8-flash`) | `llm_model` |

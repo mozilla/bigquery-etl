@@ -19,6 +19,15 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Star rating given by the reviewer.
+- name: reviewer_nickname
+  type: STRING
+  mode: NULLABLE
+  description: Nickname of the reviewer, as shown on the App Store.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the app that the review was written for, from the App Store
+    version string. NULL when the review has no linked app version.
 - name: title
   type: STRING
   mode: NULLABLE
@@ -32,28 +41,30 @@ fields:
   type: STRING
   mode: NULLABLE
   description: AI-generated summary of the review in english, limited to a maximum
-    of 8 words.
+    of 8 words. NULL when empty.
 - name: review_category_llm
   type: STRING
   mode: NULLABLE
   description: AI-generated category of the review, requested as exactly one of complaint,
     bug, request, praise, question. Any other value is tagged `review_category_llm_not_allowed`
-    in `metadata.failure_reasons`. Stored lowercase.
+    in `metadata.failure_reasons`. Stored lowercase. NULL when empty.
 - name: review_language_llm
   type: STRING
   mode: NULLABLE
   description: AI-detected BCP 47 language tag (e.g., en-US, es-MX) for the review
-    text.
+    text. NULL when empty.
 - name: review_entities_llm
   type: STRING
   mode: REPEATED
   description: Array of up to three AI-extracted normalized entities from the review
     (e.g. product names, features, error codes, companies, websites). Stored lowercase.
+    Empty array when none.
 - name: review_topics_llm
   type: STRING
   mode: REPEATED
   description: Array of up to three AI-generated broad product areas for the review
-    (e.g. ui, updates, privacy, tabs, performance). Stored lowercase.
+    (e.g. ui, updates, privacy, tabs, performance). Stored lowercase. Empty array
+    when none.
 - name: review_sentiment_score
   type: FLOAT
   mode: NULLABLE

@@ -32,5 +32,7 @@ workgroup_access:
   - workgroup:mozilla-confidential/data-viewers
 references:
   view.sql:
+  - moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_app_version
+  - moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_app_version_review
   - moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review
   - moz-fx-data-shared-prod.customer_experience_derived.app_store_reviews_retrieval_index_v1

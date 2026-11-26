@@ -34,7 +34,13 @@ labels:
   owner1: lvargas
 scheduling:
   dag_name: bqetl_customer_experience
-  partition_offset: -3d
+  partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - app_store_v2_syndicate
+    - app_store_review
 bigquery:
   time_partitioning:
     type: day
@@ -48,7 +54,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential/data-viewers
 references:
-  query.sql:
+  script.sql:
   - moz-fx-data-shared-prod.app_store_v2_syndicate.app_store_review
 monitoring:
   enabled: true

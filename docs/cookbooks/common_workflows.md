@@ -4,9 +4,11 @@ This is a quick guide of how to perform common workflows in bigquery-etl using t
 
 For any workflow, the bigquery-etl repositiory needs to be locally available, for example by cloning the repository, and the `bqetl` CLI needs to be installed by running `./bqetl bootstrap`.
 
+AI coding agents working in this repository must follow the additional restrictions in [AGENTS.md](https://github.com/mozilla/bigquery-etl/blob/main/AGENTS.md), including using only allow-listed non-prod `--target`s and impersonating the sandbox service account for `query run`, `deploy`, and `query backfill` commands.
+
 ## Adding a new scheduled query
 
-The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/) provides a more detailed guide on creating scheduled queries.
+The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/) provides a more detailed guide on creating scheduled queries. For testing changes against a personal or shared development environment before opening a PR, see the [Development workflows](https://mozilla.github.io/bigquery-etl/cookbooks/development_workflows/) cookbook.
 
 1. Run `./bqetl query create <dataset>.<table>_<version>`
    1. Specify the desired destination dataset and table name for `<dataset>.<table>_<version>`
@@ -27,7 +29,7 @@ The [Creating derived datasets tutorial](https://mozilla.github.io/bigquery-etl/
 1. Merge pull-request
 1. Table deploys happen on a nightly cadence through the [`bqetl_artifact_deployment` Airflow DAG](https://workflow.telemetry.mozilla.org/dags/bqetl_artifact_deployment/grid)
    * Clear the most recent DAG run once a new version of bigquery-etl has been deployed to create new datasets earlier
-1. Backfill data by following the [Backfilling a table](https://mozilla.github.io/bigquery-etl/cookbooks/backfilling_a_table/) cookbook, which uses a `backfill.yaml` file and `./bqetl backfill create`
+1. Backfill data by following the [Backfilling a table](https://mozilla.github.io/bigquery-etl/cookbooks/backfilling_a_table/) cookbook, which uses a `backfill.yaml` file, `./bqetl backfill create`, and a two-PR staged-swap process (staging table validation followed by a completion PR to swap in the data)
 
 ## Update an existing query
 

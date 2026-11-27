@@ -1,0 +1,9 @@
+---
+friendly_name: Stage LLM Proxy Fastly CDN logs
+description: |-
+  View on Fastly CDN logs for llm-proxy (MLPA edge) in stage.
+  Selects all columns from `moz-fx-llm-proxy-nonprod-fd0e.llm_proxy_nonprod_stage_fastly_cdn_logs.fastly`.
+owners:
+- aosipenko@mozilla.com
+labels:
+  owner1: aosipenko

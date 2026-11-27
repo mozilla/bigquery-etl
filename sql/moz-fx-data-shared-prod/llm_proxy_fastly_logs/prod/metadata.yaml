@@ -1,0 +1,9 @@
+---
+friendly_name: Prod LLM Proxy Fastly CDN logs
+description: |-
+  View on Fastly CDN logs for llm-proxy (MLPA edge) in prod.
+  Selects all columns from `moz-fx-llm-proxy-prod-b0b8.llm_proxy_prod_prod_fastly_cdn_logs.fastly`.
+owners:
+- aosipenko@mozilla.com
+labels:
+  owner1: aosipenko

@@ -146,7 +146,7 @@ aggregate_mau AS (
     week_start,
     country_name
 ),
--- the five apps' rows in the 28 days ending the week's Monday, the same days as MAU
+-- the five apps' rows in the 28 days ending @submission_date, which is the week's Monday on scheduled runs, the same days as MAU
 dau_window AS (
   SELECT
     submission_date,

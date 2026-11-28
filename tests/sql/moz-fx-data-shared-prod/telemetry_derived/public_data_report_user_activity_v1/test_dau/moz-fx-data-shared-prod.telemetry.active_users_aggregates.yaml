@@ -10,16 +10,17 @@
   app_name: Fenix
   mau: 6
   dau: 2
-# Inside the 28-day window, so counted: AA's sum is 30 + 280 + 250 = 560.
+# Inside the 28-day window, so counted: Desktop has rows on 2 days and Fenix on 3,
+# and AA's Desktop sum is 30 + 281 = 311, an odd number, so Worldwide lands on a half.
 - submission_date: 2026-10-06
   country: AA
   app_name: Firefox Desktop
-  dau: 280
+  dau: 281
 - submission_date: 2026-10-20
   country: AA
   app_name: Fenix
   dau: 250
-# BB's only other day: its sum is 14, and its 26 days without rows count as 0.
+# BB's only other day: its Fenix sum is 14, divided by Fenix's 3 days, so 2026-10-20 counts as 0 for BB.
 - submission_date: 2026-10-15
   country: BB
   app_name: Fenix

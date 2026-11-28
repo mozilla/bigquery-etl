@@ -1,6 +1,6 @@
 ---
 # A Wednesday run: every row is dated its week's Monday, and dau still joins.
-# dau is (56 + 504) / 28 = 20; the day before the window is left out.
+# dau is Desktop's sum divided by its 2 days with rows: (56 + 504) / 2 = 280; the day before the window is left out.
 - submission_date: 2026-11-02
   country_name: Country A
   mau: 70
@@ -17,7 +17,7 @@
     ratio: 1.0
   mau_desktop: 70
   mau_mobile: 0
-  dau: 20
+  dau: 280
 - submission_date: 2026-11-02
   country_name: Worldwide
   mau: 70
@@ -34,4 +34,4 @@
     ratio: 1.0
   mau_desktop: 70
   mau_mobile: 0
-  dau: 20
+  dau: 280

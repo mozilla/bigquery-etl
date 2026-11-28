@@ -5,7 +5,7 @@
   app_name: Firefox Desktop
   mau: 70
   dau: 56
-# The window's first day, 27 days before: counted, so the sum is 56 + 504 = 560.
+# The window's first day, 27 days before: counted, so Desktop has rows on 2 days and its sum is 56 + 504 = 560.
 - submission_date: 2026-10-08
   country: AA
   app_name: Firefox Desktop

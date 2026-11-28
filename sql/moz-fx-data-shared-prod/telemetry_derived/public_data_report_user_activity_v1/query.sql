@@ -146,25 +146,60 @@ aggregate_mau AS (
     week_start,
     country_name
 ),
--- average daily active users over the 28 days ending the week's Monday, the same days as MAU;
--- a day with no clients counts as 0
-aggregate_dau AS (
+-- the five apps' rows in the 28 days ending the week's Monday, the same days as MAU
+dau_window AS (
   SELECT
-    DATE_TRUNC(@submission_date, WEEK(MONDAY)) AS week_start,
-    COALESCE(cn.name, country_group) AS country_name,
-    CAST(ROUND(SUM(dau) / 28) AS INT64) AS dau
+    submission_date,
+    country,
+    app_name,
+    dau
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users_aggregates`
-  CROSS JOIN
-    UNNEST([country, 'Worldwide']) AS country_group
-  LEFT JOIN
-    countries AS cn
-    ON cn.code = country_group
   WHERE
     submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND @submission_date
     AND app_name IN ('Firefox Desktop', 'Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
+),
+-- days in the window with rows for each app in any country; a day missing upstream is left out
+dau_app_days AS (
+  SELECT
+    app_name,
+    COUNT(DISTINCT submission_date) AS app_days
+  FROM
+    dau_window
+  GROUP BY
+    app_name
+),
+-- each country's and Worldwide's 28-day DAU sum per app
+dau_by_app AS (
+  SELECT
+    COALESCE(cn.name, country_group) AS country_name,
+    app_name,
+    SUM(dau) AS dau_sum
+  FROM
+    dau_window
+  CROSS JOIN
+    UNNEST([country, 'Worldwide']) AS country_group
+  LEFT JOIN
+    countries AS cn
+    ON cn.code = country_group
+  GROUP BY
+    country_name,
+    app_name
+),
+-- each app's sum divided by that app's days, then the apps added and rounded;
+-- a day without clients in a country counts as 0
+aggregate_dau AS (
+  SELECT
+    DATE_TRUNC(@submission_date, WEEK(MONDAY)) AS week_start,
+    country_name,
+    CAST(ROUND(SUM(dau_sum / app_days)) AS INT64) AS dau
+  FROM
+    dau_by_app
+  INNER JOIN
+    dau_app_days
+    USING (app_name)
   GROUP BY
     country_name
 ),

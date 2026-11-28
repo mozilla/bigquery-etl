@@ -1,6 +1,7 @@
 ---
-# dau is the 28 days' summed DAU / 28, rounded; days without rows count as 0.
-# AA: (30 + 280 + 250) / 28 = 20; Klar and the days outside the window are left out.
+# dau divides each app's 28-day DAU sum by that app's days with rows in any country, then adds the apps and rounds.
+# Desktop has rows on 2 days, Fenix on 3. AA: (30 + 281) / 2 + 250 / 3 = 238.8, rounded to 239.
+# Klar and the days outside the window are left out.
 - submission_date: 2026-11-02
   country_name: Country A
   mau: 70
@@ -17,8 +18,9 @@
     ratio: 1.0
   mau_desktop: 70
   mau_mobile: 0
-  dau: 20
-# BB: (2 + 12) / 28 = 0.5, rounded to 1; averaging only its 2 days with rows would give 7.
+  dau: 239
+# BB: no Desktop rows, plus (2 + 12) / 3 = 4.7, rounded to 5; Fenix's day with rows only in AA counts as 0 for BB.
+# Averaging only BB's own 2 days would give 7.
 - submission_date: 2026-11-02
   country_name: Country B
   mau: 6
@@ -35,8 +37,8 @@
     ratio: 1.0
   mau_desktop: 0
   mau_mobile: 6
-  dau: 1
-# Worldwide: (560 + 14) / 28 = 20.5, rounded to 21.
+  dau: 5
+# Worldwide: (30 + 281) / 2 + (2 + 250 + 12) / 3 = 243.5, rounded half up to 244.
 - submission_date: 2026-11-02
   country_name: Worldwide
   mau: 76
@@ -53,4 +55,4 @@
     ratio: 1.0
   mau_desktop: 70
   mau_mobile: 6
-  dau: 21
+  dau: 244

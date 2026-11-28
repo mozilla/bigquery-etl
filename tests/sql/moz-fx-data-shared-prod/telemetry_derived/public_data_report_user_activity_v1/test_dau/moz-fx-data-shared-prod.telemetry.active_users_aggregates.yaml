@@ -1,0 +1,41 @@
+---
+# The Monday: MAU and that day's DAU.
+- submission_date: 2026-11-02
+  country: AA
+  app_name: Firefox Desktop
+  mau: 70
+  dau: 30
+- submission_date: 2026-11-02
+  country: BB
+  app_name: Fenix
+  mau: 6
+  dau: 2
+# Inside the 28-day window, so counted: Desktop has rows on 2 days and Fenix on 3,
+# and AA's Desktop sum is 30 + 281 = 311, an odd number, so Worldwide lands on a half.
+- submission_date: 2026-10-06
+  country: AA
+  app_name: Firefox Desktop
+  dau: 281
+- submission_date: 2026-10-20
+  country: AA
+  app_name: Fenix
+  dau: 250
+# BB's only other day: its Fenix sum is 14, divided by Fenix's 3 days, so 2026-10-20 counts as 0 for BB.
+- submission_date: 2026-10-15
+  country: BB
+  app_name: Fenix
+  dau: 12
+# Off the app list, so left out.
+- submission_date: 2026-10-10
+  country: AA
+  app_name: Klar
+  dau: 500
+# The day before the window and the day after, so left out.
+- submission_date: 2026-10-05
+  country: AA
+  app_name: Firefox Desktop
+  dau: 1000
+- submission_date: 2026-11-03
+  country: AA
+  app_name: Firefox Desktop
+  dau: 1000

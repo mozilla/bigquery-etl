@@ -87,3 +87,13 @@ fields:
   mode: NULLABLE
   description: Mobile monthly active users for the week, equal to mau minus mau_desktop. Covers Fenix, Firefox
     iOS, Focus Android and Focus iOS.
+- name: dau
+  type: INT64
+  mode: NULLABLE
+  description: !include-field-description
+    file: sql/moz-fx-data-shared-prod/telemetry_derived/telemetry_derived.yaml
+    field: dau
+    append: Here, the average daily active users over the 28 days ending the week's Monday, the same days as mau,
+      for Firefox Desktop, Fenix, Firefox iOS, Focus Android and Focus iOS. Each app is averaged over its days with
+      data in any country, so a day without clients in one country counts as 0 there, and a day with no data for an
+      app is left out. The apps' averages are added and rounded to a whole number.

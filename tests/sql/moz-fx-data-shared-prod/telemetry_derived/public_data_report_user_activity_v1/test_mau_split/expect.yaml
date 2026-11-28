@@ -1,4 +1,5 @@
 ---
+# dau is left out: this test's fixture has no dau values, so it's NULL; test_dau covers it.
 # mau is the five apps' sum; mau_mobile is mau minus mau_desktop.
 - submission_date: 2026-11-02
   country_name: Country A

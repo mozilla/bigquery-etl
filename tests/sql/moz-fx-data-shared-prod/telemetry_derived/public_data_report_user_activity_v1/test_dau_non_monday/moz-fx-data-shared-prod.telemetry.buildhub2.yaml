@@ -1,0 +1,8 @@
+---
+# A release build before the week's Sunday, so 140 is the latest version and the client is on it.
+- build:
+    build:
+      date: "2026-06-01 00:00:00"
+    target:
+      channel: release
+      version: '140.0'
